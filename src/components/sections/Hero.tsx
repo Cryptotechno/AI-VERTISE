@@ -118,7 +118,7 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent"
             >
               Transform Your Business with Smart Advertising
             </motion.h1>
@@ -127,14 +127,14 @@ const Hero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="text-lg text-gray-600 mb-8 max-w-xl"
+              className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 max-w-xl"
             >
               Leverage the power of AI and data-driven strategies to boost your business growth. Experience the future of digital advertising with our innovative solutions.
             </motion.p>
 
             {/* Benefits Grid */}
             <motion.div 
-              className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8"
+              className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -216,9 +216,9 @@ const Hero: React.FC = () => {
             {/* CTA Button */}
             <motion.button
               onClick={scrollToContact}
-              className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg 
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg 
                 font-medium transition-all shadow-md hover:shadow-lg active:shadow-sm
-                flex items-center justify-center gap-2 group text-lg
+                flex items-center justify-center gap-2 group text-base sm:text-lg
                 hover:from-indigo-500 hover:to-purple-500 transform hover:-translate-y-0.5"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

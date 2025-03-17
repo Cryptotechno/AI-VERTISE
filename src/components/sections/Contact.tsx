@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { 
   FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaLinkedin, 
   FaFacebookSquare, FaInstagram, FaWhatsapp, FaClock,
-  FaCheckCircle
+  FaCheckCircle, FaPaperPlane
 } from 'react-icons/fa'
 
 interface ContactFormData {
@@ -13,6 +13,7 @@ interface ContactFormData {
   company: string
   budget: string
   message: string
+  subject: string
 }
 
 const Contact = () => {
@@ -22,7 +23,8 @@ const Contact = () => {
     phone: '',
     company: '',
     budget: '',
-    message: ''
+    message: '',
+    subject: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -97,7 +99,8 @@ const Contact = () => {
           phone: '',
           company: '',
           budget: '',
-          message: ''
+          message: '',
+          subject: ''
         })
       }, 3000)
     } catch (error) {
@@ -145,85 +148,75 @@ const Contact = () => {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto mb-12 lg:mb-16">
           {/* Contact Information */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="space-y-6"
+            className="space-y-4 lg:space-y-6"
           >
-            <div className="bg-white rounded-2xl p-8 shadow-md border border-gray-100">
-              <div className="space-y-6">
+            <div className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100">
+              <div className="space-y-4 lg:space-y-6">
                 {/* Phone */}
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
-                    <FaPhoneAlt className="w-5 h-5" />
+                <div className="flex items-center space-x-3 lg:space-x-4">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
+                    <FaPhoneAlt className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900">Call Us</h3>
-                    <a href="tel:+48123456789" className="text-base text-indigo-600 hover:text-indigo-700 transition-colors">
+                    <h3 className="text-sm lg:text-base font-semibold text-gray-900">Call Us</h3>
+                    <a href="tel:+48123456789" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
                       +48 123 456 789
                     </a>
                   </div>
                 </div>
 
                 {/* Email */}
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
-                    <FaEnvelope className="w-5 h-5" />
+                <div className="flex items-center space-x-3 lg:space-x-4">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
+                    <FaEnvelope className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900">Email Us</h3>
-                    <a href="mailto:contact@aivertise.pl" className="text-base text-indigo-600 hover:text-indigo-700 transition-colors">
+                    <h3 className="text-sm lg:text-base font-semibold text-gray-900">Email Us</h3>
+                    <a href="mailto:contact@aivertise.pl" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
                       contact@aivertise.pl
                     </a>
                   </div>
                 </div>
 
                 {/* Location */}
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
-                    <FaMapMarkerAlt className="w-5 h-5" />
+                <div className="flex items-center space-x-3 lg:space-x-4">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
+                    <FaMapMarkerAlt className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900">Visit Us</h3>
-                    <p className="text-base text-gray-600">Bałtyk Tower</p>
-                    <p className="text-base text-gray-600">Poznań, Poland</p>
+                    <h3 className="text-sm lg:text-base font-semibold text-gray-900">Visit Us</h3>
+                    <p className="text-sm lg:text-base text-gray-600">
+                      Bałtyk Business Center<br />
+                      ul. Bałtycka 10<br />
+                      61-001 Poznań, Poland
+                    </p>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                {/* Business Hours */}
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
-                    <FaClock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900">Business Hours</h3>
-                    <p className="text-base text-gray-600">Mon - Fri: 9:00 - 17:00</p>
-                    <p className="text-sm text-gray-500">Weekend: By appointment</p>
-                  </div>
-                </div>
-
-                {/* Social Links */}
-                <div className="pt-4 border-t border-gray-100">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4">Connect With Us</h3>
-                  <div className="flex gap-3">
-                    {socialLinks.map((social, index) => (
-                      <a
-                        key={index}
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 hover:scale-110 transition-transform"
-                        aria-label={social.label}
-                      >
-                        <social.icon className="w-5 h-5" />
-                      </a>
-                    ))}
-                  </div>
-                </div>
+            {/* Social Links */}
+            <div className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100">
+              <h3 className="text-sm lg:text-base font-semibold text-gray-900 mb-4">Follow Us</h3>
+              <div className="flex space-x-4">
+                {socialLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 transition-all duration-300"
+                  >
+                    <link.icon className="w-5 h-5 lg:w-6 lg:h-6" />
+                  </a>
+                ))}
               </div>
             </div>
           </motion.div>
@@ -234,140 +227,92 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
+            className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100"
           >
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-8 shadow-md border border-gray-100">
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                      placeholder="john@company.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                      placeholder="+48 123 456 789"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
-                      Company Name
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                      placeholder="Your Company"
-                    />
-                  </div>
-                </div>
-
+            <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-4 lg:mb-6">Send us a Message</h3>
+            <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-2">
-                    Monthly Advertising Budget
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Name
                   </label>
-                  <select
-                    id="budget"
-                    name="budget"
-                    value={formData.budget}
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                  >
-                    <option value="">Select budget range</option>
-                    <option value="1000-3000">1,000 - 3,000 PLN</option>
-                    <option value="3000-5000">3,000 - 5,000 PLN</option>
-                    <option value="5000-10000">5,000 - 10,000 PLN</option>
-                    <option value="10000+">10,000+ PLN</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    How Can We Help?
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                     required
-                    rows={4}
-                    className="w-full px-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                    placeholder="Tell us about your goals and challenges..."
                   />
                 </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3 px-6 text-white font-medium bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl 
-                    hover:shadow-lg transition-all focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 
-                    disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending...
-                    </span>
-                  ) : (
-                    'Send Message'
-                  )}
-                </button>
-
-                {/* Success Message */}
-                {isSubmitted && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center justify-center space-x-2 text-green-600"
-                  >
-                    <FaCheckCircle className="w-5 h-5" />
-                    <span>Thank you! We'll get back to you soon.</span>
-                  </motion.div>
-                )}
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                    required
+                  />
+                </div>
               </div>
+
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                  Subject
+                </label>
+                <input
+                  type="text"
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={4}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors resize-none"
+                  required
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg 
+                  font-medium transition-all shadow-md hover:shadow-lg active:shadow-sm
+                  flex items-center justify-center gap-2 group text-base
+                  hover:from-indigo-500 hover:to-purple-500 transform hover:-translate-y-0.5
+                  disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    Send Message
+                    <FaPaperPlane className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
             </form>
           </motion.div>
         </div>

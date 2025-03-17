@@ -1,9 +1,9 @@
 {
   "name": "ai-vertise",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.0.0",
   "type": "module",
-  "homepage": "https://nataliiamakota.github.io/AI-VERTISE/",
+  "homepage": "https://nataliiamakota.github.io/ai-vertise",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

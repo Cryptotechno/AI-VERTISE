@@ -1,20 +1,21 @@
 # Dependencies
-node_modules
-.pnp
+/node_modules
+/.pnp
 .pnp.js
 
 # Testing
-coverage
+/coverage
 
 # Production
-dist
+/build
+/dist
 dist-ssr
 *.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -37,3 +38,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
