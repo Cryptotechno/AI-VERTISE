@@ -219,53 +219,70 @@ const Services: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
         >
           {services.map((service, index) => (
             <motion.div
               key={index}
-              variants={itemVariants}
-              whileHover={{ y: -4 }}
-              className="group relative flex"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="relative bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300"
             >
-              <div className="relative flex flex-col w-full bg-white rounded-2xl p-4 sm:p-6 transition-all duration-300 shadow-sm hover:shadow-lg overflow-hidden group min-h-[380px] sm:min-h-[420px] border border-indigo-100/20 hover:border-indigo-200/50">
-                {/* AI Score Badge */}
-                <div className="absolute top-3 sm:top-4 right-3 sm:right-4 flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-full border border-indigo-100/20 group-hover:from-indigo-100/50 group-hover:to-purple-100/50 transition-colors">
-                  <FaStar className="w-3 h-3 text-indigo-600" />
-                  <span className="text-xs font-semibold text-indigo-600">
-                    {aiRecommendations[service.title].score}% Match
+              {/* AI Score Badge */}
+              <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-full border border-indigo-100/20">
+                <FaStar className="w-3 h-3 text-indigo-600" />
+                <span className="text-xs font-semibold text-indigo-600">
+                  {aiRecommendations[service.title].score}% Match
+                </span>
+              </div>
+
+              {/* Pattern Background */}
+              <div className="absolute top-0 right-0 w-32 h-32 opacity-10 transition-transform group-hover:scale-110">
+                <div className="absolute transform rotate-45 translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-r from-indigo-600 to-purple-600" />
+              </div>
+
+              <div className="p-4 sm:p-6 h-full flex flex-col">
+                <div className="mb-4 relative">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform">
+                    <service.icon className="w-6 h-6" />
+                  </div>
+                  {/* AI Trend Tag */}
+                  <div className="absolute left-14 -top-1 inline-flex items-center">
+                    <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+                      {aiRecommendations[service.title].trend}
+                    </span>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h3>
+                <p className="text-gray-600 mb-4 flex-grow">{service.description}</p>
+
+                {/* AI Impact Badge */}
+                <div className="mb-4 flex items-center gap-2">
+                  <FaAward className="w-4 h-4 text-indigo-600" />
+                  <span className="text-sm font-medium text-indigo-600">
+                    {aiRecommendations[service.title].impact}
                   </span>
                 </div>
 
-                {/* Enhanced Background Patterns */}
-                <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-br from-indigo-50 to-transparent rounded-bl-[100px] opacity-30 transition-transform group-hover:scale-110" />
-                <div className="absolute bottom-0 left-0 w-20 sm:w-24 h-20 sm:h-24 bg-gradient-to-tr from-purple-50 to-transparent rounded-tr-[80px] opacity-30 transition-transform group-hover:scale-110" />
-                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-indigo-50/5 via-purple-50/5 to-indigo-50/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-                
-                {/* Content Container */}
-                <div className="relative flex flex-col flex-1">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 group-hover:scale-110 transition-transform">
-                      <service.icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                <div className="space-y-2 mb-6">
+                  {service.benefits.map((benefit, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <FaCheck className="w-4 h-4 text-indigo-600 flex-shrink-0" />
+                      <span className="text-sm text-gray-600">{benefit}</span>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">{service.title}</h3>
-                  </div>
-                  <p className="text-sm sm:text-base text-gray-600 mb-4 flex-1">{service.description}</p>
-                  <ul className="space-y-2 mb-6">
-                    {service.benefits.map((benefit, idx) => (
-                      <li key={idx} className="flex items-center gap-2 text-sm sm:text-base text-gray-600">
-                        <FaCheck className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-auto">
-                    <button className="w-full px-4 py-2 text-sm sm:text-base bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-600 rounded-lg font-medium hover:from-indigo-100 hover:to-purple-100 transition-all duration-300 flex items-center justify-center gap-2 group">
-                      Learn More
-                      <FaArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                  </div>
+                  ))}
                 </div>
+
+                <button
+                  onClick={() => window.location.href = '#calculator'}
+                  className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 group transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  {service.cta}
+                  <FaArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
             </motion.div>
           ))}
@@ -280,7 +297,10 @@ const Services: React.FC = () => {
           className="mt-12 text-center"
         >
           <div className="relative inline-block">
-            <div className="relative inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-50/90 to-purple-50/90 rounded-full border border-indigo-100/20 shadow-sm hover:from-indigo-100/90 hover:to-purple-100/90 transition-colors cursor-pointer">
+            <div 
+              onClick={() => window.location.href = '#calculator'}
+              className="relative inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-50/90 to-purple-50/90 rounded-full border border-indigo-100/20 shadow-sm hover:from-indigo-100/90 hover:to-purple-100/90 transition-colors cursor-pointer"
+            >
               <div className="p-1 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full">
                 <FaCogs className="w-3 h-3 text-white" />
               </div>

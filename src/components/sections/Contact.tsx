@@ -34,19 +34,19 @@ const Contact = () => {
     {
       icon: FaPhoneAlt,
       title: "Call Us",
-      details: ["+48 123 456 789"],
-      action: "tel:+48123456789"
+      details: ["+48 503 589 781"],
+      action: "tel:+48503589781"
     },
     {
       icon: FaEnvelope,
       title: "Email Us",
-      details: ["contact@aivertise.pl"],
-      action: "mailto:contact@aivertise.pl"
+      details: ["natalymakota@gmail.com"],
+      action: "mailto:natalymakota@gmail.com"
     },
     {
       icon: FaMapMarkerAlt,
       title: "Visit Us",
-      details: ["Bałtyk Tower", "Poznań, Poland"],
+      details: ["Bałtyk Tower", "Głogowska 40A", "60-734 Poznań, Poland"],
       action: "https://goo.gl/maps/your-location"
     },
     {
@@ -75,7 +75,7 @@ const Contact = () => {
     },
     {
       icon: FaWhatsapp,
-      url: "https://wa.me/48123456789",
+      url: "https://wa.me/48503589781",
       label: "WhatsApp"
     }
   ]
@@ -166,8 +166,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-sm lg:text-base font-semibold text-gray-900">Call Us</h3>
-                    <a href="tel:+48123456789" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
-                      +48 123 456 789
+                    <a href="tel:+48503589781" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
+                      +48 503 589 781
                     </a>
                   </div>
                 </div>
@@ -179,8 +179,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-sm lg:text-base font-semibold text-gray-900">Email Us</h3>
-                    <a href="mailto:contact@aivertise.pl" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
-                      contact@aivertise.pl
+                    <a href="mailto:natalymakota@gmail.com" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
+                      natalymakota@gmail.com
                     </a>
                   </div>
                 </div>
@@ -193,9 +193,9 @@ const Contact = () => {
                   <div>
                     <h3 className="text-sm lg:text-base font-semibold text-gray-900">Visit Us</h3>
                     <p className="text-sm lg:text-base text-gray-600">
-                      Bałtyk Business Center<br />
-                      ul. Bałtycka 10<br />
-                      61-001 Poznań, Poland
+                      Bałtyk Tower<br />
+                      Głogowska 40A<br />
+                      60-734 Poznań, Poland
                     </p>
                   </div>
                 </div>

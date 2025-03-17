@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense, lazy } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
@@ -58,9 +58,13 @@ import {
   FaDownload
 } from 'react-icons/fa'
 import { utils as xlsxUtils, writeFile as xlsxWriteFile } from 'xlsx'
+import { generateMediaPlan } from '../../utils/generateMediaPlan'
 
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend)
+
+// Lazy load the chart component
+const MediaPlanChart = lazy(() => import('../charts/MediaPlanChart'))
 
 interface Channel {
   id: string
@@ -389,6 +393,13 @@ const MagicPortal = () => {
   )
 }
 
+// Add loading component for the chart
+const ChartLoading = () => (
+  <div className="w-full max-w-md mx-auto h-[300px] flex items-center justify-center">
+    <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+  </div>
+)
+
 const Calculator = () => {
   const [budget, setBudget] = useState<number>(5000)
   const [selectedChannels, setSelectedChannels] = useState<string[]>([])
@@ -406,14 +417,20 @@ const Calculator = () => {
     isAutomated: true
   })
   const [showMagicAnimation, setShowMagicAnimation] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const handleChannelToggle = (channelId: string) => {
-    setSelectedChannels(prev =>
-      prev.includes(channelId)
+    setSelectedChannels(prev => {
+      const newChannels = prev.includes(channelId)
         ? prev.filter(id => id !== channelId)
-        : [...prev, channelId]
-    )
-    setShowResults(false)
+        : [...prev, channelId];
+      
+      // Reset predictions and allocations when channels change
+      setPredictions({});
+      setAllocations({});
+      setShowResults(false);
+      return newChannels;
+    });
   }
 
   // Update useEffect for insights
@@ -528,72 +545,66 @@ const Calculator = () => {
 
   // Update calculateMediaMix function
   const calculateMediaMix = () => {
-    if (selectedChannels.length === 0) return
+    if (selectedChannels.length === 0) return;
 
-    setIsOptimizing(true)
-    setShowMagicAnimation(true)
+    setIsOptimizing(true);
+    setShowMagicAnimation(true);
+
+    // Calculate new predictions and allocations
+    const baseAllocation = 100 / selectedChannels.length;
+    const newAllocations: Record<string, number> = {};
+    const newPredictions: Record<string, ChannelPrediction> = {};
+    
+    selectedChannels.forEach(channelId => {
+      newAllocations[channelId] = baseAllocation;
+      newPredictions[channelId] = getChannelPredictions(channelId, selectedGoal, budget, settings);
+    });
+
+    // Apply AI optimizations based on all factors
+    const optimizationFactors = {
+      web_landing: { display: 5, native: 3 },
+      mobile_app: { native: 7, video: 4 },
+      cross_platform: { video: 6, programmatic: 5 }
+    };
+
+    const goalFactors = {
+      awareness: { video: 7, dooh: 5, display: 3, audio: 2 },
+      consideration: { native: 6, video: 4, ctv: 3, telegram: 2 },
+      conversion: { retail: 8, programmatic: 5, native: 3 }
+    };
 
     setTimeout(() => {
-      setShowMagicAnimation(false)
-      const baseAllocation = 100 / selectedChannels.length
-      const newAllocations: Record<string, number> = {}
-      const newPredictions: Record<string, ChannelPrediction> = {}
-      
-      selectedChannels.forEach(channelId => {
-        newAllocations[channelId] = baseAllocation
-        newPredictions[channelId] = getChannelPredictions(channelId, selectedGoal, budget, settings)
-      })
-
-      // Apply AI optimizations based on all factors
-      const optimizationFactors = {
-        web_landing: { display: 5, native: 3 },
-        mobile_app: { native: 7, video: 4 },
-        cross_platform: { video: 6, programmatic: 5 }
-      }
-
-      const goalFactors = {
-        awareness: { video: 7, dooh: 5, display: 3, audio: 2 },
-        consideration: { native: 6, video: 4, ctv: 3, telegram: 2 },
-        conversion: { retail: 8, programmatic: 5, native: 3 }
-      }
-
       // Apply campaign type optimizations
-      const typeFactors = optimizationFactors[settings.type]
+      const typeFactors = optimizationFactors[settings.type] || {};
       Object.entries(typeFactors).forEach(([channel, bonus]) => {
         if (selectedChannels.includes(channel)) {
-          newAllocations[channel] += bonus * (settings.isAutomated ? 1.2 : 1)
+          newAllocations[channel] = (newAllocations[channel] || 0) + bonus * (settings.isAutomated ? 1.2 : 1);
         }
-      })
+      });
 
       // Apply goal optimizations
-      const currentGoalFactors = goalFactors[selectedGoal]
+      const currentGoalFactors = goalFactors[selectedGoal] || {};
       Object.entries(currentGoalFactors).forEach(([channel, bonus]) => {
         if (selectedChannels.includes(channel)) {
-          newAllocations[channel] += bonus
+          newAllocations[channel] = (newAllocations[channel] || 0) + bonus;
         }
-      })
+      });
 
-      // Duration impact
-      if (settings.duration > 1) {
-        selectedChannels.forEach(channel => {
-          if (channel === 'programmatic' || channel === 'native') {
-            newAllocations[channel] *= (1 + (settings.duration - 1) * 0.1)
-          }
-        })
+      // Normalize allocations to ensure total is 100%
+      const total = Object.values(newAllocations).reduce((sum, val) => sum + val, 0);
+      if (total > 0) {
+        Object.keys(newAllocations).forEach(key => {
+          newAllocations[key] = (newAllocations[key] / total) * 100;
+        });
       }
-      
-      // Normalize allocations
-      const total = Object.values(newAllocations).reduce((sum, val) => sum + val, 0)
-      Object.keys(newAllocations).forEach(key => {
-        newAllocations[key] = (newAllocations[key] / total) * 100
-      })
 
-      setAllocations(newAllocations)
-      setPredictions(newPredictions)
-      setShowResults(true)
-      setIsOptimizing(false)
-    }, 2000)
-  }
+      setAllocations(newAllocations);
+      setPredictions(newPredictions);
+      setShowResults(true);
+      setIsOptimizing(false);
+      setShowMagicAnimation(false);
+    }, 2000);
+  };
 
   const reviseMediaMix = () => {
     // Slightly adjust allocations to simulate AI refinement
@@ -615,29 +626,35 @@ const Calculator = () => {
   }
 
   const chartData = {
-    labels: selectedChannels.map(id => adChannels.find(ch => ch.id === id)?.name),
+    labels: selectedChannels.map(id => adChannels.find(ch => ch.id === id)?.name || ''),
     datasets: [{
-      data: selectedChannels.map(id => allocations[id]),
-      backgroundColor: selectedChannels.map(id => adChannels.find(ch => ch.id === id)?.color),
-      borderWidth: 0
+      data: selectedChannels.map(id => Number((allocations[id] || 0).toFixed(1))),
+      backgroundColor: selectedChannels.map(id => adChannels.find(ch => ch.id === id)?.color || '#000000'),
+      borderColor: selectedChannels.map(() => 'transparent'),
+      borderWidth: 2
     }]
   }
 
-  const chartOptions = {
-    cutout: '70%',
-    plugins: {
-      legend: {
-        display: false
-      },
-      tooltip: {
-        callbacks: {
-          label: (context: any) => {
-            const value = context.raw;
-            const channelBudget = (value / 100) * budget;
-            return `${value.toFixed(1)}% ($${channelBudget.toLocaleString()})`;
-          }
-        }
-      }
+  const handleDownloadMediaPlan = async () => {
+    if (isDownloading) return; // Prevent double-clicks
+    
+    try {
+      setIsDownloading(true);
+      generateMediaPlan();
+      
+      // Small delay to ensure file is generated
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const link = document.createElement('a');
+      link.href = '/downloads/AI_VERTISE_Media_Plan.xlsx';
+      link.download = 'AI_VERTISE_Media_Plan.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error generating media plan:', error);
+    } finally {
+      setIsDownloading(false);
     }
   }
 
@@ -757,13 +774,13 @@ const Calculator = () => {
                       <button
                         key={type.id}
                         onClick={() => setSettings(prev => ({ ...prev, type: type.id }))}
-                        className={`p-2 rounded-lg border transition-all ${
+                        className={`p-2 rounded-lg border transition-all duration-300 hover:scale-105 ${
                           settings.type === type.id
-                            ? 'border-indigo-600 bg-indigo-50/50 text-indigo-600'
+                            ? 'border-indigo-600 bg-indigo-50/50 text-indigo-600 shadow-sm'
                             : 'border-gray-100 hover:border-indigo-100 hover:bg-indigo-50/30'
                         }`}
                       >
-                        <div className={`p-1.5 rounded-lg mx-auto mb-1 w-fit ${
+                        <div className={`p-1.5 rounded-lg mx-auto mb-1 w-fit transition-colors ${
                           settings.type === type.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'
                         }`}>
                           {type.icon}
@@ -842,45 +859,49 @@ const Calculator = () => {
                   <motion.button
                     key={channel.id}
                     onClick={() => handleChannelToggle(channel.id)}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`relative flex items-center gap-3 p-3 rounded-xl border transition-all ${
+                    className={`relative flex items-center gap-3 p-3 rounded-xl border transition-all duration-300 cursor-pointer hover:shadow-md ${
                       selectedChannels.includes(channel.id)
-                        ? 'border-indigo-600 bg-indigo-50/50 text-indigo-600'
+                        ? 'border-indigo-600 bg-indigo-50/50 text-indigo-600 shadow-sm'
                         : 'border-gray-100 hover:border-indigo-100 hover:bg-indigo-50/30'
                     }`}
                   >
-                    {/* Add glowing effect for selected channels */}
+                    {/* Glowing effect for selected channels */}
                     {selectedChannels.includes(channel.id) && (
                       <motion.div
                         className="absolute inset-0 rounded-xl bg-indigo-400/20"
                         animate={{
-                          opacity: [0.2, 0.4, 0.2],
+                          opacity: [0.1, 0.2, 0.1],
                         }}
                         transition={{
                           duration: 2,
                           repeat: Infinity,
+                          ease: "easeInOut"
                         }}
                       />
                     )}
-                    <div className={`p-2 rounded-lg ${
-                      selectedChannels.includes(channel.id) ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'
+                    <div className={`p-2 rounded-lg transition-colors ${
+                      selectedChannels.includes(channel.id) 
+                        ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white' 
+                        : 'bg-gray-100 text-gray-600'
                     }`}>
                       {channel.icon}
                     </div>
-                    <div className="text-left">
+                    <div className="text-left relative z-10">
                       <div className="font-medium text-sm">{channel.name}</div>
+                      <div className="text-xs text-gray-500">{channel.description}</div>
                       {selectedChannels.includes(channel.id) && predictions[channel.id] && (
-                        <div className="text-xs text-indigo-600 mt-1">
+                        <div className="text-xs text-indigo-600 mt-1 font-medium">
                           ~{predictions[channel.id].roi.toFixed(1)}x ROI
                         </div>
                       )}
                     </div>
                     {suggestedChannels.includes(channel.id) && !selectedChannels.includes(channel.id) && (
-                      <div className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full">
+                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs px-2 py-0.5 rounded-full shadow-sm">
                         Recommended
                       </div>
                     )}
@@ -973,9 +994,11 @@ const Calculator = () => {
                   transition={{ duration: 0.5 }}
                   className="space-y-4"
                 >
-                  <div className="relative aspect-square max-w-[300px] mx-auto">
-                    <Doughnut data={chartData} options={chartOptions} />
-                    <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative aspect-square max-w-[300px] mx-auto mb-6">
+                    <Suspense fallback={<ChartLoading />}>
+                      <MediaPlanChart data={chartData} />
+                    </Suspense>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                       <motion.div
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -986,33 +1009,6 @@ const Calculator = () => {
                         <div className="text-sm text-gray-500">Total Budget</div>
                       </motion.div>
                     </div>
-                    {/* Simplified floating labels */}
-                    {selectedChannels.map((channelId, index) => {
-                      const channel = adChannels.find(ch => ch.id === channelId);
-                      const allocation = allocations[channelId];
-                      const angle = (index / selectedChannels.length) * Math.PI * 2 - Math.PI / 2;
-                      const radius = 120; // Reduced radius for closer labels
-                      const x = Math.cos(angle) * radius;
-                      const y = Math.sin(angle) * radius;
-                      
-                      return (
-                        <motion.div
-                          key={channelId}
-                          initial={{ opacity: 0, x, y }}
-                          animate={{ opacity: 1, x, y }}
-                          transition={{ delay: 0.5 + index * 0.1 }}
-                          className="absolute transform -translate-x-1/2 -translate-y-1/2"
-                          style={{ left: '50%', top: '50%' }}
-                        >
-                          <div 
-                            className="px-2 py-1 rounded-full bg-white/90 shadow-sm border border-gray-100 text-xs font-semibold"
-                            style={{ color: channel?.color }}
-                          >
-                            {allocation?.toFixed(1)}%
-                          </div>
-                        </motion.div>
-                      );
-                    })}
                   </div>
 
                   {/* Animate channel allocations */}
@@ -1114,140 +1110,33 @@ const Calculator = () => {
                   </div>
 
                   {/* Get Media Plan Button */}
-                  <div className="border-t border-gray-100 pt-4">
+                  <div className="border-t border-gray-100 pt-4 flex flex-col items-center w-full">
                     <button
-                      onClick={() => {
-                        // Prepare data for Excel sheets
-                        const campaignSheet = [
-                          ['Campaign Overview'],
-                          ['Goal', campaignGoals.find(g => g.id === selectedGoal)?.name],
-                          ['Type', campaignTypes.find(t => t.id === settings.type)?.name],
-                          ['Duration', `${settings.duration} months`],
-                          ['Total Budget', `$${budget.toLocaleString()}`],
-                          ['Monthly Budget', `$${(budget / settings.duration).toLocaleString()}`],
-                          ['Audience Target', audienceTargets.find(t => t.id === settings.audienceTarget)?.name],
-                          ['AI Automation', settings.isAutomated ? 'Enabled' : 'Disabled'],
-                          ['Start Date', new Date().toLocaleDateString()],
-                          ['End Date', new Date(Date.now() + settings.duration * 30 * 24 * 60 * 60 * 1000).toLocaleDateString()],
-                          [],
-                          ['Channel Allocations']
-                        ]
-
-                        // Add channel allocations
-                        selectedChannels.forEach(id => {
-                          const channel = adChannels.find(ch => ch.id === id)
-                          const allocation = allocations[id] || 0
-                          const channelBudget = (budget * allocation) / 100
-                          campaignSheet.push([
-                            channel?.name,
-                            `${allocation.toFixed(1)}%`,
-                            `$${channelBudget.toLocaleString()}`
-                          ])
-                        })
-
-                        // Create channel details sheet
-                        const channelDetailsSheet = [
-                          ['Channel Performance Predictions'],
-                          ['Channel', 'Allocation', 'Monthly Budget', 'Total Budget', 'Reach', 'Engagement', 'Conversion Rate', 'ROI', 'Est. Clicks', 'Est. Conversions', 'CPC', 'CPM', 'CPA']
-                        ]
-
-                        selectedChannels.forEach(id => {
-                          const channel = adChannels.find(ch => ch.id === id)
-                          const allocation = allocations[id] || 0
-                          const channelBudget = (budget * allocation) / 100
-                          const prediction = predictions[id]
-                          const monthlyBudget = channelBudget / settings.duration
-                          const reach = prediction?.reach || 0
-                          const engagement = prediction?.engagement || 0
-                          const conversion = prediction?.conversion || 0
-                          const clicks = Math.round((reach * engagement) / 100)
-                          const conversions = Math.round((reach * conversion) / 100)
-
-                          channelDetailsSheet.push([
-                            channel?.name || 'Unknown Channel',
-                            `${allocation.toFixed(1)}%`,
-                            `$${monthlyBudget.toLocaleString()}`,
-                            `$${channelBudget.toLocaleString()}`,
-                            reach.toLocaleString(),
-                            `${engagement.toFixed(2)}%`,
-                            `${conversion.toFixed(2)}%`,
-                            `${prediction?.roi.toFixed(2)}x`,
-                            clicks.toLocaleString(),
-                            conversions.toLocaleString(),
-                            `$${(channelBudget / clicks).toFixed(2)}`,
-                            `$${(channelBudget / reach * 1000).toFixed(2)}`,
-                            `$${(channelBudget / conversions).toFixed(2)}`
-                          ])
-                        })
-
-                        // Create insights sheet
-                        const insightsSheet = [
-                          ['AI Insights and Recommendations'],
-                          ['Type', 'Message', 'Impact', 'Confidence', 'Priority', 'Action Items']
-                        ]
-
-                        insights.forEach(insight => {
-                          insightsSheet.push([
-                            insight.type.charAt(0).toUpperCase() + insight.type.slice(1),
-                            insight.message,
-                            `${insight.impact}%`,
-                            `${insight.confidence}%`,
-                            insight.type === 'positive' ? 'High' : insight.type === 'negative' ? 'Critical' : 'Medium',
-                            'Review channel mix, Adjust budget allocation, Optimize targeting'
-                          ])
-                        })
-
-                        // Create timeline sheet
-                        const timelineSheet = [
-                          ['Campaign Timeline'],
-                          ['Phase', 'Start Date', 'Duration'],
-                          ['Setup', new Date().toLocaleDateString(), '1 week'],
-                          ['Testing', new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString(), '2 weeks'],
-                          ['Scaling', new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toLocaleDateString(), `${settings.duration - 1} months`]
-                        ]
-
-                        // Create workbook
-                        const wb = xlsxUtils.book_new()
-                        
-                        // Add sheets
-                        const wsOverview = xlsxUtils.aoa_to_sheet(campaignSheet)
-                        const wsChannels = xlsxUtils.aoa_to_sheet(channelDetailsSheet)
-                        const wsInsights = xlsxUtils.aoa_to_sheet(insightsSheet)
-                        const wsTimeline = xlsxUtils.aoa_to_sheet(timelineSheet)
-
-                        // Set column widths
-                        wsOverview['!cols'] = [{ wch: 20 }, { wch: 30 }]
-                        wsChannels['!cols'] = Array(13).fill({ wch: 15 })
-                        wsInsights['!cols'] = [{ wch: 15 }, { wch: 50 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 40 }]
-                        wsTimeline['!cols'] = [{ wch: 20 }, { wch: 20 }, { wch: 20 }]
-
-                        xlsxUtils.book_append_sheet(wb, wsOverview, 'Campaign Overview')
-                        xlsxUtils.book_append_sheet(wb, wsChannels, 'Channel Details')
-                        xlsxUtils.book_append_sheet(wb, wsInsights, 'AI Insights')
-                        xlsxUtils.book_append_sheet(wb, wsTimeline, 'Timeline')
-
-                        // Save Excel file
-                        xlsxWriteFile(wb, `media-plan-${new Date().toISOString().split('T')[0]}.xlsx`)
-                      }}
-                      className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
+                      onClick={handleDownloadMediaPlan}
+                      disabled={isDownloading}
+                      className={`w-full sm:w-auto min-w-[200px] px-6 py-3 text-white rounded-lg transition-all duration-300 ${
+                        isDownloading
+                          ? 'bg-indigo-400 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                      }`}
                     >
-                      <FaDownload className="w-4 h-4" />
-                      Download Media Plan (Excel)
+                      <div className="flex items-center justify-center gap-2">
+                        <FaDownload className={`w-5 h-5 ${isDownloading ? 'animate-bounce' : ''}`} />
+                        <span>{isDownloading ? 'Preparing...' : 'Download Media Mix'}</span>
+                      </div>
                     </button>
-                    <p className="text-xs text-gray-500 text-center mt-1">
+                    <p className="text-xs text-gray-500 text-center mt-2 max-w-sm">
                       Get a detailed Excel file with campaign strategy, predictions, and recommendations
                     </p>
-                  </div>
 
-                  <button
-                    onClick={reviseMediaMix}
-                    className="w-full px-3 py-1.5 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors"
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      <FaSyncAlt />
-                      Optimize Further
-                    </span>
-                  </button>
+                    <button
+                      onClick={reviseMediaMix}
+                      className="w-full sm:w-auto min-w-[200px] mt-4 px-4 py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
+                    >
+                      <FaSyncAlt className="animate-spin-slow" />
+                      <span>Optimize Further</span>
+                    </button>
+                  </div>
                 </motion.div>
               ) : (
                 <div className="h-full flex items-center justify-center">
@@ -1262,168 +1151,186 @@ const Calculator = () => {
         </div>
       </div>
 
-      {/* Keep only the AI Magic Animation */}
+      {/* Enhanced AI Magic Animation */}
       <AnimatePresence>
         {showMagicAnimation && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg bg-indigo-900/40"
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xl bg-gradient-to-b from-indigo-900/40 to-purple-900/40"
           >
-            {/* Add magical portal effect */}
-            <motion.div
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {[...Array(3)].map((_, i) => (
+            {/* Neural network background effect */}
+            <div className="absolute inset-0 overflow-hidden">
+              {[...Array(20)].map((_, i) => (
                 <motion.div
-                  key={i}
-                  className="absolute inset-0"
+                  key={`node-${i}`}
+                  className="absolute w-2 h-2 rounded-full bg-white/30"
                   style={{
-                    background: `radial-gradient(circle at center, ${
-                      ['#818cf8', '#c084fc', '#6366f1'][i]
-                    }10, transparent 60%)`
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
                   }}
                   animate={{
                     scale: [1, 1.5, 1],
-                    rotate: [0, 180, 360],
+                    opacity: [0.3, 0.7, 0.3],
+                    boxShadow: [
+                      '0 0 20px rgba(255,255,255,0.3)',
+                      '0 0 30px rgba(255,255,255,0.5)',
+                      '0 0 20px rgba(255,255,255,0.3)',
+                    ],
                   }}
                   transition={{
-                    duration: 8,
-                    repeat: Infinity,
-                    delay: i * 2,
-                    ease: "linear"
-                  }}
-                />
-              ))}
-            </motion.div>
-
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              transition={{ type: "spring", duration: 1 }}
-              className="relative"
-            >
-              {/* Enhanced rings */}
-              {[...Array(5)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  animate={{ 
-                    rotate: i % 2 === 0 ? 360 : -360,
-                    scale: [1, 1.1, 1]
-                  }}
-                  transition={{ 
-                    duration: 3 + i,
-                    ease: "linear",
-                    repeat: Infinity,
-                    delay: i * 0.2
-                  }}
-                  className={`absolute rounded-full border-4 ${
-                    i % 2 === 0 
-                      ? 'border-t-indigo-600 border-r-purple-600 border-b-indigo-400 border-l-purple-400'
-                      : 'border-t-purple-600 border-r-indigo-600 border-b-purple-400 border-l-indigo-400'
-                  }`}
-                  style={{
-                    inset: `${-4 - i * 4}px`,
-                    opacity: 1 - i * 0.15
-                  }}
-                />
-              ))}
-
-              {/* Enhanced inner content */}
-              <div className="w-40 h-40 rounded-full bg-white shadow-lg flex items-center justify-center relative overflow-hidden">
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotateY: [0, 360],
-                    rotateZ: [0, 45, 0, -45, 0]
-                  }}
-                  transition={{ 
                     duration: 3,
                     repeat: Infinity,
-                    ease: "easeInOut"
+                    delay: i * 0.2,
+                    ease: "easeInOut",
                   }}
-                  className="text-center relative z-10"
-                >
+                />
+              ))}
+              {/* Neural connections */}
+              {[...Array(15)].map((_, i) => (
+                <motion.div
+                  key={`connection-${i}`}
+                  className="absolute h-px w-32 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                    transform: `rotate(${Math.random() * 360}deg)`,
+                  }}
+                  animate={{
+                    opacity: [0, 0.5, 0],
+                    width: ['0px', '200px', '0px'],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    delay: i * 0.3,
+                    ease: "easeInOut",
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="relative">
+              {/* Advanced loading circle */}
+              <div className="w-48 h-48 rounded-full bg-white/10 shadow-2xl flex items-center justify-center relative overflow-hidden backdrop-blur-2xl border border-white/20">
+                {/* Rotating gradient rings */}
+                {[...Array(3)].map((_, i) => (
                   <motion.div
+                    key={`ring-${i}`}
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: `conic-gradient(from ${i * 120}deg, transparent, ${
+                        ['#818cf8', '#c084fc', '#6366f1'][i]
+                      }40, transparent)`,
+                    }}
                     animate={{
-                      y: [0, -5, 0],
-                      rotate: [0, 5, 0, -5, 0]
+                      rotate: [0, 360],
                     }}
                     transition={{
-                      duration: 2,
+                      duration: 8 - i * 2,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                  />
+                ))}
+                
+                {/* Inner circle with AI brain */}
+                <div className="absolute inset-4 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
+                  <motion.div
+                    animate={{ 
+                      scale: [1, 1.05, 1],
+                      rotateY: [0, 360],
+                    }}
+                    transition={{ 
+                      duration: 4,
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
+                    className="text-center relative z-10"
                   >
-                    <FaBrain className="w-12 h-12 mx-auto mb-2 text-indigo-600" />
-                  </motion.div>
-                  <div className="text-lg font-medium bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent bg-[length:200%_100%]">
-                    <motion.span
+                    <motion.div
                       animate={{
-                        backgroundPosition: ['0% 0%', '100% 0%', '0% 0%']
+                        y: [0, -3, 0],
+                        filter: [
+                          'drop-shadow(0 0 8px rgba(99,102,241,0.5))',
+                          'drop-shadow(0 0 12px rgba(99,102,241,0.8))',
+                          'drop-shadow(0 0 8px rgba(99,102,241,0.5))',
+                        ],
                       }}
                       transition={{
-                        duration: 3,
+                        duration: 2,
                         repeat: Infinity,
-                        ease: "linear"
+                        ease: "easeInOut"
                       }}
-                      className="inline-block"
                     >
-                      Optimizing
-                    </motion.span>
-                  </div>
-                </motion.div>
+                      <FaBrain className="w-14 h-14 mx-auto mb-2 text-indigo-600" />
+                    </motion.div>
+                    <div className="text-lg font-medium bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent animate-gradient">
+                      AI Optimizing
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">Advanced Analysis</div>
+                  </motion.div>
+                </div>
+              </div>
 
-                {/* Enhanced glowing effects */}
+              {/* Data particles */}
+              {[...Array(32)].map((_, i) => (
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-br from-indigo-400/30 via-purple-400/30 to-indigo-400/30"
+                  key={`particle-${i}`}
+                  className="absolute w-1 h-1 rounded-full"
+                  style={{
+                    background: `radial-gradient(circle at center, ${
+                      i % 4 === 0 ? '#818cf8' : 
+                      i % 4 === 1 ? '#c084fc' : 
+                      i % 4 === 2 ? '#6366f1' :
+                      '#a855f7'
+                    }, transparent)`,
+                    boxShadow: `0 0 10px ${
+                      i % 4 === 0 ? '#818cf8' : 
+                      i % 4 === 1 ? '#c084fc' : 
+                      i % 4 === 2 ? '#6366f1' :
+                      '#a855f7'
+                    }`,
+                  }}
+                  initial={{
+                    x: 0,
+                    y: 0,
+                    scale: 0,
+                  }}
                   animate={{
-                    opacity: [0.2, 0.4, 0.2],
-                    rotate: [0, 180],
-                    scale: [0.8, 1.2, 0.8]
+                    x: Math.sin(i * (Math.PI * 2 / 16)) * 100,
+                    y: Math.cos(i * (Math.PI * 2 / 16)) * 100,
+                    scale: [0, 1.5, 0],
+                    opacity: [0, 1, 0],
                   }}
                   transition={{
                     duration: 3,
                     repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-              </div>
-
-              {/* Enhanced floating particles */}
-              {[...Array(36)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ x: 0, y: 0 }}
-                  animate={{
-                    x: Math.sin(i) * (60 + Math.random() * 30),
-                    y: Math.cos(i) * (60 + Math.random() * 30),
-                    scale: [0, 1, 0],
-                    opacity: [0, 0.8, 0]
-                  }}
-                  transition={{
-                    duration: 2 + Math.random() * 2,
-                    repeat: Infinity,
                     delay: i * 0.1,
-                    ease: "easeInOut"
-                  }}
-                  className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full"
-                  style={{
-                    background: `radial-gradient(circle at center, ${
-                      i % 3 === 0 ? '#818cf8' : i % 3 === 1 ? '#c084fc' : '#6366f1'
-                    }, transparent)`,
-                    boxShadow: `0 0 10px ${
-                      i % 3 === 0 ? '#818cf8' : i % 3 === 1 ? '#c084fc' : '#6366f1'
-                    }`
+                    ease: "easeInOut",
                   }}
                 />
               ))}
-            </motion.div>
+
+              {/* Scanning effect */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'linear-gradient(to bottom, transparent, rgba(99,102,241,0.2), transparent)',
+                  height: '200%',
+                  top: '-50%',
+                }}
+                animate={{
+                  y: ['0%', '100%', '0%'],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

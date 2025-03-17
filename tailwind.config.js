@@ -10,6 +10,9 @@ export default {
         center: true,
         padding: '1rem',
       },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
+      },
     },
   },
   plugins: [],
