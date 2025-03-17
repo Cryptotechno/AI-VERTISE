@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1145009-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-1145009-1');
+    </script>
+    <script async src="https://cse.google.com/cse.js?cx=66f2731a9a4fb42d5">
+    </script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="cLD6UtJQWR6FuVMvsbDzFWQLJCgPx8HRobEhnCWJ">
+
+            <meta name="robots" content="index, follow">
+    
+    <base href="https://www.urbanity.pl">
+
+    <title>Urbanity</title>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#f6ae01">
+     <link rel="alternate" type="application/rss+xml" href="https://www.urbanity.pl/feed" title="Urbanity.pl">
+    <meta name="apple-mobile-web-app-title" content="Urbanity">
+    <meta name="application-name" content="Urbanity">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="robots" content="max-image-preview:large">
+    
+    <link media="all" type="text/css" rel="stylesheet" href="https://www.urbanity.pl/css/vendor/pure.min.css">
+    <link media="all" type="text/css" rel="stylesheet" href="https://www.urbanity.pl/css/vendor/grids-responsive-min.css">
+        <link media="all" type="text/css" rel="stylesheet" href="https://www.urbanity.pl/fonts/fontello/css/urbanity.css">
+
+    
+    <link media="all" type="text/css" rel="stylesheet" href="https://www.urbanity.pl/js/vendor/jquery-nice-select-1.1.0/css/nice-select.css">
+
+    
+        <link media="all" type="text/css" rel="stylesheet" href="https://www.urbanity.pl/css/main.css?v=8">
+</head>
+<body id="urbanity"
+      >
+
+<nav id="navbar" class="pure-menu pure-menu-horizontal">
+    <div class="container">
+        
+        <a id="navbar-logo" href="https://www.urbanity.pl"
+           >
+            <i class="icon-home"></i>
+            <img src="img/Urbanity-logo-white.png" alt="Urbanity"/>
+        </a>
+
+        
+        <ul id="navbar-website-menu-collapsed" class="pure-menu-list">
+            <li class="pure-menu-item">
+                <a href="#" class="pure-menu-link" title="Menu">
+                    <i class="icon-menu"></i>
+                </a>
+
+                <ul class="pure-menu-children">
+                    
+                                            <li class="pure-menu-item">
+                            <a href="https://www.urbanity.pl/wiadomosci" class="pure-menu-link">
+                                <span class="menu-item-label">Wiadomości</span>
+                            </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="https://www.urbanity.pl/firmy" class="pure-menu-link">
+                                <span class="menu-item-label">Firmy</span>
+                            </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="https://www.urbanity.pl/wiezowce" class="pure-menu-link">
+                                <span class="menu-item-label">Wieżowce</span>
+                            </a>
+                        </li>
+                        
+                                                            </ul>
+            </li>
+        </ul>
+        <ul id="navbar-website-menu" class="pure-menu-list">
+                                    <li class="pure-menu-item">
+                            <a href="https://www.urbanity.pl/wiadomosci" class="pure-menu-link">
+                                <span class="menu-item-label">Wiadomości</span>
+                            </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="https://www.urbanity.pl/firmy" class="pure-menu-link">
+                                <span class="menu-item-label">Firmy</span>
+                            </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="https://www.urbanity.pl/wiezowce" class="pure-menu-link">
+                                <span class="menu-item-label">Wieżowce</span>
+                            </a>
+                        </li>
+                        
+                                                    </ul>
+
+        
+        <div id="navbar-search-wrapper">
+            <form method="GET" action="https://www.urbanity.pl/wyszukaj">
+                <div class="input-wrapper">
+                    <input name="q" placeholder="Szukaj na urbanity.pl" value=""/>
+                    <i class="icon-magnify"></i>
+                </div>
+                
+                <button class="pure-button-primary" type="submit">Szukaj</button>
+            </form>
+        </div>
+
+        
+        <ul id="navbar-user-menu" class="pure-menu-list">
+
+            
+                            <li class="pure-menu-item">
+                    <a href="https://www.urbanity.pl/zaloguj" title="Logowanie / Rejestracja"
+                       class="pure-button button-primary login-button">
+                        Zaloguj
+                    </a>
+                </li>
+                    </ul>
+    </div>
+</nav>
+
+
+
+<main id="main">
+    <div id="main-wrapper">
+        
+                    <div class="container banner-top">
+                                    <!-- responsywna -->
+    <ins class="adsbygoogle banner-vertical-high center-banner show-on-mobile"
+         data-ad-client="ca-pub-4028058190402463"
+         data-ad-slot="5520451462"
+         data-ad-format="auto"></ins>
+
+
+                    <ins class="adsbygoogle center-banner hide-on-mobile"
+     data-ad-client="ca-pub-4028058190402463"
+     data-ad-slot="4082615972"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+
+                            </div>
+        
+        
+        <div class="container main-container">
+            <div class="container">
+    <div class="content error-404">
+        <h1>404</h1>
+        <p>Obiekt nie istnieje.</p>
+        <p><a href="https://www.urbanity.pl">Powróć do strony głównej</a></p>
+    </div>
+</div>
+        </div>
+    </div>
+</main>
+
+
+<footer>
+    <div class="container">
+        <p>
+            &copy; 2006-2025 Urbanity
+            Wszelkie prawa zastrzeżone.
+        </p>
+        <ul>
+            <li><a href="https://www.urbanity.pl/prywatnosc">prywatność</a></li>
+            <li><a href="https://www.urbanity.pl/kontakt">kontakt</a></li>
+            <li><a href="https://www.urbanity.pl/reklama">reklama</a></li>
+                    </ul>
+    </div>
+</footer>
+
+
+
+
+    <div class="login-overlay" style="display: none">
+        <div class="login-window">
+            <a href="#" class="close">&times;</a>
+            <div class="login-box block-box">
+   <p class="text-center">
+      <img src="img/Urbanity-logo.png" class="logo" alt="Urbanity">
+   </p>
+
+    <form class="pure-form pure-form-stacked" role="form" method="POST" action="https://www.urbanity.pl/zaloguj">
+        <fieldset>
+            <input type="hidden" name="_token" value="cLD6UtJQWR6FuVMvsbDzFWQLJCgPx8HRobEhnCWJ">
+
+            <div class="form-group">
+                <label for="name">Nazwa użytkownika</label>
+                <input type="text" name="name" value="">
+
+                            </div>
+
+            <div class="form-group">
+                <label for="password">Hasło</label>
+                <input type="password" name="password">
+
+                            </div>
+
+            <div class="text-center">
+                <label for="remember">
+                    <input type="checkbox" name="remember" >
+                    Zapamiętaj mnie
+                </label>
+
+                <button type="submit" class="pure-button button-primary">Zaloguj</button>
+
+                <a href="https://www.urbanity.pl/haslo/resetuj">Zapomniałeś hasła?</a>
+            </div>
+        </fieldset>
+    </form>
+
+	<hr />
+   <div class="text-center">
+      lub
+   </div>
+   <div class="text-center">
+   	<a class="pure-button button-facebook" href="https://www.urbanity.pl/zaloguj-z-facebook">
+         <i class="icon-facebook-box"></i>&nbsp;
+         Zaloguj się z Facebook
+      </a>
+   </div>
+   <hr />
+
+   <div class="text-center">
+      <a class="pure-button" href="https://www.urbanity.pl/zarejestruj">
+         REJESTRACJA
+      </a>
+   </div>
+</div>
+        </div>
+    </div>
+
+
+<!-- JavaScripts -->
+<script src="https://www.urbanity.pl/js/vendor/prefixfree.min.js"></script>
+<script src="https://www.urbanity.pl/js/vendor/jquery-3.1.1.min.js"></script>
+<script src="https://www.urbanity.pl/js/vendor/object-fit-images.min.js"></script>
+<script src="https://www.urbanity.pl/js/vendor/clamp.min.js"></script>
+<script src="https://www.urbanity.pl/js/vendor/jquery-nice-select-1.1.0/js/jquery.nice-select.js"></script>
+<script src="https://www.urbanity.pl/js/main.js?v=8"></script>
+
+
+
+
+<script >
+    function refreshReCaptchaV3(fieldId,action){
+        return new Promise(function (resolve, reject) {
+            grecaptcha.ready(function () {
+                grecaptcha.execute(window['client'+fieldId], {
+                    action: action
+                }).then(resolve);
+            });
+        });
+    }
+
+    function getReCaptchaV3Response(fieldId){
+        return grecaptcha.getResponse(window['client'+fieldId])
+    }
+</script>
+
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+    [].forEach.call(document.querySelectorAll('.adsbygoogle'), function () {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    });
+</script>
+
+</body>
+</html>
