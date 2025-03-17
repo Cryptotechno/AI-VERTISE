@@ -66,12 +66,26 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 // Lazy load the chart component
 const MediaPlanChart = lazy(() => import('../charts/MediaPlanChart'))
 
+interface Predictions {
+  impressions: number;
+  engagement: number;
+  conversion: number;
+  roi: number;
+  cpm: number;
+  ctr: number;
+  cpc: number;
+  cac: number;
+}
+
 interface Channel {
-  id: string
-  name: string
-  color: string
-  icon: React.ReactNode
-  description: string
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  color: string;
+  description: string;
+  allocation?: number;
+  budget?: number;
+  predictions?: Predictions;
 }
 
 type CampaignGoal = 'awareness' | 'consideration' | 'conversion'
@@ -200,10 +214,14 @@ interface AIInsight {
 }
 
 interface ChannelPrediction {
-  reach: number // Estimated reach in thousands
+  impressions: number // Estimated reach in thousands
   engagement: number // Expected engagement rate
   conversion: number // Expected conversion rate
   roi: number // Predicted ROI multiplier
+  cpm: number // Estimated CPM
+  ctr: number // Estimated CTR
+  cpc: number // Estimated CPC
+  cac: number // Estimated CAC
 }
 
 // Update channelSynergies to match the new channel list
@@ -282,54 +300,120 @@ const audienceTargets = [
   }
 ]
 
-// Update the getChannelPredictions function
+// Channel-specific CTR ranges (realistic values)
+const channelCTRRanges: Record<string, [number, number]> = {
+  'search': [0.02, 0.04],     // Search Ads: 2-4%
+  'display': [0.001, 0.002],  // Display Ads: 0.1-0.2%
+  'native': [0.003, 0.008],   // Native Ads: 0.3-0.8%
+  'video': [0.01, 0.015],     // Video Ads: 1-1.5%
+  'dooh': [0.001, 0.002],     // DOOH: 0.1-0.2%
+  'linkedin': [0.004, 0.006], // LinkedIn: 0.4-0.6%
+  'tiktok': [0.01, 0.02],     // TikTok: 1-2%
+  'instagram': [0.005, 0.01], // Instagram: 0.5-1%
+  'youtube': [0.01, 0.015],   // YouTube: 1-1.5%
+  'telegram': [0.003, 0.005], // Telegram: 0.3-0.5%
+  'appstore': [0.015, 0.025], // App Store: 1.5-2.5%
+  'ctv': [0.005, 0.01]        // CTV/OTT: 0.5-1%
+};
+
+// Update getChannelPredictions function
 const getChannelPredictions = (
   channel: string, 
   goal: CampaignGoal, 
   budget: number,
   settings: CampaignSettings
 ): ChannelPrediction => {
-  // Base calculations
-  const baseReach = budget * (Math.random() * 0.5 + 0.5)
-  const baseEngagement = Math.random() * 3 + 2
-  const baseConversion = Math.random() * 1.5 + 0.5
-  const baseRoi = Math.random() * 3 + 2
+  // Base CPM ranges for different channels (realistic values)
+  const channelCPMRanges: Record<string, [number, number]> = {
+    'search': [1, 3],
+    'display': [2, 5],
+    'native': [5, 12],
+    'video': [15, 25],
+    'dooh': [25, 40],
+    'linkedin': [8, 15],
+    'tiktok': [5, 10],
+    'instagram': [6, 12],
+    'youtube': [10, 20],
+    'telegram': [3, 8],
+    'appstore': [4, 10],
+    'ctv': [20, 35]
+  };
+
+  // Channel-specific conversion rate ranges (realistic values)
+  const channelConvRanges: Record<string, [number, number]> = {
+    'search': [0.03, 0.05],     // 3-5%
+    'display': [0.01, 0.02],    // 1-2%
+    'native': [0.02, 0.03],     // 2-3%
+    'video': [0.01, 0.02],      // 1-2%
+    'dooh': [0.005, 0.01],      // 0.5-1%
+    'linkedin': [0.02, 0.04],   // 2-4%
+    'tiktok': [0.015, 0.025],   // 1.5-2.5%
+    'instagram': [0.02, 0.03],  // 2-3%
+    'youtube': [0.01, 0.02],    // 1-2%
+    'telegram': [0.015, 0.025], // 1.5-2.5%
+    'appstore': [0.03, 0.05],   // 3-5%
+    'ctv': [0.01, 0.02]         // 1-2%
+  };
+
+  // Get CPM range for the channel or use default
+  const [minCPM, maxCPM] = channelCPMRanges[channel] || [5, 15];
+  const baseCPM = Math.round(minCPM + Math.random() * (maxCPM - minCPM));
+  
+  // Calculate base impressions using CPM formula: (budget × 1000) ÷ CPM
+  const baseImpressions = Math.round((budget * 1000) / baseCPM);
+  
+  // Get CTR and conversion ranges for the channel
+  const [minCTR, maxCTR] = channelCTRRanges[channel] || [0.001, 0.002];
+  const [minConv, maxConv] = channelConvRanges[channel] || [0.01, 0.02];
+  
+  // Calculate base metrics with realistic ranges
+  const baseCTR = minCTR + (Math.random() * (maxCTR - minCTR));
+  const baseConversion = minConv + (Math.random() * (maxConv - minConv));
+  const baseROI = Number((Math.random() * 3 + 1.5).toFixed(1)); // 1.5-4.5x ROI
+  
+  // Calculate CPC and CAC based on actual metrics
+  const clicks = Math.round(baseImpressions * baseCTR);
+  const conversions = Math.round(clicks * baseConversion);
+  const baseCPC = Number((budget / clicks).toFixed(2));
+  const baseCAC = Math.round(budget / conversions);
 
   // Get multipliers
-  const campaignTypeMultiplier = campaignTypes.find(t => t.id === settings.type)?.multiplier || 1
-  const audienceMultiplier = audienceTargets.find(t => t.id === settings.audienceTarget)?.multiplier || 1
-  const automationBonus = settings.isAutomated ? 1.2 : 1
-  const durationMultiplier = Math.min(1 + (settings.duration - 1) * 0.1, 1.5) // Up to 50% bonus for longer campaigns
+  const campaignTypeMultiplier = campaignTypes.find(t => t.id === settings.type)?.multiplier || 1;
+  const audienceMultiplier = audienceTargets.find(t => t.id === settings.audienceTarget)?.multiplier || 1;
+  const automationBonus = settings.isAutomated ? 1.2 : 1;
+  const durationMultiplier = Math.min(1 + (settings.duration - 1) * 0.1, 1.5);
 
   // Goal-specific adjustments
   const goalAdjustments = {
-    awareness: { reach: 1.5, engagement: 0.8, conversion: 0.7, roi: 0.9 },
-    consideration: { reach: 1.2, engagement: 1.3, conversion: 1.1, roi: 1.2 },
-    conversion: { reach: 0.8, engagement: 1.1, conversion: 1.5, roi: 1.4 }
-  }
+    awareness: { impressions: 1.3, conversion: 0.7, roi: 0.9, cpm: 0.9, ctr: 0.8, cpc: 1.1, cac: 1.2 },
+    consideration: { impressions: 1.1, conversion: 1.1, roi: 1.2, cpm: 1.0, ctr: 1.2, cpc: 0.9, cac: 0.9 },
+    conversion: { impressions: 0.8, conversion: 1.5, roi: 1.4, cpm: 1.1, ctr: 1.4, cpc: 0.8, cac: 0.7 }
+  };
 
-  const adj = goalAdjustments[goal]
+  const adj = goalAdjustments[goal];
 
-  // Channel-specific adjustments
-  const channelMultipliers: Record<string, number> = {
-    display: settings.type === 'web_landing' ? 1.2 : 1,
-    video: settings.type === 'cross_platform' ? 1.3 : 1,
-    native: settings.type === 'mobile_app' ? 1.25 : 1,
-    programmatic: settings.isAutomated ? 1.4 : 1,
-    telegram: settings.audienceTarget === 'specific' ? 1.3 : 1,
-    retail: settings.audienceTarget === 'custom' ? 1.35 : 1
-  }
+  // Calculate final metrics with all multipliers
+  const finalImpressions = Math.round(baseImpressions * adj.impressions * campaignTypeMultiplier * audienceMultiplier * durationMultiplier);
+  const finalCPM = Math.round((budget / finalImpressions) * 1000);
+  const finalCTR = Number((baseCTR * adj.ctr * audienceMultiplier * automationBonus).toFixed(4));
+  const finalClicks = Math.round(finalImpressions * finalCTR);
+  const finalConversion = Number((baseConversion * adj.conversion * audienceMultiplier * automationBonus).toFixed(4));
+  const finalConversions = Math.round(finalClicks * finalConversion);
+  const finalCPC = Number((budget / finalClicks).toFixed(2));
+  const finalCAC = finalConversions > 0 ? Math.round(budget / finalConversions) : 0;
+  const finalROI = Number((baseROI * adj.roi * campaignTypeMultiplier * audienceMultiplier * automationBonus * durationMultiplier).toFixed(1));
 
-  const channelMultiplier = channelMultipliers[channel] || 1
-
-  // Apply all multipliers
   return {
-    reach: baseReach * adj.reach * campaignTypeMultiplier * audienceMultiplier * channelMultiplier * durationMultiplier,
-    engagement: baseEngagement * adj.engagement * campaignTypeMultiplier * audienceMultiplier * automationBonus,
-    conversion: baseConversion * adj.conversion * audienceMultiplier * automationBonus * channelMultiplier,
-    roi: baseRoi * adj.roi * campaignTypeMultiplier * audienceMultiplier * automationBonus * durationMultiplier
-  }
-}
+    impressions: finalImpressions,
+    cpm: finalCPM,
+    roi: finalROI,
+    ctr: finalCTR,
+    cpc: finalCPC,
+    conversion: finalConversion,
+    cac: finalCAC,
+    engagement: 0
+  };
+};
 
 // Add new sparkle effect component
 const Sparkle = ({ delay = 0 }) => {
@@ -399,6 +483,32 @@ const ChartLoading = () => (
     <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
   </div>
 )
+
+function generateTopThreeInsights(channels: Channel[]): string[] {
+  const insights: string[] = [];
+  
+  // 1. Best performing channel by ROI
+  const sortedByROI = [...channels].sort((a, b) => (b.predictions?.roi || 0) - (a.predictions?.roi || 0));
+  if (sortedByROI.length > 0 && sortedByROI[0].predictions?.roi) {
+    insights.push(`🟢 ${sortedByROI[0].name} shows the highest ROI potential at ${sortedByROI[0].predictions.roi.toFixed(1)}x`);
+  }
+
+  // 2. Budget optimization insight
+  const lowROIChannels = channels.filter(ch => (ch.predictions?.roi || 0) < 2.0);
+  if (lowROIChannels.length > 0) {
+    insights.push(`🟡 Consider reallocating budget from ${lowROIChannels[0].name} to higher ROI channels`);
+  }
+
+  // 3. Performance optimization insight
+  const highCACChannels = channels.filter(ch => (ch.predictions?.cac || 0) > 100);
+  if (highCACChannels.length > 0) {
+    insights.push(`🔴 Optimize ${highCACChannels[0].name} to reduce high customer acquisition cost`);
+  } else {
+    insights.push(`🟢 All channels show efficient customer acquisition costs`);
+  }
+
+  return insights;
+}
 
 const Calculator = () => {
   const [budget, setBudget] = useState<number>(5000)
@@ -551,53 +661,23 @@ const Calculator = () => {
     setShowMagicAnimation(true);
 
     // Calculate new predictions and allocations
-    const baseAllocation = 100 / selectedChannels.length;
+    const channelCount = selectedChannels.length;
+    const baseAllocation = Math.round(100 / channelCount); // This ensures whole number percentages
     const newAllocations: Record<string, number> = {};
     const newPredictions: Record<string, ChannelPrediction> = {};
     
-    selectedChannels.forEach(channelId => {
-      newAllocations[channelId] = baseAllocation;
-      newPredictions[channelId] = getChannelPredictions(channelId, selectedGoal, budget, settings);
+    selectedChannels.forEach((channelId, index) => {
+      // For the last channel, adjust to ensure total is exactly 100%
+      const allocation = index === channelCount - 1 
+        ? 100 - (baseAllocation * (channelCount - 1))
+        : baseAllocation;
+      
+      newAllocations[channelId] = allocation;
+      const channelBudget = (budget * allocation) / 100;
+      newPredictions[channelId] = getChannelPredictions(channelId, selectedGoal, channelBudget, settings);
     });
 
-    // Apply AI optimizations based on all factors
-    const optimizationFactors = {
-      web_landing: { display: 5, native: 3 },
-      mobile_app: { native: 7, video: 4 },
-      cross_platform: { video: 6, programmatic: 5 }
-    };
-
-    const goalFactors = {
-      awareness: { video: 7, dooh: 5, display: 3, audio: 2 },
-      consideration: { native: 6, video: 4, ctv: 3, telegram: 2 },
-      conversion: { retail: 8, programmatic: 5, native: 3 }
-    };
-
     setTimeout(() => {
-      // Apply campaign type optimizations
-      const typeFactors = optimizationFactors[settings.type] || {};
-      Object.entries(typeFactors).forEach(([channel, bonus]) => {
-        if (selectedChannels.includes(channel)) {
-          newAllocations[channel] = (newAllocations[channel] || 0) + bonus * (settings.isAutomated ? 1.2 : 1);
-        }
-      });
-
-      // Apply goal optimizations
-      const currentGoalFactors = goalFactors[selectedGoal] || {};
-      Object.entries(currentGoalFactors).forEach(([channel, bonus]) => {
-        if (selectedChannels.includes(channel)) {
-          newAllocations[channel] = (newAllocations[channel] || 0) + bonus;
-        }
-      });
-
-      // Normalize allocations to ensure total is 100%
-      const total = Object.values(newAllocations).reduce((sum, val) => sum + val, 0);
-      if (total > 0) {
-        Object.keys(newAllocations).forEach(key => {
-          newAllocations[key] = (newAllocations[key] / total) * 100;
-        });
-      }
-
       setAllocations(newAllocations);
       setPredictions(newPredictions);
       setShowResults(true);
@@ -635,28 +715,42 @@ const Calculator = () => {
     }]
   }
 
-  const handleDownloadMediaPlan = async () => {
-    if (isDownloading) return; // Prevent double-clicks
-    
+  const handleDownload = () => {
     try {
-      setIsDownloading(true);
-      generateMediaPlan();
-      
-      // Small delay to ensure file is generated
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
+      // Create predictions with budget included
+      const predictionsWithBudget = Object.fromEntries(
+        selectedChannels.map(id => [
+          id,
+          {
+            ...predictions[id],
+            budget: (budget * (allocations[id] || 0)) / 100
+          }
+        ])
+      );
+
+      const url = generateMediaPlan(
+        selectedChannels.map(id => {
+          const channel = adChannels.find(ch => ch.id === id);
+          if (!channel) throw new Error(`Channel ${id} not found`);
+          return channel;
+        }),
+        budget,
+        predictionsWithBudget
+      );
+
+      // Create a temporary link and trigger download
       const link = document.createElement('a');
-      link.href = '/downloads/AI_VERTISE_Media_Plan.xlsx';
+      link.href = url;
       link.download = 'AI_VERTISE_Media_Plan.xlsx';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error generating media plan:', error);
-    } finally {
-      setIsDownloading(false);
+      console.error('Error downloading media plan:', error);
+      // You might want to show an error message to the user here
     }
-  }
+  };
 
   return (
     <section id="calculator" className="py-8">
@@ -1039,21 +1133,21 @@ const Calculator = () => {
                           {prediction && (
                             <div className="grid grid-cols-3 gap-2 mt-2">
                               <div className="text-center p-2 bg-indigo-50 rounded-lg">
-                                <div className="text-xs text-gray-500">Reach</div>
+                                <div className="text-xs text-gray-500">Impressions</div>
                                 <div className="text-sm font-medium text-indigo-600">
-                                  {(prediction.reach / 1000).toFixed(1)}K
+                                  {(prediction.impressions / 1000).toFixed(1)}K
                                 </div>
                               </div>
                               <div className="text-center p-2 bg-indigo-50 rounded-lg">
-                                <div className="text-xs text-gray-500">Engagement</div>
+                                <div className="text-xs text-gray-500">CTR</div>
                                 <div className="text-sm font-medium text-indigo-600">
-                                  {prediction.engagement.toFixed(1)}%
+                                  {(prediction.ctr * 100).toFixed(1)}%
                                 </div>
                               </div>
                               <div className="text-center p-2 bg-indigo-50 rounded-lg">
                                 <div className="text-xs text-gray-500">Conv. Rate</div>
                                 <div className="text-sm font-medium text-indigo-600">
-                                  {prediction.conversion.toFixed(1)}%
+                                  {(prediction.conversion * 100).toFixed(1)}%
                                 </div>
                               </div>
                             </div>
@@ -1063,56 +1157,47 @@ const Calculator = () => {
                     })}
                   </div>
 
-                  {/* Animate insights */}
-                  <div className="space-y-3">
-                    <h4 className="font-medium text-sm text-gray-700">AI Recommendations</h4>
-                    {insights.map((insight, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.2 }}
-                        whileHover={{ scale: 1.02 }}
-                        className={`p-3 rounded-lg border ${
-                          insight.type === 'positive'
-                            ? 'border-green-100 bg-green-50'
-                            : insight.type === 'negative'
-                            ? 'border-red-100 bg-red-50'
-                            : 'border-yellow-100 bg-yellow-50'
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className={`p-1.5 rounded-lg ${
-                            insight.type === 'positive'
-                              ? 'bg-green-100 text-green-600'
-                              : insight.type === 'negative'
-                              ? 'bg-red-100 text-red-600'
-                              : 'bg-yellow-100 text-yellow-600'
-                          }`}>
-                            {insight.type === 'positive' ? <FaArrowUp /> : insight.type === 'negative' ? <FaArrowUp className="rotate-180" /> : <FaRegLightbulb />}
+                  {/* Add AI Recommendations section after the channel cards */}
+                  {selectedChannels.length > 0 && (
+                    <div className="mt-8">
+                      <h3 className="text-xl font-semibold text-gray-900 mb-4">AI Recommendations</h3>
+                      <div className="space-y-2">
+                        {generateTopThreeInsights(
+                          selectedChannels.map(id => {
+                            const channel = adChannels.find(ch => ch.id === id);
+                            return {
+                              id,
+                              name: channel?.name || '',
+                              icon: channel?.icon || null,
+                              color: channel?.color || '',
+                              description: channel?.description || '',
+                              allocation: allocations[id],
+                              budget: (budget * (allocations[id] || 0)) / 100,
+                              predictions: predictions[id]
+                            };
+                          })
+                        ).map((insight, index) => (
+                          <div
+                            key={index}
+                            className="p-4 rounded-lg bg-white shadow-sm border border-gray-100"
+                          >
+                            <p className={`text-sm ${
+                              insight.startsWith('🟢') ? 'text-green-600' :
+                              insight.startsWith('🟡') ? 'text-amber-600' :
+                              'text-red-600'
+                            }`}>
+                              {insight}
+                            </p>
                           </div>
-                          <div>
-                            <p className="text-sm">{insight.message}</p>
-                            <div className="flex items-center gap-3 mt-2 text-xs">
-                              <span className="flex items-center gap-1">
-                                <FaChartLine className="text-gray-400" />
-                                Impact: {insight.impact}%
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <FaStar className="text-gray-400" />
-                                Confidence: {insight.confidence}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Get Media Plan Button */}
                   <div className="border-t border-gray-100 pt-4 flex flex-col items-center w-full">
                     <button
-                      onClick={handleDownloadMediaPlan}
+                      onClick={handleDownload}
                       disabled={isDownloading}
                       className={`w-full sm:w-auto min-w-[200px] px-6 py-3 text-white rounded-lg transition-all duration-300 ${
                         isDownloading

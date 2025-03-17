@@ -15,14 +15,14 @@ const brandColors = {
 };
 
 interface CellStyle {
-  fill: { fgColor: { rgb: string } };
-  font: { color: { rgb: string }; bold?: boolean; sz?: number; italic?: boolean };
+  fill?: { fgColor: { rgb: string } };
+  font?: { color?: { rgb: string }; bold?: boolean; sz?: number; italic?: boolean };
   alignment?: { horizontal: string; vertical: string; wrapText?: boolean };
   border?: {
-    top: { style: string; color: { rgb: string } };
-    bottom: { style: string; color: { rgb: string } };
-    left: { style: string; color: { rgb: string } };
-    right: { style: string; color: { rgb: string } };
+    top?: { style: string; color: { rgb: string } };
+    bottom?: { style: string; color: { rgb: string } };
+    left?: { style: string; color: { rgb: string } };
+    right?: { style: string; color: { rgb: string } };
   };
   numFmt?: string;
 }
@@ -42,12 +42,12 @@ const createHeaderStyle = (bgColor: string = brandColors.primary): CellStyle => 
 const createDataStyle = (isAlternate: boolean = false, format?: string): CellStyle => ({
   fill: { fgColor: { rgb: isAlternate ? brandColors.lightGray : 'FFFFFF' } },
   font: { color: { rgb: brandColors.text }, sz: 11 },
-  alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+  alignment: { horizontal: 'center', vertical: 'center' },
   border: {
-    top: { style: 'thin', color: { rgb: 'FFFFFF' } },
-    bottom: { style: 'thin', color: { rgb: 'FFFFFF' } },
-    left: { style: 'thin', color: { rgb: 'FFFFFF' } },
-    right: { style: 'thin', color: { rgb: 'FFFFFF' } },
+    top: { style: 'thin', color: { rgb: brandColors.lightGray } },
+    bottom: { style: 'thin', color: { rgb: brandColors.lightGray } },
+    left: { style: 'thin', color: { rgb: brandColors.lightGray } },
+    right: { style: 'thin', color: { rgb: brandColors.lightGray } },
   },
   ...(format ? { numFmt: format } : {}),
 });
@@ -71,273 +71,301 @@ const createMetricStyle = (value: number, threshold: number, inverse: boolean = 
   };
 };
 
-export const generateMediaPlan = () => {
-  const wb = XLSX.utils.book_new();
+interface Channel {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  color: string;
+  description: string;
+}
+
+interface ChannelPrediction {
+  impressions: number;
+  cpm: number;
+  ctr: number;
+  cpc: number;
+  conversion: number;
+  cac: number;
+  roi: number;
+  budget: number;
+}
+
+interface MediaPlanData {
+  budget: number;
+  channels: Array<{
+    name: string;
+    allocation: number;
+    budget: number;
+    predictions: ChannelPrediction;
+  }>;
+  settings: {
+    type: string;
+    audienceTarget: string;
+    duration: number;
+    isAutomated: boolean;
+  };
+  goal: string;
+}
+
+const generateTopThreeInsights = (
+  channels: Channel[],
+  predictions: Record<string, ChannelPrediction>
+): string[] => {
+  const insights: string[] = [];
   
-  // Create the main sheet with enhanced KPIs
-  const ws = XLSX.utils.aoa_to_sheet([
-    [{ v: 'AI VERTISE Media Plan', s: { font: { bold: true, sz: 24 }, alignment: { horizontal: 'center' } } }],
-    [{ v: 'Powered by Advanced AI Analytics', s: { font: { italic: true, sz: 14, color: { rgb: brandColors.secondary } }, alignment: { horizontal: 'center' } } }],
-    [''],
-    // Key Performance Summary
-    [{ v: 'Key Performance Summary', s: { 
-      font: { bold: true, sz: 16, color: { rgb: 'FFFFFF' } }, 
-      fill: { fgColor: { rgb: brandColors.primary } }, 
-      alignment: { horizontal: 'center' } 
-    } }],
-    [
-      { v: 'Total Budget', s: createHeaderStyle() },
-      { v: 'Est. Total Reach', s: createHeaderStyle() },
-      { v: 'Avg. CPM', s: createHeaderStyle() },
-      { v: 'Projected ROI', s: createHeaderStyle() },
-      { v: 'Engagement Rate', s: createHeaderStyle() },
-      { v: 'Conversion Rate', s: createHeaderStyle() }
-    ],
-    [
-      { v: '$10,000', s: createDataStyle(false, '$#,##0') },
-      { v: '450,000', s: createDataStyle(false, '#,##0') },
-      { v: '$32.17', s: createDataStyle(false, '$0.00') },
-      { v: '2.82x', s: createMetricStyle(2.82, 2.5) },
-      { v: '4.3%', s: createMetricStyle(4.3, 4.0) },
-      { v: '2.1%', s: createMetricStyle(2.1, 2.0) }
-    ],
-    [''],
-    // Channel Performance Matrix
-    [{ v: 'Channel Performance Matrix', s: { 
-      font: { bold: true, sz: 16, color: { rgb: 'FFFFFF' } }, 
-      fill: { fgColor: { rgb: brandColors.primary } }, 
-      alignment: { horizontal: 'center' } 
-    } }],
-    // Channel data headers
-    [
-      { v: 'Channel', s: createHeaderStyle() },
-      { v: 'Budget (%)', s: createHeaderStyle() },
-      { v: 'Budget ($)', s: createHeaderStyle() },
-      { v: 'Est. Reach', s: createHeaderStyle() },
-      { v: 'CPM', s: createHeaderStyle() },
-      { v: 'AI Score', s: createHeaderStyle() },
-      { v: 'ROI Forecast', s: createHeaderStyle() },
-      { v: 'Engagement', s: createHeaderStyle() },
-      { v: 'CTR', s: createHeaderStyle() },
-      { v: 'CPC', s: createHeaderStyle() },
-      { v: 'Conv. Rate', s: createHeaderStyle() },
-      { v: 'CAC', s: createHeaderStyle() }
-    ],
-    [
-      { v: 'LinkedIn Ads', s: createDataStyle() },
-      { v: 30, s: createDataStyle(false, '0.0%') },
-      { v: 3000, s: createDataStyle(false, '$#,##0') },
-      { v: 50000, s: createDataStyle(false, '#,##0') },
-      { v: 60, s: createDataStyle(false, '$0.00') },
-      { v: 8.5, s: createMetricStyle(8.5, 8.0, false, '0.0') },
-      { v: 2.8, s: createMetricStyle(2.8, 2.5, false, '0.0') },
-      { v: '4.2%', s: createMetricStyle(4.2, 3.5, false, '0.0%') },
-      { v: '1.8%', s: createMetricStyle(1.8, 1.5, false, '0.0%') },
-      { v: '$4.20', s: createDataStyle(false, '$0.00') },
-      { v: '2.4%', s: createMetricStyle(2.4, 2.0, false, '0.0%') },
-      { v: '$125', s: createMetricStyle(125, 100, true, '$#,##0') }
-    ],
-    [
-      { v: 'Native Ads', s: createDataStyle(true) },
-      { v: 25, s: createDataStyle(true, '0.0%') },
-      { v: 2500, s: createDataStyle(true, '$#,##0') },
-      { v: 75000, s: createDataStyle(true, '#,##0') },
-      { v: 33.33, s: createDataStyle(true, '$0.00') },
-      { v: 7.8, s: createMetricStyle(7.8, 8.0, false, '0.0') },
-      { v: 3.1, s: createMetricStyle(3.1, 2.5, false, '0.0') },
-      { v: '3.8%', s: createMetricStyle(3.8, 3.5, false, '0.0%') },
-      { v: '1.2%', s: createMetricStyle(1.2, 1.5, false, '0.0%') },
-      { v: '$3.50', s: createDataStyle(true, '$0.00') },
-      { v: '1.8%', s: createMetricStyle(1.8, 2.0, false, '0.0%') },
-      { v: '$95', s: createMetricStyle(95, 100, true, '$#,##0') }
-    ],
-    [
-      { v: 'Telegram Ads', s: createDataStyle() },
-      { v: 20, s: createDataStyle(false, '0.0%') },
-      { v: 2000, s: createDataStyle(false, '$#,##0') },
-      { v: 100000, s: createDataStyle(false, '#,##0') },
-      { v: 20, s: createDataStyle(false, '$0.00') },
-      { v: 8.2, s: createMetricStyle(8.2, 8.0, false, '0.0') },
-      { v: 2.9, s: createMetricStyle(2.9, 2.5, false, '0.0') },
-      { v: '5.1%', s: createMetricStyle(5.1, 3.5, false, '0.0%') },
-      { v: '1.8%', s: createMetricStyle(1.8, 1.5, false, '0.0%') },
-      { v: '$5.10', s: createDataStyle(false, '$0.00') },
-      { v: '2.4%', s: createMetricStyle(2.4, 2.0, false, '0.0%') },
-      { v: '$125', s: createMetricStyle(125, 100, true, '$#,##0') }
-    ],
-    [
-      { v: 'DOOH', s: createDataStyle(true) },
-      { v: 15, s: createDataStyle(true, '0.0%') },
-      { v: 1500, s: createDataStyle(true, '$#,##0') },
-      { v: 200000, s: createDataStyle(true, '#,##0') },
-      { v: 7.5, s: createDataStyle(true, '$0.00') },
-      { v: 7.5, s: createMetricStyle(7.5, 8.0, false, '0.0') },
-      { v: 1.8, s: createMetricStyle(1.8, 2.5, false, '0.0') },
-      { v: '2.5%', s: createMetricStyle(2.5, 3.5, false, '0.0%') },
-      { v: '0.8%', s: createMetricStyle(0.8, 1.5, false, '0.0%') },
-      { v: '$7.50', s: createDataStyle(true, '$0.00') },
-      { v: '1.2%', s: createMetricStyle(1.2, 2.0, false, '0.0%') },
-      { v: '$180', s: createMetricStyle(180, 100, true, '$#,##0') }
-    ],
-    [
-      { v: 'App Store Ads', s: createDataStyle() },
-      { v: 10, s: createDataStyle(false, '0.0%') },
-      { v: 1000, s: createDataStyle(false, '$#,##0') },
-      { v: 25000, s: createDataStyle(false, '#,##0') },
-      { v: 40, s: createDataStyle(false, '$0.00') },
-      { v: 8.0, s: createMetricStyle(8.0, 8.0, false, '0.0') },
-      { v: 3.5, s: createMetricStyle(3.5, 2.5, false, '0.0') },
-      { v: '6.2%', s: createMetricStyle(6.2, 3.5, false, '0.0%') },
-      { v: '1.8%', s: createMetricStyle(1.8, 1.5, false, '0.0%') },
-      { v: '$6.20', s: createDataStyle(false, '$0.00') },
-      { v: '3.5%', s: createMetricStyle(3.5, 2.0, false, '0.0%') },
-      { v: '$125', s: createMetricStyle(125, 100, true, '$#,##0') }
-    ],
-    // Total row with bold styling and calculations
-    [
-      { v: 'TOTAL', s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } } } },
-      { v: 100, s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '0.0%' } },
-      { v: 10000, s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '$#,##0' } },
-      { v: 450000, s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '#,##0' } },
-      { v: 32.17, s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '$0.00' } },
-      { v: 8.0, s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '0.0' } },
-      { v: 2.82, s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '0.0' } },
-      { v: '4.3%', s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '0.0%' } },
-      { v: '1.5%', s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '0.0%' } },
-      { v: '$5.30', s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '$0.00' } },
-      { v: '2.3%', s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '0.0%' } },
-      { v: '$130', s: { ...createHeaderStyle(), fill: { fgColor: { rgb: brandColors.secondary } }, numFmt: '$#,##0' } }
-    ],
-    [''],
-    // Audience Segmentation Analysis
-    [{ v: 'Audience Segmentation Analysis', s: { 
-      font: { bold: true, sz: 16, color: { rgb: 'FFFFFF' } }, 
-      fill: { fgColor: { rgb: brandColors.primary } }, 
-      alignment: { horizontal: 'center' } 
-    } }],
-    [
-      { v: 'Channel', s: createHeaderStyle() },
-      { v: 'Primary Audience', s: createHeaderStyle() },
-      { v: 'Age Range', s: createHeaderStyle() },
-      { v: 'Interests', s: createHeaderStyle() },
-      { v: 'Engagement Score', s: createHeaderStyle() },
-      { v: 'Conversion Rate', s: createHeaderStyle() }
-    ],
-    [
-      { v: 'LinkedIn Ads', s: createDataStyle() },
-      { v: 'B2B Professionals', s: createDataStyle() },
-      { v: '25-54', s: createDataStyle() },
-      { v: 'Tech, Finance, Marketing', s: createDataStyle() },
-      { v: '8.5', s: createMetricStyle(8.5, 8.0, false, '0.0') },
-      { v: '2.4%', s: createMetricStyle(2.4, 2.0, false, '0.0%') }
-    ],
-    [
-      { v: 'Native Ads', s: createDataStyle(true) },
-      { v: 'Tech Enthusiasts', s: createDataStyle(true) },
-      { v: '18-45', s: createDataStyle(true) },
-      { v: 'AI, Innovation, Digital', s: createDataStyle(true) },
-      { v: '7.8', s: createMetricStyle(7.8, 8.0, false, '0.0') },
-      { v: '1.8%', s: createMetricStyle(1.8, 2.0, false, '0.0%') }
-    ],
-    [
-      { v: 'Telegram Ads', s: createDataStyle() },
-      { v: 'Crypto Community', s: createDataStyle() },
-      { v: '21-45', s: createDataStyle() },
-      { v: 'Blockchain, Trading, Tech', s: createDataStyle() },
-      { v: '8.2', s: createMetricStyle(8.2, 8.0, false, '0.0') },
-      { v: '2.4%', s: createMetricStyle(2.4, 2.0, false, '0.0%') }
-    ],
-    [
-      { v: 'DOOH', s: createDataStyle(true) },
-      { v: 'Urban Professionals', s: createDataStyle(true) },
-      { v: '25-54', s: createDataStyle(true) },
-      { v: 'Business, Tech, Luxury', s: createDataStyle(true) },
-      { v: '7.5', s: createMetricStyle(7.5, 8.0, false, '0.0') },
-      { v: '1.2%', s: createMetricStyle(1.2, 2.0, false, '0.0%') }
-    ],
-    [
-      { v: 'App Store Ads', s: createDataStyle() },
-      { v: 'Mobile Users', s: createDataStyle() },
-      { v: '18-44', s: createDataStyle() },
-      { v: 'Apps, Mobile Tech', s: createDataStyle() },
-      { v: '8.0', s: createMetricStyle(8.0, 8.0, false, '0.0') },
-      { v: '3.5%', s: createMetricStyle(3.5, 2.0, false, '0.0%') }
-    ],
-    [''],
-    // Update AI Insights with audience segmentation recommendations
-    [{ v: 'AI Insights & Recommendations', s: { 
-      font: { bold: true, sz: 16, color: { rgb: 'FFFFFF' } }, 
-      fill: { fgColor: { rgb: brandColors.accent } }, 
-      alignment: { horizontal: 'center' } 
-    } }],
-    [{ v: '🟢 LinkedIn + Native Ads combination shows highest synergy for tech-focused B2B audience (Expected +15% ROI boost)', s: { font: { sz: 11, bold: true, color: { rgb: brandColors.success } } } }],
-    [{ v: '🟡 DOOH performance requires location-based optimization - Target premium business districts during peak hours', s: { font: { sz: 11, bold: true, color: { rgb: brandColors.warning } } } }],
-    [{ v: '🟢 App Store Ads excelling with mobile-first younger demographic (18-34 age group)', s: { font: { sz: 11, bold: true, color: { rgb: brandColors.success } } } }],
-    [{ v: '🔴 DOOH CAC ($180) needs improvement - Implement targeted messaging for urban professionals', s: { font: { sz: 11, bold: true, color: { rgb: brandColors.error } } } }],
-    [{ v: '🟡 Opportunity to cross-target Telegram users with Native Ads for improved engagement', s: { font: { sz: 11, bold: true, color: { rgb: brandColors.warning } } } }],
-    [{ v: '🟢 Consider expanding LinkedIn targeting to include Finance & Tech decision-makers', s: { font: { sz: 11, bold: true, color: { rgb: brandColors.success } } } }],
-    [''],
-    [{ v: 'Generated by AI VERTISE © 2024', s: { font: { italic: true, sz: 10 }, alignment: { horizontal: 'center' } } }],
-    [{ v: 'Nataliia Rumiantseva | +48 503 589 781 | natalymakota@gmail.com', s: { 
-      font: { italic: true, sz: 10 }, 
-      alignment: { horizontal: 'center' } 
-    } }]
+  // Find best performing channel by ROI
+  const bestChannel = channels.reduce((best, current) => {
+    const currentPred = predictions[current.id];
+    const bestPred = predictions[best.id];
+    return currentPred.roi > bestPred.roi ? current : best;
+  }, channels[0]);
+  
+  insights.push(`🟢 ${bestChannel.name} shows the highest ROI at ${predictions[bestChannel.id].roi.toFixed(1)}x, consider increasing budget allocation.`);
+  
+  // Find channels with low ROI for optimization
+  const lowROIChannels = channels.filter(ch => predictions[ch.id].roi < 2.0);
+  if (lowROIChannels.length > 0) {
+    insights.push(`🟡 Consider optimizing or reducing budget for ${lowROIChannels.map(ch => ch.name).join(', ')} due to ROI below 2.0x.`);
+  } else {
+    insights.push(`🟢 All channels are performing efficiently with ROI above 2.0x.`);
+  }
+  
+  // Analyze CAC efficiency
+  const highCACChannels = channels.filter(ch => predictions[ch.id].cac > 100);
+  if (highCACChannels.length > 0) {
+    insights.push(`🔴 High customer acquisition cost in ${highCACChannels.map(ch => ch.name).join(', ')}. Review targeting and creative strategy.`);
+  } else {
+    insights.push(`🟢 Customer acquisition costs are within acceptable range across all channels.`);
+  }
+  
+  return insights.slice(0, 3);
+};
+
+export const generateMediaPlan = (
+  channels: Channel[],
+  budget: number,
+  predictions: Record<string, ChannelPrediction>
+) => {
+  // Calculate total metrics
+  const totalBudget = budget;
+  const totalImpressions = Object.values(predictions).reduce((sum, p) => sum + p.impressions, 0);
+  const avgCPM = (totalBudget * 1000) / totalImpressions;
+  const avgROI = Object.values(predictions).reduce((sum, p) => sum + p.roi, 0) / channels.length;
+  const avgCTR = Object.values(predictions).reduce((sum, p) => sum + p.ctr, 0) / channels.length;
+  const avgConversion = Object.values(predictions).reduce((sum, p) => sum + p.conversion, 0) / channels.length;
+
+  // Create workbook
+  const wb = XLSX.utils.book_new();
+  const wsData: any[][] = [];
+
+  // Add title with style
+  wsData.push([{
+    v: 'AI-VERTISE Media Plan',
+    t: 's',
+    s: {
+      font: { bold: true, sz: 16, color: { rgb: brandColors.primary } },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    }
+  }]);
+  wsData.push([]);
+
+  // Add summary section with styles
+  wsData.push([{
+    v: 'Campaign Summary',
+    t: 's',
+    s: createHeaderStyle()
+  }]);
+
+  // Add summary data with styles
+  wsData.push([
+    { v: 'Total Budget', t: 's', s: createDataStyle() },
+    { v: totalBudget, t: 'n', s: { ...createDataStyle(), numFmt: '"$"#,##0' } }
+  ]);
+  wsData.push([
+    { v: 'Total Impressions', t: 's', s: createDataStyle() },
+    { v: totalImpressions, t: 'n', s: { ...createDataStyle(), numFmt: '#,##0' } }
+  ]);
+  wsData.push([
+    { v: 'Average CPM', t: 's', s: createDataStyle() },
+    { v: avgCPM, t: 'n', s: { ...createDataStyle(), numFmt: '"$"#,##0.00' } }
+  ]);
+  wsData.push([
+    { v: 'Average ROI', t: 's', s: createDataStyle() },
+    { v: avgROI, t: 'n', s: { ...createDataStyle(), numFmt: '0.0"x"' } }
+  ]);
+  wsData.push([
+    { v: 'Average CTR', t: 's', s: createDataStyle() },
+    { v: avgCTR * 100, t: 'n', s: { ...createDataStyle(), numFmt: '0.0"%"' } }
+  ]);
+  wsData.push([
+    { v: 'Average Conversion Rate', t: 's', s: createDataStyle() },
+    { v: avgConversion * 100, t: 'n', s: { ...createDataStyle(), numFmt: '0.0"%"' } }
   ]);
 
-  // Update column widths for new sections
-  ws['!cols'] = [
-    { width: 20 }, // Channel/Metric
-    { width: 15 }, // Budget % / Primary Audience
-    { width: 12 }, // Budget $ / Age Range
-    { width: 25 }, // Est. Reach / Interests
-    { width: 12 }, // CPM / Engagement Score
-    { width: 12 }, // AI Score / Conversion Rate
-    { width: 12 }, // ROI Forecast
-    { width: 12 }, // Engagement
-    { width: 10 }, // CTR
-    { width: 10 }, // CPC
-    { width: 12 }, // Conv. Rate
-    { width: 10 }, // CAC
-  ];
+  wsData.push([]);
 
-  // Update merge cells to fix Channel Performance Matrix header
-  ws['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 11 } }, // Title
-    { s: { r: 1, c: 0 }, e: { r: 1, c: 11 } }, // Subtitle
-    { s: { r: 3, c: 0 }, e: { r: 3, c: 5 } }, // Key Performance Summary
-    { s: { r: 7, c: 0 }, e: { r: 7, c: 11 } }, // Channel Performance Matrix header
-    { s: { r: 16, c: 0 }, e: { r: 16, c: 5 } }, // Audience Segmentation Analysis header
-    { s: { r: 23, c: 0 }, e: { r: 23, c: 11 } }, // AI Insights header
-    { s: { r: 30, c: 0 }, e: { r: 30, c: 11 } }, // Footer
-    { s: { r: 31, c: 0 }, e: { r: 31, c: 11 } }, // Contact info
-  ];
+  // Add channel performance section with styles
+  wsData.push([{
+    v: 'Channel Performance',
+    t: 's',
+    s: createHeaderStyle()
+  }]);
 
-  // Set print and view properties
-  ws['!pageSetup'] = {
-    orientation: 'landscape',
-    fitToPage: true,
-    fitToHeight: 1,
-    fitToWidth: 1,
-    scale: 85, // Slightly smaller scale for better readability
+  // Add headers with styles
+  const headers = [
+    'Channel',
+    'Budget',
+    'Impressions',
+    'CPM',
+    'ROI',
+    'CTR',
+    'CPC',
+    'Conv. Rate',
+    'CAC'
+  ].map(header => ({
+    v: header,
+    t: 's',
+    s: createHeaderStyle(brandColors.secondary)
+  }));
+  wsData.push(headers);
+
+  // Add channel data with styles
+  channels.forEach((channel, idx) => {
+    const prediction = predictions[channel.id];
+    if (prediction) {
+      const rowStyle = createDataStyle(idx % 2 === 1);
+      wsData.push([
+        { v: channel.name, t: 's', s: rowStyle },
+        { v: prediction.budget, t: 'n', s: { ...rowStyle, numFmt: '"$"#,##0' } },
+        { v: prediction.impressions, t: 'n', s: { ...rowStyle, numFmt: '#,##0' } },
+        { v: prediction.cpm, t: 'n', s: { ...rowStyle, numFmt: '"$"#,##0.00' } },
+        { v: prediction.roi, t: 'n', s: createMetricStyle(prediction.roi, 2, false, '0.0"x"') },
+        { v: prediction.ctr * 100, t: 'n', s: { ...rowStyle, numFmt: '0.0"%"' } },
+        { v: prediction.cpc, t: 'n', s: { ...rowStyle, numFmt: '"$"#,##0.00' } },
+        { v: prediction.conversion * 100, t: 'n', s: { ...rowStyle, numFmt: '0.0"%"' } },
+        { v: prediction.cac, t: 'n', s: createMetricStyle(prediction.cac, 100, true, '"$"#,##0') }
+      ]);
+    }
+  });
+
+  wsData.push([]);
+
+  // Add AI Recommendations with styles
+  wsData.push([{
+    v: 'AI Recommendations',
+    t: 's',
+    s: createHeaderStyle()
+  }]);
+
+  const insights = generateTopThreeInsights(channels, predictions);
+  insights.forEach(insight => {
+    const color = insight.startsWith('🟢') ? brandColors.success :
+                 insight.startsWith('🟡') ? brandColors.warning :
+                 brandColors.error;
+    wsData.push([{
+      v: insight,
+      t: 's',
+      s: {
+        font: { color: { rgb: color }, sz: 11 },
+        alignment: { horizontal: 'left', vertical: 'center' }
+      }
+    }]);
+  });
+
+  wsData.push([]);
+
+  // Add contact information with styles
+  wsData.push([{
+    v: 'Contact Information',
+    t: 's',
+    s: createHeaderStyle()
+  }]);
+
+  const contactStyle = {
+    font: { sz: 11, color: { rgb: brandColors.text } },
+    alignment: { horizontal: 'left', vertical: 'center' }
   };
 
-  // Set zoom level and freeze panes
-  ws['!view'] = [{
-    zoom: 85,
-    frozen: true,
-    xSplit: 1,
-    ySplit: 8, // Adjust frozen rows to match new structure
-    topLeftCell: 'B9',
-    activeCell: 'B9',
-  }];
+  wsData.push([
+    { v: 'Name:', t: 's', s: contactStyle },
+    { v: 'Nataliia Rumiantseva', t: 's', s: contactStyle }
+  ]);
+  wsData.push([
+    { v: 'Phone:', t: 's', s: contactStyle },
+    { v: '+48 503 589 781', t: 's', s: contactStyle }
+  ]);
+  wsData.push([
+    { v: 'Email:', t: 's', s: contactStyle },
+    { v: 'natalymakota@gmail.com', t: 's', s: contactStyle }
+  ]);
+  wsData.push([{
+    v: '© AI VERTISE 2024',
+    t: 's',
+    s: {
+      font: { italic: true, sz: 10, color: { rgb: brandColors.text } },
+      alignment: { horizontal: 'center', vertical: 'center' }
+    }
+  }]);
 
+  // Create worksheet
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Set column widths
+  ws['!cols'] = [
+    { wch: 25 }, // Channel
+    { wch: 12 }, // Budget
+    { wch: 12 }, // Impressions
+    { wch: 10 }, // CPM
+    { wch: 8 },  // ROI
+    { wch: 8 },  // CTR
+    { wch: 10 }, // CPC
+    { wch: 12 }, // Conv. Rate
+    { wch: 10 }  // CAC
+  ];
+
+  // Add merge cells for headers
+  ws['!merges'] = [
+    { s: { r: 0, c: 0 }, e: { r: 0, c: 8 } }, // Title
+    { s: { r: 2, c: 0 }, e: { r: 2, c: 8 } }, // Campaign Summary
+    { s: { r: 10, c: 0 }, e: { r: 10, c: 8 } }, // Channel Performance
+    { s: { r: wsData.length - 6, c: 0 }, e: { r: wsData.length - 6, c: 8 } }, // AI Recommendations
+    { s: { r: wsData.length - 2, c: 0 }, e: { r: wsData.length - 2, c: 8 } } // Copyright
+  ];
+
+  // Add the worksheet to the workbook
   XLSX.utils.book_append_sheet(wb, ws, 'Media Plan');
-  
-  // Write to file with specific options
-  XLSX.writeFile(wb, 'public/downloads/AI_VERTISE_Media_Plan.xlsx', {
+
+  // Generate Excel file
+  const wbout = XLSX.write(wb, {
+    type: 'array',
     bookType: 'xlsx',
-    bookSST: false,
-    type: 'binary',
-    compression: true,
+    bookSST: false
   });
-}; 
+  
+  const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  return URL.createObjectURL(blob);
+};
+
+// Helper function for generating insights
+function generateInsights(data: MediaPlanData): string[] {
+  const insights: string[] = [];
+  
+  // Find channels with highest ROI
+  const sortedByROI = [...data.channels].sort((a, b) => b.predictions.roi - a.predictions.roi);
+  if (sortedByROI.length > 0) {
+    insights.push(`🟢 ${sortedByROI[0].name} shows highest ROI potential (${sortedByROI[0].predictions.roi.toFixed(1)}x)`);
+  }
+
+  // Check for high CAC channels
+  const highCACChannels = data.channels.filter(ch => ch.predictions.cac > 100);
+  if (highCACChannels.length > 0) {
+    insights.push(`🔴 High CAC detected in ${highCACChannels.map(ch => ch.name).join(', ')} - Consider optimization`);
+  }
+
+  // Add campaign-type specific insights
+  if (data.settings.type === 'mobile_app') {
+    insights.push(`🟡 Consider increasing budget allocation for app-specific channels`);
+  }
+
+  return insights;
+} 
