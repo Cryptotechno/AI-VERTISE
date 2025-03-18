@@ -1,11 +1,9 @@
 import React from 'react';
-import { Blog } from '../components/sections/Blog';
-import { Navbar } from '../components/common/Navbar';
+import Blog from '../components/sections/Blog';
 
-export const BlogPage: React.FC = () => {
+const BlogPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar />
+    <div className="min-h-screen bg-white">
       <main>
         <div className="pt-16">
           <Blog />
@@ -13,4 +11,6 @@ export const BlogPage: React.FC = () => {
       </main>
     </div>
   );
-}; 
+};
+
+export default BlogPage; 

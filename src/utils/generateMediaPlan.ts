@@ -1,4 +1,5 @@
 import * as XLSX from 'xlsx-js-style';
+import type { Channel, CampaignGoal, CampaignSettings } from '../types/calculator';
 
 const brandColors = {
   primary: '4F46E5', // Indigo
@@ -71,14 +72,6 @@ const createMetricStyle = (value: number, threshold: number, inverse: boolean = 
   };
 };
 
-interface Channel {
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-  color: string;
-  description: string;
-}
-
 interface ChannelPrediction {
   impressions: number;
   cpm: number;
@@ -141,209 +134,74 @@ const generateTopThreeInsights = (
   return insights.slice(0, 3);
 };
 
-export const generateMediaPlan = (
-  channels: Channel[],
-  budget: number,
-  predictions: Record<string, ChannelPrediction>
-) => {
-  // Calculate total metrics
-  const totalBudget = budget;
-  const totalImpressions = Object.values(predictions).reduce((sum, p) => sum + p.impressions, 0);
-  const avgCPM = (totalBudget * 1000) / totalImpressions;
-  const avgROI = Object.values(predictions).reduce((sum, p) => sum + p.roi, 0) / channels.length;
-  const avgCTR = Object.values(predictions).reduce((sum, p) => sum + p.ctr, 0) / channels.length;
-  const avgConversion = Object.values(predictions).reduce((sum, p) => sum + p.conversion, 0) / channels.length;
+interface MediaPlanInput {
+  channels: Channel[];
+  settings: CampaignSettings;
+  goal: CampaignGoal;
+  budget: number;
+}
 
-  // Create workbook
-  const wb = XLSX.utils.book_new();
-  const wsData: any[][] = [];
-
-  // Add title with style
-  wsData.push([{
-    v: 'AI-VERTISE Media Plan',
-    t: 's',
-    s: {
-      font: { bold: true, sz: 16, color: { rgb: brandColors.primary } },
-      alignment: { horizontal: 'center', vertical: 'center' }
-    }
-  }]);
-  wsData.push([]);
-
-  // Add summary section with styles
-  wsData.push([{
-    v: 'Campaign Summary',
-    t: 's',
-    s: createHeaderStyle()
-  }]);
-
-  // Add summary data with styles
-  wsData.push([
-    { v: 'Total Budget', t: 's', s: createDataStyle() },
-    { v: totalBudget, t: 'n', s: { ...createDataStyle(), numFmt: '"$"#,##0' } }
-  ]);
-  wsData.push([
-    { v: 'Total Impressions', t: 's', s: createDataStyle() },
-    { v: totalImpressions, t: 'n', s: { ...createDataStyle(), numFmt: '#,##0' } }
-  ]);
-  wsData.push([
-    { v: 'Average CPM', t: 's', s: createDataStyle() },
-    { v: avgCPM, t: 'n', s: { ...createDataStyle(), numFmt: '"$"#,##0.00' } }
-  ]);
-  wsData.push([
-    { v: 'Average ROI', t: 's', s: createDataStyle() },
-    { v: avgROI, t: 'n', s: { ...createDataStyle(), numFmt: '0.0"x"' } }
-  ]);
-  wsData.push([
-    { v: 'Average CTR', t: 's', s: createDataStyle() },
-    { v: avgCTR * 100, t: 'n', s: { ...createDataStyle(), numFmt: '0.0"%"' } }
-  ]);
-  wsData.push([
-    { v: 'Average Conversion Rate', t: 's', s: createDataStyle() },
-    { v: avgConversion * 100, t: 'n', s: { ...createDataStyle(), numFmt: '0.0"%"' } }
-  ]);
-
-  wsData.push([]);
-
-  // Add channel performance section with styles
-  wsData.push([{
-    v: 'Channel Performance',
-    t: 's',
-    s: createHeaderStyle()
-  }]);
-
-  // Add headers with styles
+export const generateMediaPlan = async ({ channels, settings, goal, budget }: MediaPlanInput): Promise<string[][]> => {
+  // Create headers
   const headers = [
     'Channel',
     'Budget',
+    'Allocation',
     'Impressions',
     'CPM',
-    'ROI',
     'CTR',
     'CPC',
-    'Conv. Rate',
-    'CAC'
-  ].map(header => ({
-    v: header,
-    t: 's',
-    s: createHeaderStyle(brandColors.secondary)
-  }));
-  wsData.push(headers);
-
-  // Add channel data with styles
-  channels.forEach((channel, idx) => {
-    const prediction = predictions[channel.id];
-    if (prediction) {
-      const rowStyle = createDataStyle(idx % 2 === 1);
-      wsData.push([
-        { v: channel.name, t: 's', s: rowStyle },
-        { v: prediction.budget, t: 'n', s: { ...rowStyle, numFmt: '"$"#,##0' } },
-        { v: prediction.impressions, t: 'n', s: { ...rowStyle, numFmt: '#,##0' } },
-        { v: prediction.cpm, t: 'n', s: { ...rowStyle, numFmt: '"$"#,##0.00' } },
-        { v: prediction.roi, t: 'n', s: createMetricStyle(prediction.roi, 2, false, '0.0"x"') },
-        { v: prediction.ctr * 100, t: 'n', s: { ...rowStyle, numFmt: '0.0"%"' } },
-        { v: prediction.cpc, t: 'n', s: { ...rowStyle, numFmt: '"$"#,##0.00' } },
-        { v: prediction.conversion * 100, t: 'n', s: { ...rowStyle, numFmt: '0.0"%"' } },
-        { v: prediction.cac, t: 'n', s: createMetricStyle(prediction.cac, 100, true, '"$"#,##0') }
-      ]);
-    }
-  });
-
-  wsData.push([]);
-
-  // Add AI Recommendations with styles
-  wsData.push([{
-    v: 'AI Recommendations',
-    t: 's',
-    s: createHeaderStyle()
-  }]);
-
-  const insights = generateTopThreeInsights(channels, predictions);
-  insights.forEach(insight => {
-    const color = insight.startsWith('🟢') ? brandColors.success :
-                 insight.startsWith('🟡') ? brandColors.warning :
-                 brandColors.error;
-    wsData.push([{
-      v: insight,
-      t: 's',
-      s: {
-        font: { color: { rgb: color }, sz: 11 },
-        alignment: { horizontal: 'left', vertical: 'center' }
-      }
-    }]);
-  });
-
-  wsData.push([]);
-
-  // Add contact information with styles
-  wsData.push([{
-    v: 'Contact Information',
-    t: 's',
-    s: createHeaderStyle()
-  }]);
-
-  const contactStyle = {
-    font: { sz: 11, color: { rgb: brandColors.text } },
-    alignment: { horizontal: 'left', vertical: 'center' }
-  };
-
-  wsData.push([
-    { v: 'Name:', t: 's', s: contactStyle },
-    { v: 'Nataliia Rumiantseva', t: 's', s: contactStyle }
-  ]);
-  wsData.push([
-    { v: 'Phone:', t: 's', s: contactStyle },
-    { v: '+48 503 589 781', t: 's', s: contactStyle }
-  ]);
-  wsData.push([
-    { v: 'Email:', t: 's', s: contactStyle },
-    { v: 'natalymakota@gmail.com', t: 's', s: contactStyle }
-  ]);
-  wsData.push([{
-    v: '© AI VERTISE 2024',
-    t: 's',
-    s: {
-      font: { italic: true, sz: 10, color: { rgb: brandColors.text } },
-      alignment: { horizontal: 'center', vertical: 'center' }
-    }
-  }]);
-
-  // Create worksheet
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // Set column widths
-  ws['!cols'] = [
-    { wch: 25 }, // Channel
-    { wch: 12 }, // Budget
-    { wch: 12 }, // Impressions
-    { wch: 10 }, // CPM
-    { wch: 8 },  // ROI
-    { wch: 8 },  // CTR
-    { wch: 10 }, // CPC
-    { wch: 12 }, // Conv. Rate
-    { wch: 10 }  // CAC
+    'Conversions',
+    'CAC',
+    'ROI'
   ];
 
-  // Add merge cells for headers
-  ws['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 0, c: 8 } }, // Title
-    { s: { r: 2, c: 0 }, e: { r: 2, c: 8 } }, // Campaign Summary
-    { s: { r: 10, c: 0 }, e: { r: 10, c: 8 } }, // Channel Performance
-    { s: { r: wsData.length - 6, c: 0 }, e: { r: wsData.length - 6, c: 8 } }, // AI Recommendations
-    { s: { r: wsData.length - 2, c: 0 }, e: { r: wsData.length - 2, c: 8 } } // Copyright
+  // Create data rows
+  const rows = channels.map(channel => [
+    channel.name,
+    `$${channel.budget?.toLocaleString() || '0'}`,
+    `${channel.allocation?.toFixed(1) || '0'}%`,
+    (channel.predictions?.impressions || 0).toLocaleString(),
+    `$${channel.predictions?.cpm?.toFixed(2) || '0'}`,
+    `${((channel.predictions?.ctr || 0) * 100).toFixed(2)}%`,
+    `$${channel.predictions?.cpc?.toFixed(2) || '0'}`,
+    Math.round(
+      (channel.predictions?.impressions || 0) * 
+      (channel.predictions?.ctr || 0) * 
+      (channel.predictions?.conversion || 0)
+    ).toLocaleString(),
+    `$${channel.predictions?.cac?.toFixed(0) || '0'}`,
+    `${channel.predictions?.roi?.toFixed(1) || '0'}x`
+  ]);
+
+  // Add summary row
+  const totalBudget = channels.reduce((sum, channel) => sum + (channel.budget || 0), 0);
+  const totalImpressions = channels.reduce((sum, channel) => sum + (channel.predictions?.impressions || 0), 0);
+  const avgCPM = channels.reduce((sum, channel) => sum + (channel.predictions?.cpm || 0), 0) / channels.length;
+  const avgCTR = channels.reduce((sum, channel) => sum + (channel.predictions?.ctr || 0), 0) / channels.length;
+  const avgCPC = channels.reduce((sum, channel) => sum + (channel.predictions?.cpc || 0), 0) / channels.length;
+  const totalConversions = channels.reduce((sum, channel) => 
+    sum + Math.round((channel.predictions?.impressions || 0) * (channel.predictions?.ctr || 0) * (channel.predictions?.conversion || 0)), 
+    0
+  );
+  const avgCAC = totalBudget / totalConversions;
+  const avgROI = channels.reduce((sum, channel) => sum + (channel.predictions?.roi || 0), 0) / channels.length;
+
+  const summaryRow = [
+    'TOTAL',
+    `$${totalBudget.toLocaleString()}`,
+    '100%',
+    totalImpressions.toLocaleString(),
+    `$${avgCPM.toFixed(2)}`,
+    `${(avgCTR * 100).toFixed(2)}%`,
+    `$${avgCPC.toFixed(2)}`,
+    totalConversions.toLocaleString(),
+    `$${avgCAC.toFixed(0)}`,
+    `${avgROI.toFixed(1)}x`
   ];
 
-  // Add the worksheet to the workbook
-  XLSX.utils.book_append_sheet(wb, ws, 'Media Plan');
-
-  // Generate Excel file
-  const wbout = XLSX.write(wb, {
-    type: 'array',
-    bookType: 'xlsx',
-    bookSST: false
-  });
-  
-  const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  return URL.createObjectURL(blob);
+  // Return all rows including headers and summary
+  return [headers, ...rows, summaryRow];
 };
 
 // Helper function for generating insights

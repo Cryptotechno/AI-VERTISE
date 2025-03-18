@@ -7,13 +7,10 @@ import About from '../components/sections/About';
 import Contact from '../components/sections/Contact';
 import BackToTop from '../components/ui/BackToTop';
 import PageTransition from '../components/ui/PageTransition';
-import { Navbar } from '../components/common/Navbar';
-import { Footer } from '../components/common/Footer';
 
 export const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <main>
         <PageTransition>
           <Hero />
@@ -37,7 +34,6 @@ export const HomePage: React.FC = () => {
         </div>
         <BackToTop />
       </main>
-      <Footer />
     </div>
   );
 }; 

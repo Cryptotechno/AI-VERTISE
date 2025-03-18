@@ -1,27 +1,57 @@
-import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom'
+import React, { useEffect, Suspense } from 'react'
+import { HashRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom'
 import { motion, useScroll, useSpring } from 'framer-motion'
-import Calculator from './components/sections/Calculator'
-import Hero from './components/sections/Hero'
-import Services from './components/sections/Services'
-import SuccessStories from './components/sections/SuccessStories'
-import About from './components/sections/About'
-import Contact from './components/sections/Contact'
-import BackToTop from './components/ui/BackToTop'
-import PageTransition from './components/ui/PageTransition'
 import { Navbar } from './components/common/Navbar'
 import { Footer } from './components/common/Footer'
-import { BlogPage } from './pages/BlogPage'
-import BlogArticle from './components/sections/BlogArticle'
 import { HomePage } from './pages/HomePage'
-import Blog from './components/sections/Blog'
+import BlogPage from './pages/BlogPage'
+import BlogArticle from './components/sections/BlogArticle'
 import { blogPosts } from './data/blogPosts'
 
+// Error boundary component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Error caught by boundary:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h1>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
+
 const BlogArticleWrapper = () => {
-  const { slug } = useParams();
-  const post = blogPosts.find(post => post.slug === slug) || blogPosts[0];
-  return <BlogArticle post={post} />;
-};
+  const { slug } = useParams()
+  const post = blogPosts.find(post => post.slug === slug) || blogPosts[0]
+  return <BlogArticle post={post} />
+}
 
 function App() {
   const { scrollYProgress } = useScroll()
@@ -119,47 +149,35 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  useEffect(() => {
+    window.history.scrollRestoration = 'manual'
+  }, [])
+
   return (
-    <Router basename="/AI-VERTISE">
-      <div className="relative">
-        <motion.div
-          className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 transform-none z-50"
-          style={{ scaleX }}
-        />
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
-          <Route path="/" element={
-            <main id="main-content" tabIndex={-1} className="relative overflow-x-hidden outline-none">
-              <PageTransition>
-                <Hero />
-              </PageTransition>
-              <div className="space-y-24 md:space-y-32">
-                <PageTransition>
-                  <Services />
-                </PageTransition>
-                <PageTransition>
-                  <Calculator />
-                </PageTransition>
-                <PageTransition>
-                  <SuccessStories />
-                </PageTransition>
-                <PageTransition>
-                  <About />
-                </PageTransition>
-                <PageTransition>
-                  <Contact />
-                </PageTransition>
-              </div>
-              <BackToTop />
-            </main>
-          } />
-        </Routes>
-        <Footer />
-      </div>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <div className="relative min-h-screen bg-gray-50">
+          <motion.div
+            className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 transform-none z-50"
+            style={{ scaleX }}
+          />
+          <Navbar />
+          <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+            </div>
+          }>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+          <Footer />
+        </div>
+      </Router>
+    </ErrorBoundary>
   )
 }
 

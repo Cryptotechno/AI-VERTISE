@@ -1,64 +1,27 @@
-import { useState, useEffect, Suspense, lazy } from 'react'
+import { useState, useEffect, Suspense, lazy, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
-import { 
-  FaBrain, 
-  FaMagic, 
-  FaChartPie, 
-  FaBullhorn, 
-  FaVideo,
-  FaPlayCircle,
-  FaHeadphones,
-  FaStore,
-  FaNewspaper,
-  FaDesktop,
-  FaRegWindowRestore,
-  FaTelegram,
-  FaRegLightbulb,
-  FaChartLine,
-  FaShoppingCart,
-  FaSyncAlt,
-  FaStar,
-  FaRocket,
-  FaChartBar,
-  FaArrowUp,
-  FaUsers,
-  FaPercentage,
-  FaCheck,
-  FaCog,
-  FaInfoCircle,
-  FaRobot,
-  FaMobile,
-  FaUserTag,
-  FaUserCog,
-  FaExchangeAlt,
-  FaInstagram,
-  FaYoutube,
-  FaTiktok,
-  FaSnapchatGhost,
-  FaLinkedin,
-  FaTwitter,
-  FaSearch,
-  FaGamepad,
-  FaMapMarkerAlt,
-  FaPodcast,
-  FaShoppingBag,
-  FaFileDownload,
-  FaWhatsapp,
-  FaApple,
-  FaGooglePlay,
-  FaGlobe,
-  FaMailBulk,
-  FaCommentDots,
-  FaNetworkWired,
-  FaQrcode,
-  FaHandshake,
-  FaUserFriends,
-  FaDownload
-} from 'react-icons/fa'
 import { utils as xlsxUtils, writeFile as xlsxWriteFile } from 'xlsx'
 import { generateMediaPlan } from '../../utils/generateMediaPlan'
+import { adChannels, campaignGoals } from '../../data/calculatorData.tsx'
+import { 
+  FaBrain,
+  FaDesktop,
+  FaMobile,
+  FaExchangeAlt,
+  FaUsers,
+  FaUserTag,
+  FaUserCog,
+  FaCheck,
+  FaCog,
+  FaChartPie,
+  FaInfoCircle,
+  FaSyncAlt,
+  FaChartLine,
+  FaDownload,
+  FaRegLightbulb
+} from 'react-icons/fa'
 
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend)
@@ -66,144 +29,14 @@ ChartJS.register(ArcElement, Tooltip, Legend)
 // Lazy load the chart component
 const MediaPlanChart = lazy(() => import('../charts/MediaPlanChart'))
 
-interface Predictions {
-  impressions: number;
-  engagement: number;
-  conversion: number;
-  roi: number;
-  cpm: number;
-  ctr: number;
-  cpc: number;
-  cac: number;
-}
-
-interface Channel {
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-  color: string;
-  description: string;
-  allocation?: number;
-  budget?: number;
-  predictions?: Predictions;
-}
-
-type CampaignGoal = 'awareness' | 'consideration' | 'conversion'
-
-interface Goal {
-  id: CampaignGoal
-  name: string
-  icon: React.ReactNode
-  description: string
-}
-
-const campaignGoals: Goal[] = [
-  {
-    id: 'awareness',
-    name: 'Brand Awareness',
-    icon: <FaBullhorn className="w-5 h-5" />,
-    description: 'Increase visibility and reach new audiences'
-  },
-  {
-    id: 'consideration',
-    name: 'Consideration',
-    icon: <FaRegLightbulb className="w-5 h-5" />,
-    description: 'Drive engagement and interest in your products'
-  },
-  {
-    id: 'conversion',
-    name: 'Conversion',
-    icon: <FaShoppingCart className="w-5 h-5" />,
-    description: 'Generate leads and drive sales'
-  }
-]
-
-const adChannels: Channel[] = [
-  { 
-    id: 'ctv', 
-    name: 'CTV/OTT', 
-    color: '#4f46e5',
-    icon: <FaPlayCircle className="w-5 h-5" />,
-    description: 'Connected TV & streaming'
-  },
-  { 
-    id: 'display', 
-    name: 'Display Ads', 
-    color: '#6366f1',
-    icon: <FaDesktop className="w-5 h-5" />,
-    description: 'Banner ads across the web'
-  },
-  { 
-    id: 'video', 
-    name: 'Video Advertising', 
-    color: '#7c3aed',
-    icon: <FaVideo className="w-5 h-5" />,
-    description: 'Video ad formats'
-  },
-  { 
-    id: 'youtube', 
-    name: 'YouTube Ads', 
-    color: '#ef4444',
-    icon: <FaYoutube className="w-5 h-5" />,
-    description: 'Video & display on YouTube'
-  },
-  { 
-    id: 'instagram', 
-    name: 'Instagram Ads', 
-    color: '#ec4899',
-    icon: <FaInstagram className="w-5 h-5" />,
-    description: 'Stories, Reels & feed ads'
-  },
-  { 
-    id: 'tiktok', 
-    name: 'TikTok Ads', 
-    color: '#14b8a6',
-    icon: <FaTiktok className="w-5 h-5" />,
-    description: 'Short-form video ads'
-  },
-  { 
-    id: 'linkedin', 
-    name: 'LinkedIn Ads', 
-    color: '#0284c7',
-    icon: <FaLinkedin className="w-5 h-5" />,
-    description: 'B2B & professional targeting'
-  },
-  { 
-    id: 'search', 
-    name: 'Search Ads', 
-    color: '#4ade80',
-    icon: <FaSearch className="w-5 h-5" />,
-    description: 'PPC & keyword targeting'
-  },
-  { 
-    id: 'native', 
-    name: 'Native Ads', 
-    color: '#8b5cf6',
-    icon: <FaNewspaper className="w-5 h-5" />,
-    description: 'In-feed advertising'
-  },
-  { 
-    id: 'dooh', 
-    name: 'DOOH', 
-    color: '#4338ca',
-    icon: <FaRegWindowRestore className="w-5 h-5" />,
-    description: 'Digital out-of-home'
-  },
-  { 
-    id: 'telegram', 
-    name: 'Telegram Ads', 
-    color: '#0088cc',
-    icon: <FaTelegram className="w-5 h-5" />,
-    description: 'Messaging platform ads'
-  },
-  { 
-    id: 'appstore', 
-    name: 'App Store Ads', 
-    color: '#0066CC',
-    icon: <FaApple className="w-5 h-5" />,
-    description: 'iOS app promotion'
-  }
-]
+// Import types
+import type { 
+  Predictions, 
+  Channel, 
+  CampaignGoal, 
+  Goal, 
+  ChannelPrediction
+} from '../../types/calculator'
 
 // Add new interfaces for AI insights
 interface AIInsight {
@@ -211,17 +44,6 @@ interface AIInsight {
   message: string
   impact: number // 0-100
   confidence: number // 0-100
-}
-
-interface ChannelPrediction {
-  impressions: number // Estimated reach in thousands
-  engagement: number // Expected engagement rate
-  conversion: number // Expected conversion rate
-  roi: number // Predicted ROI multiplier
-  cpm: number // Estimated CPM
-  ctr: number // Estimated CTR
-  cpc: number // Estimated CPC
-  cac: number // Estimated CAC
 }
 
 // Update channelSynergies to match the new channel list
@@ -247,8 +69,8 @@ type AudienceTarget = 'broad' | 'specific' | 'custom'
 interface CampaignSettings {
   type: CampaignType
   audienceTarget: AudienceTarget
-  duration: number // in months
-  isAutomated: boolean // Keep this for internal use but remove the UI toggle
+  duration: number
+  isAutomated: boolean
 }
 
 // Add campaign type definitions
@@ -316,7 +138,7 @@ const channelCTRRanges: Record<string, [number, number]> = {
   'ctv': [0.005, 0.01]        // CTV/OTT: 0.5-1%
 };
 
-// Update getChannelPredictions function
+// Remove the useCallback hook from here
 const getChannelPredictions = (
   channel: string, 
   goal: CampaignGoal, 
@@ -413,7 +235,7 @@ const getChannelPredictions = (
     cac: finalCAC,
     engagement: 0
   };
-};
+}
 
 // Add new sparkle effect component
 const Sparkle = ({ delay = 0 }) => {
@@ -511,246 +333,127 @@ function generateTopThreeInsights(channels: Channel[]): string[] {
 }
 
 const Calculator = () => {
-  const [budget, setBudget] = useState<number>(5000)
   const [selectedChannels, setSelectedChannels] = useState<string[]>([])
-  const [selectedGoal, setSelectedGoal] = useState<CampaignGoal>('awareness')
-  const [showResults, setShowResults] = useState(false)
-  const [allocations, setAllocations] = useState<Record<string, number>>({})
-  const [insights, setInsights] = useState<AIInsight[]>([])
-  const [predictions, setPredictions] = useState<Record<string, ChannelPrediction>>({})
-  const [isOptimizing, setIsOptimizing] = useState(false)
-  const [suggestedChannels, setSuggestedChannels] = useState<string[]>([])
+  const [budget, setBudget] = useState<number>(5000)
+  const [goal, setGoal] = useState<CampaignGoal>('awareness')
+  const [mediaMix, setMediaMix] = useState<Channel[]>([])
+  const [isCalculating, setIsCalculating] = useState(false)
+  const [showInsights, setShowInsights] = useState(false)
+  const [showMagicAnimation, setShowMagicAnimation] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
   const [settings, setSettings] = useState<CampaignSettings>({
     type: 'web_landing',
     audienceTarget: 'broad',
     duration: 1,
     isAutomated: true
   })
-  const [showMagicAnimation, setShowMagicAnimation] = useState(false)
-  const [isDownloading, setIsDownloading] = useState(false)
 
-  const handleChannelToggle = (channelId: string) => {
-    setSelectedChannels(prev => {
-      const newChannels = prev.includes(channelId)
-        ? prev.filter(id => id !== channelId)
-        : [...prev, channelId];
-      
-      // Reset predictions and allocations when channels change
-      setPredictions({});
-      setAllocations({});
-      setShowResults(false);
-      return newChannels;
-    });
-  }
+  // Move the useCallback hook inside the component
+  const memoizedGetChannelPredictions = useCallback(getChannelPredictions, []);
 
-  // Update useEffect for insights
-  useEffect(() => {
-    if (selectedChannels.length > 0) {
-      const newInsights: AIInsight[] = []
-      
-      // Channel synergies
-      selectedChannels.forEach(channel => {
-        const synergies = channelSynergies[channel]
-        const matchingSynergies = synergies?.filter(s => selectedChannels.includes(s)) || []
-        
-        if (matchingSynergies.length > 0) {
-          newInsights.push({
-            type: 'positive',
-            message: `Strong synergy detected between ${channel} and ${matchingSynergies.join(', ')}`,
-            impact: 85,
-            confidence: 92
-          })
-        }
-      })
-
-      // Campaign type insights
-      if (settings.type === 'cross_platform' && selectedChannels.length < 3) {
-        newInsights.push({
-          type: 'negative',
-          message: 'Cross-platform campaigns perform better with 3+ channels',
-          impact: 70,
-          confidence: 88
-        })
+  // Chart data preparation
+  const chartData = useMemo(() => {
+    if (!mediaMix.length) {
+      return {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: [],
+          borderWidth: 0
+        }]
       }
-
-      if (settings.type === 'mobile_app' && !selectedChannels.includes('native')) {
-        newInsights.push({
-          type: 'neutral',
-          message: 'Native ads are highly effective for mobile app campaigns',
-          impact: 75,
-          confidence: 90
-        })
-      }
-
-      // Audience targeting insights
-      if (settings.audienceTarget === 'specific' && !selectedChannels.includes('programmatic')) {
-        newInsights.push({
-          type: 'neutral',
-          message: 'Programmatic RTB enables precise audience targeting',
-          impact: 80,
-          confidence: 85
-        })
-      }
-
-      // Duration insights
-      if (settings.duration >= 3 && selectedChannels.length < 4) {
-        newInsights.push({
-          type: 'neutral',
-          message: 'Longer campaigns benefit from broader channel mix',
-          impact: 65,
-          confidence: 82
-        })
-      }
-
-      // Goal-specific insights
-      switch (selectedGoal) {
-        case 'awareness':
-          if (!selectedChannels.includes('video') && !selectedChannels.includes('dooh')) {
-            newInsights.push({
-              type: 'neutral',
-              message: 'Consider adding Video or DOOH for better brand awareness',
-              impact: 75,
-              confidence: 88
-            })
-          }
-          break
-        case 'consideration':
-          if (!selectedChannels.includes('native')) {
-            newInsights.push({
-              type: 'neutral',
-              message: 'Native advertising could improve consideration metrics',
-              impact: 70,
-              confidence: 85
-            })
-          }
-          break
-        case 'conversion':
-          if (!selectedChannels.includes('retail') && budget > 10000) {
-            newInsights.push({
-              type: 'negative',
-              message: 'High budget without retail media may limit conversion potential',
-              impact: 65,
-              confidence: 82
-            })
-          }
-          break
-      }
-
-      setInsights(newInsights)
     }
-  }, [selectedChannels, selectedGoal, budget, settings])
-
-  // Generate channel suggestions
-  useEffect(() => {
-    if (selectedGoal && budget) {
-      const suggestions = adChannels
-        .filter(channel => !selectedChannels.includes(channel.id))
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map(channel => channel.id)
-      
-      setSuggestedChannels(suggestions)
-    }
-  }, [selectedGoal, budget])
-
-  // Update calculateMediaMix function
-  const calculateMediaMix = () => {
-    if (selectedChannels.length === 0) return;
-
-    setIsOptimizing(true);
-    setShowMagicAnimation(true);
-
-    // Calculate new predictions and allocations
-    const channelCount = selectedChannels.length;
-    const baseAllocation = Math.round(100 / channelCount); // This ensures whole number percentages
-    const newAllocations: Record<string, number> = {};
-    const newPredictions: Record<string, ChannelPrediction> = {};
     
-    selectedChannels.forEach((channelId, index) => {
-      // For the last channel, adjust to ensure total is exactly 100%
-      const allocation = index === channelCount - 1 
-        ? 100 - (baseAllocation * (channelCount - 1))
-        : baseAllocation;
-      
-      newAllocations[channelId] = allocation;
-      const channelBudget = (budget * allocation) / 100;
-      newPredictions[channelId] = getChannelPredictions(channelId, selectedGoal, channelBudget, settings);
-    });
-
-    setTimeout(() => {
-      setAllocations(newAllocations);
-      setPredictions(newPredictions);
-      setShowResults(true);
-      setIsOptimizing(false);
-      setShowMagicAnimation(false);
-    }, 2000);
-  };
-
-  const reviseMediaMix = () => {
-    // Slightly adjust allocations to simulate AI refinement
-    const adjustedAllocations = { ...allocations }
-    const adjustmentFactor = 0.15 // 15% maximum adjustment
-
-    Object.keys(adjustedAllocations).forEach(key => {
-      const randomAdjustment = (Math.random() * 2 - 1) * adjustmentFactor // Random adjustment between -15% and +15%
-      adjustedAllocations[key] *= (1 + randomAdjustment)
-    })
-
-    // Normalize to ensure total is still 100%
-    const total = Object.values(adjustedAllocations).reduce((sum, val) => sum + val, 0)
-    Object.keys(adjustedAllocations).forEach(key => {
-      adjustedAllocations[key] = (adjustedAllocations[key] / total) * 100
-    })
-
-    setAllocations(adjustedAllocations)
-  }
-
-  const chartData = {
-    labels: selectedChannels.map(id => adChannels.find(ch => ch.id === id)?.name || ''),
-    datasets: [{
-      data: selectedChannels.map(id => Number((allocations[id] || 0).toFixed(1))),
-      backgroundColor: selectedChannels.map(id => adChannels.find(ch => ch.id === id)?.color || '#000000'),
-      borderColor: selectedChannels.map(() => 'transparent'),
-      borderWidth: 2
-    }]
-  }
-
-  const handleDownload = () => {
-    try {
-      // Create predictions with budget included
-      const predictionsWithBudget = Object.fromEntries(
-        selectedChannels.map(id => [
-          id,
-          {
-            ...predictions[id],
-            budget: (budget * (allocations[id] || 0)) / 100
-          }
-        ])
-      );
-
-      const url = generateMediaPlan(
-        selectedChannels.map(id => {
-          const channel = adChannels.find(ch => ch.id === id);
-          if (!channel) throw new Error(`Channel ${id} not found`);
-          return channel;
-        }),
-        budget,
-        predictionsWithBudget
-      );
-
-      // Create a temporary link and trigger download
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'AI_VERTISE_Media_Plan.xlsx';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error downloading media plan:', error);
-      // You might want to show an error message to the user here
+    return {
+      labels: mediaMix.map(channel => channel.name),
+      datasets: [{
+        data: mediaMix.map(channel => channel.budget || 0),
+        backgroundColor: mediaMix.map(channel => channel.color),
+        borderWidth: 0
+      }]
     }
-  };
+  }, [mediaMix])
+
+  // Handle media plan download
+  const handleDownload = useCallback(async () => {
+    setIsDownloading(true)
+    try {
+      // Convert media mix to array format for Excel
+      const headers = ['Channel', 'Budget', 'Allocation', 'ROI', 'CPM', 'CTR', 'CPC', 'CAC']
+      const data = [
+        headers,
+        ...mediaMix.map(channel => [
+          channel.name,
+          channel.budget?.toFixed(2) || '0',
+          `${channel.allocation?.toFixed(1)}%` || '0%',
+          channel.predictions?.roi?.toFixed(1) || '0',
+          channel.predictions?.cpm?.toFixed(2) || '0',
+          `${((channel.predictions?.ctr || 0) * 100).toFixed(2)}%`,
+          channel.predictions?.cpc?.toFixed(2) || '0',
+          channel.predictions?.cac?.toFixed(0) || '0'
+        ])
+      ]
+
+      const workbook = xlsxUtils.book_new()
+      const worksheet = xlsxUtils.aoa_to_sheet(data)
+      xlsxUtils.book_append_sheet(workbook, worksheet, 'Media Plan')
+      xlsxWriteFile(workbook, 'ai-vertise-media-plan.xlsx')
+    } catch (error) {
+      console.error('Error generating media plan:', error)
+    } finally {
+      setIsDownloading(false)
+    }
+  }, [mediaMix])
+
+  // Memoize channel toggle handler
+  const handleChannelToggle = useCallback((channelId: string) => {
+    setSelectedChannels(prev => 
+      prev.includes(channelId)
+        ? prev.filter(id => id !== channelId)
+        : [...prev, channelId]
+    )
+  }, [])
+
+  // Memoize media mix calculation
+  const calculateMediaMix = useCallback(() => {
+    setIsCalculating(true)
+    
+    // Delay calculation to next tick to prevent UI freeze
+    setTimeout(() => {
+      try {
+        const selectedChannelData = adChannels.filter(channel => 
+          selectedChannels.includes(channel.id)
+        )
+
+        const totalBudget = budget
+        const channelCount = selectedChannelData.length
+        const baseAllocation = 100 / channelCount
+
+        const mix = selectedChannelData.map(channel => ({
+          ...channel,
+          allocation: baseAllocation,
+          budget: (totalBudget * baseAllocation) / 100,
+          predictions: memoizedGetChannelPredictions(channel.id, goal, budget, settings)
+        }))
+
+        setMediaMix(mix)
+        setShowInsights(true)
+      } catch (error) {
+        console.error('Error calculating media mix:', error)
+      } finally {
+        setIsCalculating(false)
+      }
+    }, 0)
+  }, [selectedChannels, budget, goal, settings, memoizedGetChannelPredictions])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setMediaMix([])
+      setIsCalculating(false)
+      setShowInsights(false)
+    }
+  }, [])
 
   return (
     <section id="calculator" className="py-8">
@@ -824,26 +527,26 @@ const Calculator = () => {
                   Campaign Goals
                 </h3>
                 <div className="space-y-2">
-                  {campaignGoals.map(goal => (
+                  {campaignGoals.map(campaignGoal => (
                     <button
-                      key={goal.id}
-                      onClick={() => setSelectedGoal(goal.id)}
+                      key={campaignGoal.id}
+                      onClick={() => setGoal(campaignGoal.id)}
                       className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all ${
-                        selectedGoal === goal.id
+                        campaignGoal.id === goal
                           ? 'border-indigo-600 bg-indigo-50/50 text-indigo-600'
                           : 'border-gray-100 hover:border-indigo-100 hover:bg-indigo-50/30'
                       }`}
                     >
                       <div className={`p-2 rounded-lg ${
-                        selectedGoal === goal.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'
+                        campaignGoal.id === goal ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600'
                       }`}>
-                        {goal.icon}
+                        {campaignGoal.icon}
                       </div>
                       <div className="text-left">
-                        <div className="font-medium">{goal.name}</div>
-                        <div className="text-xs text-gray-500">{goal.description}</div>
+                        <div className="font-medium">{campaignGoal.name}</div>
+                        <div className="text-xs text-gray-500">{campaignGoal.description}</div>
                       </div>
-                      {selectedGoal === goal.id && (
+                      {campaignGoal.id === goal && (
                         <FaCheck className="ml-auto text-indigo-600" />
                       )}
                     </button>
@@ -988,17 +691,12 @@ const Calculator = () => {
                     <div className="text-left relative z-10">
                       <div className="font-medium text-sm">{channel.name}</div>
                       <div className="text-xs text-gray-500">{channel.description}</div>
-                      {selectedChannels.includes(channel.id) && predictions[channel.id] && (
+                      {selectedChannels.includes(channel.id) && mediaMix.find(c => c.id === channel.id) && (
                         <div className="text-xs text-indigo-600 mt-1 font-medium">
-                          ~{predictions[channel.id].roi.toFixed(1)}x ROI
+                          ~{mediaMix.find(c => c.id === channel.id)?.predictions?.roi.toFixed(1)}x ROI
                         </div>
                       )}
                     </div>
-                    {suggestedChannels.includes(channel.id) && !selectedChannels.includes(channel.id) && (
-                      <div className="absolute -top-2 -right-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs px-2 py-0.5 rounded-full shadow-sm">
-                        Recommended
-                      </div>
-                    )}
                   </motion.button>
                 ))}
               </div>
@@ -1029,11 +727,11 @@ const Calculator = () => {
 
               <motion.button
                 onClick={calculateMediaMix}
-                disabled={selectedChannels.length === 0 || isOptimizing}
+                disabled={selectedChannels.length === 0 || isCalculating}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 animate={
-                  selectedChannels.length > 0 && !isOptimizing
+                  selectedChannels.length > 0 && !isCalculating
                     ? {
                         scale: [1, 1.02, 1],
                         boxShadow: [
@@ -1053,7 +751,7 @@ const Calculator = () => {
                     : 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
                 }`}
               >
-                {isOptimizing ? (
+                {isCalculating ? (
                   <span className="flex items-center justify-center gap-2">
                     <FaSyncAlt className="animate-spin" />
                     Optimizing Mix...
@@ -1081,7 +779,7 @@ const Calculator = () => {
                 AI Insights
               </h3>
 
-              {showResults ? (
+              {showInsights ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -1109,7 +807,7 @@ const Calculator = () => {
                   <div className="space-y-3">
                     {selectedChannels.map((channelId, index) => {
                       const channel = adChannels.find(ch => ch.id === channelId)
-                      const prediction = predictions[channelId]
+                      const prediction = mediaMix.find(c => c.id === channelId)?.predictions
                       if (!channel) return null
 
                       return (
@@ -1127,7 +825,7 @@ const Calculator = () => {
                               <span className="text-sm font-medium">{channel.name}</span>
                             </div>
                             <span className="text-sm font-semibold">
-                              {allocations[channelId]?.toFixed(1)}%
+                              {mediaMix.find(c => c.id === channelId)?.allocation?.toFixed(1)}%
                             </span>
                           </div>
                           {prediction && (
@@ -1162,21 +860,7 @@ const Calculator = () => {
                     <div className="mt-8">
                       <h3 className="text-xl font-semibold text-gray-900 mb-4">AI Recommendations</h3>
                       <div className="space-y-2">
-                        {generateTopThreeInsights(
-                          selectedChannels.map(id => {
-                            const channel = adChannels.find(ch => ch.id === id);
-                            return {
-                              id,
-                              name: channel?.name || '',
-                              icon: channel?.icon || null,
-                              color: channel?.color || '',
-                              description: channel?.description || '',
-                              allocation: allocations[id],
-                              budget: (budget * (allocations[id] || 0)) / 100,
-                              predictions: predictions[id]
-                            };
-                          })
-                        ).map((insight, index) => (
+                        {generateTopThreeInsights(mediaMix).map((insight, index) => (
                           <div
                             key={index}
                             className="p-4 rounded-lg bg-white shadow-sm border border-gray-100"
@@ -1213,14 +897,6 @@ const Calculator = () => {
                     <p className="text-xs text-gray-500 text-center mt-2 max-w-sm">
                       Get a detailed Excel file with campaign strategy, predictions, and recommendations
                     </p>
-
-                    <button
-                      onClick={reviseMediaMix}
-                      className="w-full sm:w-auto min-w-[200px] mt-4 px-4 py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105"
-                    >
-                      <FaSyncAlt className="animate-spin-slow" />
-                      <span>Optimize Further</span>
-                    </button>
                   </div>
                 </motion.div>
               ) : (
