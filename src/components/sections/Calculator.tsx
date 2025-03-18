@@ -181,8 +181,8 @@ const getChannelPredictions = (
   const [minCPM, maxCPM] = channelCPMRanges[channel] || [5, 15];
   const baseCPM = Math.round(minCPM + Math.random() * (maxCPM - minCPM));
   
-  // Calculate base impressions using CPM formula: (budget × 1000) ÷ CPM
-  const baseImpressions = Math.round((budget * 1000) / baseCPM);
+  // Calculate base impressions using correct CPM formula: (budget / CPM) * 1000
+  const baseImpressions = Math.round((budget / baseCPM) * 1000);
   
   // Get CTR and conversion ranges for the channel
   const [minCTR, maxCTR] = channelCTRRanges[channel] || [0.001, 0.002];
