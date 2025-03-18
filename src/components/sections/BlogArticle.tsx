@@ -1,11 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { FaBookmark, FaRegBookmark, FaShare, FaEye, FaClock, FaUser } from 'react-icons/fa';
-import { BlogPost } from '../../data/blogPosts';
+import { Link } from 'react-router-dom';
+import { FaBookmark, FaRegBookmark, FaShare, FaEye, FaClock, FaUser, FaArrowRight } from 'react-icons/fa';
+import { BlogPost, blogPosts } from '../../data/blogPosts';
 
 interface BlogArticleProps {
   post: BlogPost;
 }
+
+interface RelatedArticleCardProps {
+  post: BlogPost;
+}
+
+const RelatedArticleCard: React.FC<RelatedArticleCardProps> = ({ post }) => {
+  return (
+    <Link to={`/blog/${post.slug}`} className="block">
+      <motion.div 
+        whileHover={{ y: -5 }}
+        className="flex flex-col h-full rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-white"
+      >
+        <div className="relative h-40 overflow-hidden">
+          <img 
+            src={post.image} 
+            alt={post.title} 
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+          <div className="absolute top-3 left-3">
+            <span className="bg-indigo-600 text-white text-xs font-medium px-2 py-1 rounded-full">
+              {post.category}
+            </span>
+          </div>
+        </div>
+        <div className="p-4 flex-grow">
+          <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{post.title}</h3>
+          <div className="flex items-center text-xs text-gray-500 mb-2">
+            <FaClock className="mr-1 text-indigo-600" />
+            <span>{post.readTime}</span>
+          </div>
+          <p className="text-sm text-gray-600 line-clamp-2">{post.summary}</p>
+        </div>
+      </motion.div>
+    </Link>
+  );
+};
 
 const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
   const [isSaved, setIsSaved] = useState(false);
@@ -23,6 +60,29 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
       });
     }
   };
+  
+  const relatedPosts = useMemo(() => {
+    // Find posts with matching tags or category, excluding the current post
+    return blogPosts
+      .filter(p => 
+        p.id !== post.id && (
+          p.category === post.category || 
+          p.tags.some(tag => post.tags.includes(tag))
+        )
+      )
+      .sort((a, b) => {
+        // Count matching tags for better relevance sorting
+        const aMatchCount = a.tags.filter(tag => post.tags.includes(tag)).length;
+        const bMatchCount = b.tags.filter(tag => post.tags.includes(tag)).length;
+        
+        // Sort by match count (descending), then by views (descending)
+        if (bMatchCount !== aMatchCount) {
+          return bMatchCount - aMatchCount;
+        }
+        return b.views - a.views;
+      })
+      .slice(0, 3); // Limit to 3 posts
+  }, [post]);
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-8">
@@ -136,6 +196,26 @@ const BlogArticle: React.FC<BlogArticleProps> = ({ post }) => {
           </div>
         </div>
       </footer>
+      
+      {/* Related Articles Section */}
+      {relatedPosts.length > 0 && (
+        <section className="mt-16 pt-12 border-t border-gray-200">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">Related Articles</h2>
+            <Link 
+              to="/blog" 
+              className="flex items-center text-indigo-600 hover:text-indigo-800 transition-colors"
+            >
+              View all articles <FaArrowRight className="ml-2" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedPosts.map(relatedPost => (
+              <RelatedArticleCard key={relatedPost.id} post={relatedPost} />
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 };
