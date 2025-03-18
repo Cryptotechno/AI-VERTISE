@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://nataliiamakota.github.io/AI-VERTISE",
+  "homepage": "https://cryptotechno.github.io/AI-VERTISE",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
