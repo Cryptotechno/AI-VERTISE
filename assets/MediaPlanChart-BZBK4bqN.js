@@ -1,2 +1,0 @@
-import{D as t}from"./charts-3IN_53e2.js";import{j as a}from"./index-pJDgok-R.js";import"./vendor-Cr-lhRma.js";import"./icons-DlVkvgdF.js";import"./ui-BvLEso-1.js";const o=({data:o})=>a.jsx(t,{data:o,options:{responsive:!0,maintainAspectRatio:!0,plugins:{legend:{display:!1},tooltip:{enabled:!0,callbacks:{label:t=>{const a=t.raw,o=(a/t.dataset.data.reduce(((t,a)=>t+a),0)*100).toFixed(1);return`$${a.toLocaleString()} (${o}%)`}}}},cutout:"70%",animation:{animateRotate:!0,animateScale:!0}}});export{o as default};
-//# sourceMappingURL=MediaPlanChart-BZBK4bqN.js.map
