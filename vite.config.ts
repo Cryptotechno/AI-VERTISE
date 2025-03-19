@@ -44,12 +44,9 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: false,
-    hmr: {
-      overlay: true,
-      clientPort: 5173
-    },
+    hmr: false,
     watch: {
-      usePolling: true,
+      usePolling: false,
     },
     open: true,
     host: true
@@ -63,4 +60,5 @@ export default defineConfig({
     include: ['react', 'react-dom', 'react-router-dom', 'framer-motion', 'chart.js', 'react-chartjs-2'],
     exclude: ['@babel/runtime'],
   },
+  cacheDir: '.vite-cache',
 })

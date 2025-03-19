@@ -8,6 +8,12 @@ import BlogPage from './pages/BlogPage'
 import BlogArticle from './components/sections/BlogArticle'
 import { blogPosts } from './data/blogPosts'
 
+// Importing section components for dedicated pages
+import Services from './components/sections/Services'
+import About from './components/sections/About'
+import Calculator from './components/sections/Calculator'
+import Contact from './components/sections/Contact'
+
 // Error boundary component
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -52,6 +58,31 @@ const BlogArticleWrapper = () => {
   const post = blogPosts.find(post => post.slug === slug) || blogPosts[0]
   return <BlogArticle post={post} />
 }
+
+// Wrappers for section components to add proper layout
+const ServicesPage = () => (
+  <div className="pt-16 bg-gray-50">
+    <Services />
+  </div>
+)
+
+const AboutPage = () => (
+  <div className="pt-16 bg-gray-50">
+    <About />
+  </div>
+)
+
+const CalculatorPage = () => (
+  <div className="pt-16 bg-gray-50">
+    <Calculator />
+  </div>
+)
+
+const ContactPage = () => (
+  <div className="pt-16 bg-gray-50">
+    <Contact />
+  </div>
+)
 
 function App() {
   const { scrollYProgress } = useScroll()
@@ -169,6 +200,10 @@ function App() {
           }>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/calculator" element={<CalculatorPage />} />
+              <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
               <Route path="*" element={<Navigate to="/" replace />} />

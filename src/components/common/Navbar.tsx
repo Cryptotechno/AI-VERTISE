@@ -6,25 +6,6 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const scrollToSection = (sectionId: string) => {
-    if (location.pathname !== '/') {
-      navigate('/');
-      // Wait for navigation to complete before scrolling
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-    setIsMenuOpen(false);
-  };
-
   const handleHomeClick = () => {
     if (location.pathname !== '/') {
       navigate('/');
@@ -32,6 +13,11 @@ export const Navbar: React.FC = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     setIsMenuOpen(false);
+  };
+
+  // Helper to determine if a nav item is active
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -73,40 +59,40 @@ export const Navbar: React.FC = () => {
           <div className="hidden md:flex md:items-center md:space-x-8">
             <button
               onClick={handleHomeClick}
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+              className={`${isActive('/') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               Home
             </button>
-            <button
-              onClick={() => scrollToSection('services')}
-              className="text-[#6C5CE7] hover:text-[#5849c4] px-3 py-2 text-sm font-medium transition-colors duration-200"
+            <Link
+              to="/services"
+              className={`${isActive('/services') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               Services
-            </button>
-            <button
-              onClick={() => scrollToSection('about')}
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+            </Link>
+            <Link
+              to="/about"
+              className={`${isActive('/about') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               About
-            </button>
+            </Link>
             <Link
               to="/blog"
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+              className={`${isActive('/blog') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               Blog
             </Link>
-            <button
-              onClick={() => scrollToSection('calculator')}
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+            <Link
+              to="/calculator"
+              className={`${isActive('/calculator') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               Calculator
-            </button>
-            <button
-              onClick={() => scrollToSection('contact')}
+            </Link>
+            <Link
+              to="/contact"
               className="bg-[#6C5CE7] text-white px-6 py-2 rounded-md hover:bg-[#5849c4] transition-colors duration-200 text-sm font-medium"
             >
               Contact Us
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -116,41 +102,45 @@ export const Navbar: React.FC = () => {
         <div className="px-2 pt-2 pb-3 space-y-1">
           <button
             onClick={handleHomeClick}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
           >
             Home
           </button>
-          <button
-            onClick={() => scrollToSection('services')}
-            className="w-full text-left px-3 py-2 text-base font-medium text-[#6C5CE7] hover:text-[#5849c4] hover:bg-gray-50 rounded-md"
+          <Link
+            to="/services"
+            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/services') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
+            onClick={() => setIsMenuOpen(false)}
           >
             Services
-          </button>
-          <button
-            onClick={() => scrollToSection('about')}
-            className="w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+          </Link>
+          <Link
+            to="/about"
+            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/about') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
+            onClick={() => setIsMenuOpen(false)}
           >
             About
-          </button>
+          </Link>
           <Link
             to="/blog"
-            className="block px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/blog') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
             onClick={() => setIsMenuOpen(false)}
           >
             Blog
           </Link>
-          <button
-            onClick={() => scrollToSection('calculator')}
-            className="w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+          <Link
+            to="/calculator"
+            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/calculator') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
+            onClick={() => setIsMenuOpen(false)}
           >
             Calculator
-          </button>
-          <button
-            onClick={() => scrollToSection('contact')}
-            className="w-full text-left px-3 py-2 text-base font-medium bg-[#6C5CE7] text-white hover:bg-[#5849c4] rounded-md"
+          </Link>
+          <Link
+            to="/contact"
+            className="block w-full text-left px-3 py-2 text-base font-medium bg-[#6C5CE7] text-white hover:bg-[#5849c4] rounded-md"
+            onClick={() => setIsMenuOpen(false)}
           >
             Contact Us
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
