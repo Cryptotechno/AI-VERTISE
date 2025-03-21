@@ -11,12 +11,6 @@ import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import CookieConsent from './components/common/CookieConsent'
 
-// Importing section components for dedicated pages
-import Services from './components/sections/Services'
-import About from './components/sections/About'
-import Calculator from './components/sections/Calculator'
-import Contact from './components/sections/Contact'
-
 // Error boundary component
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -61,31 +55,6 @@ const BlogArticleWrapper = () => {
   const post = blogPosts.find(post => post.slug === slug) || blogPosts[0]
   return <BlogArticle post={post} />
 }
-
-// Wrappers for section components to add proper layout
-const ServicesPage = () => (
-  <div className="pt-16 bg-gray-50">
-    <Services />
-  </div>
-)
-
-const AboutPage = () => (
-  <div className="pt-16 bg-gray-50">
-    <About />
-  </div>
-)
-
-const CalculatorPage = () => (
-  <div className="pt-16 bg-gray-50">
-    <Calculator />
-  </div>
-)
-
-const ContactPage = () => (
-  <div className="pt-16 bg-gray-50">
-    <Contact />
-  </div>
-)
 
 function App() {
   const { scrollYProgress } = useScroll()
@@ -167,31 +136,37 @@ function App() {
     }
   }, [])
 
-  // Add meta tags for accessibility
-  useEffect(() => {
-    const meta = document.createElement('meta')
-    meta.name = 'description'
-    meta.content = 'AI VERTISE - AI-powered digital advertising agency in Poznań, specializing in programmatic ads, paid social, and performance marketing.'
-    document.head.appendChild(meta)
-
-    return () => {
-      document.head.removeChild(meta)
-    }
-  }, [])
-
   useEffect(() => {
     const handleScroll = () => {
-      const sections = document.querySelectorAll('section')
-      const navItems = document.querySelectorAll('nav button')
+      const sections = document.querySelectorAll('section[id]')
+      const navItems = document.querySelectorAll('nav a, nav button')
 
-      sections.forEach((section, index) => {
+      sections.forEach((section) => {
+        const sectionId = section.getAttribute('id')
+        if (!sectionId) return
+        
         const rect = section.getBoundingClientRect()
         if (rect.top <= 100 && rect.bottom >= 100) {
-          navItems[index]?.classList.add('text-indigo-600')
-          navItems[index]?.classList.remove('text-gray-600')
+          // Find all nav items with href pointing to this section
+          navItems.forEach(item => {
+            if (item instanceof HTMLAnchorElement && item.getAttribute('href') === `#${sectionId}`) {
+              item.classList.add('text-indigo-600')
+              item.classList.remove('text-gray-800')
+            } else if (item instanceof HTMLButtonElement && item.dataset.section === sectionId) {
+              item.classList.add('text-indigo-600')
+              item.classList.remove('text-gray-800')
+            }
+          })
         } else {
-          navItems[index]?.classList.remove('text-indigo-600')
-          navItems[index]?.classList.add('text-gray-600')
+          navItems.forEach(item => {
+            if (item instanceof HTMLAnchorElement && item.getAttribute('href') === `#${sectionId}`) {
+              item.classList.remove('text-indigo-600')
+              item.classList.add('text-gray-800')
+            } else if (item instanceof HTMLButtonElement && item.dataset.section === sectionId) {
+              item.classList.remove('text-indigo-600')
+              item.classList.add('text-gray-800')
+            }
+          })
         }
       })
     }
@@ -220,10 +195,6 @@ function App() {
           }>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/services" element={<ServicesPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/calculator" element={<CalculatorPage />} />
-              <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
