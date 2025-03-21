@@ -52,12 +52,12 @@ const Contact = () => {
   const socialLinks = [
     {
       icon: FaLinkedin,
-      url: "https://www.linkedin.com/in/natalia-makota/",
+      url: "https://www.linkedin.com/in/nataliia-r/",
       label: "LinkedIn"
     },
     {
       icon: FaTelegram,
-      url: "https://t.me/natalymakota",
+      url: "https://t.me/natalyineu",
       label: "Telegram"
     }
   ]

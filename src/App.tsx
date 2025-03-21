@@ -7,6 +7,9 @@ import { HomePage } from './pages/HomePage'
 import BlogPage from './pages/BlogPage'
 import BlogArticle from './components/sections/BlogArticle'
 import { blogPosts } from './data/blogPosts'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import TermsOfService from './pages/TermsOfService'
+import CookieConsent from './components/common/CookieConsent'
 
 // Importing section components for dedicated pages
 import Services from './components/sections/Services'
@@ -120,9 +123,9 @@ function App() {
       "logo": "https://aivertise.pl/logo.png",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Za Bramką 1",
+        "streetAddress": "Głogowska 40A",
         "addressLocality": "Poznań",
-        "postalCode": "61-842",
+        "postalCode": "60-734",
         "addressCountry": "PL"
       },
       "contactPoint": {
@@ -132,8 +135,8 @@ function App() {
         "email": "natalymakota@gmail.com"
       },
       "sameAs": [
-        "https://www.linkedin.com/company/aivertise",
-        "https://t.me/aivertise"
+        "https://www.linkedin.com/in/nataliia-r/",
+        "https://t.me/natalyineu"
       ]
     }
 
@@ -206,10 +209,13 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
           <Footer />
+          <CookieConsent />
         </div>
       </Router>
     </ErrorBoundary>

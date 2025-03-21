@@ -68,17 +68,19 @@ export const Footer: React.FC = () => {
             <h3 className="text-xl font-bold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
               <a
-                href="https://t.me/aivertise"
+                href="https://t.me/natalyineu"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="me noopener noreferrer"
+                aria-label="Visit our Telegram page"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <FaTelegram className="w-6 h-6" />
               </a>
               <a
-                href="https://www.linkedin.com/company/aivertise"
+                href="https://www.linkedin.com/in/nataliia-r/"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="me noopener noreferrer"
+                aria-label="Visit our LinkedIn page"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <FaLinkedin className="w-6 h-6" />
