@@ -34,6 +34,18 @@ const Navbar = () => {
     }
   }, [])
 
+  // Control body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
+
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false)
     const element = document.querySelector(href)

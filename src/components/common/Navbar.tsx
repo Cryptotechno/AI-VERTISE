@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaPhone, FaEnvelope, FaBars, FaTimes } from 'react-icons/fa';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
@@ -19,6 +20,18 @@ export const Navbar: React.FC = () => {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
+  // Control body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    }
+  }, [isMenuOpen]);
 
   return (
     <nav className="bg-white shadow-sm fixed w-full z-50">
