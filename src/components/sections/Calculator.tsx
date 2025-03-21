@@ -22,6 +22,7 @@ import {
   FaDownload,
   FaRegLightbulb
 } from 'react-icons/fa'
+import { Link } from 'react-router-dom'
 
 // Register ChartJS components
 ChartJS.register(ArcElement, Tooltip, Legend)
@@ -1095,6 +1096,16 @@ const Calculator = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Add at the bottom of the component before the closing fragment */}
+      <div className="mt-16 text-center">
+        <Link 
+          to="/" 
+          className="inline-flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300"
+        >
+          Back to Home
+        </Link>
+      </div>
     </section>
   )
 }

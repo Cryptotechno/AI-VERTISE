@@ -5,6 +5,7 @@ import {
   FaMapMarkerAlt, FaLanguage, FaCalendarAlt, FaGraduationCap, FaUserTie
 } from 'react-icons/fa'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 // Default fallback image
 const BALTYK_IMAGE = 'http://i.imgur.com/zpYk2iK.jpg'
@@ -332,6 +333,15 @@ const About = () => {
             ))}
           </div>
         </motion.div>
+
+        <div className="mt-16 text-center">
+          <Link 
+            to="/" 
+            className="inline-flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-300"
+          >
+            Back to Home
+          </Link>
+        </div>
       </div>
     </section>
   )
