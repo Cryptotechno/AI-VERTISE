@@ -1,15 +1,29 @@
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
   FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaLinkedin, 
   FaTelegram, FaClock,
-  FaCheckCircle, FaPaperPlane
+  FaCheckCircle, FaPaperPlane, FaRobot, FaBrain, FaChartLine
 } from 'react-icons/fa'
 
 interface ContactFormData {
   contact: string
   message: string
 }
+
+// AI analysis messages that will display randomly
+const aiAnalysisMessages = [
+  "Analyzing your request patterns...",
+  "Identifying key requirements...",
+  "Calculating optimal approach...",
+  "Processing inquiry semantics...",
+  "Determining service compatibility...",
+  "Evaluating marketing potential...",
+  "Assessing campaign viability...",
+  "Computing ROI projections...",
+  "Matching to ideal service solutions...",
+  "Generating personalized response plan..."
+];
 
 const Contact = () => {
   const [formData, setFormData] = useState<ContactFormData>({
@@ -21,6 +35,10 @@ const Contact = () => {
   const [isMapLoading, setIsMapLoading] = useState(true)
   const [formProgress, setFormProgress] = useState(0)
   const [submissionError, setSubmissionError] = useState<string | null>(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisMessage, setAnalysisMessage] = useState("")
+  const [analysisStep, setAnalysisStep] = useState(0)
+  const [specificInsight, setSpecificInsight] = useState("")
 
   const contactInfo = [
     {
@@ -77,11 +95,53 @@ const Contact = () => {
     setFormProgress(progress);
   }, [formData]);
 
+  // Generate a specific insight based on the message content
+  const generateSpecificInsight = (message: string) => {
+    let insight = "";
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes("social") || lowerMessage.includes("facebook") || lowerMessage.includes("instagram")) {
+      insight = "Your focus on social media marketing could yield 40% higher engagement with our targeted AI approach.";
+    } else if (lowerMessage.includes("seo") || lowerMessage.includes("search") || lowerMessage.includes("google")) {
+      insight = "Our AI analysis suggests your SEO strategy could benefit from semantic content optimization.";
+    } else if (lowerMessage.includes("ads") || lowerMessage.includes("advertising") || lowerMessage.includes("campaign")) {
+      insight = "Based on your campaign needs, our predictive models recommend multi-channel distribution.";
+    } else if (lowerMessage.includes("budget") || lowerMessage.includes("cost") || lowerMessage.includes("price")) {
+      insight = "Our ROI calculator estimates a 3.2x return on your marketing investment based on industry averages.";
+    } else if (lowerMessage.includes("website") || lowerMessage.includes("web") || lowerMessage.includes("site")) {
+      insight = "AI analysis of your website needs indicates potential for conversion optimization.";
+    } else {
+      insight = "Our initial analysis shows your request aligns with our expertise in AI-driven marketing solutions.";
+    }
+    
+    return insight;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmissionError(null)
+    setIsAnalyzing(true)
+    setAnalysisStep(0)
     
+    // Start the AI analysis animation sequence
+    let step = 0;
+    const analyzeInterval = setInterval(() => {
+      if (step < 3) {
+        setAnalysisMessage(aiAnalysisMessages[Math.floor(Math.random() * aiAnalysisMessages.length)]);
+        setAnalysisStep(step + 1);
+        step++;
+      } else {
+        clearInterval(analyzeInterval);
+        setSpecificInsight(generateSpecificInsight(formData.message));
+        
+        // After the analysis is complete, submit the form
+        submitForm();
+      }
+    }, 1200);
+  }
+  
+  const submitForm = async () => {
     try {
       // Google Apps Script deployed web app URL
       const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjwybSVgn1Ap3BLPogvpkNNF7fuBsJRU77rQUcMFLo108kI8FSm7uaMwoZ7c8k032J/exec';
@@ -99,22 +159,27 @@ const Contact = () => {
       // Log submission (for debugging)
       console.log('Form submitted to Google Sheet:', formData);
       
-      // Set success state
-      setIsSubmitted(true)
-      
-      // Reset form after 3 seconds
+      // Complete the analysis
       setTimeout(() => {
-        setIsSubmitted(false)
-        setFormData({
-          contact: '',
-          message: ''
-        })
-      }, 3000)
+        setIsAnalyzing(false);
+        setIsSubmitted(true);
+        
+        // Reset form after 5 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({
+            contact: '',
+            message: ''
+          });
+        }, 5000);
+      }, 1000);
+      
     } catch (error) {
       console.error('Error submitting form:', error);
+      setIsAnalyzing(false);
       setSubmissionError('Failed to submit form. Please try again later.');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
@@ -279,6 +344,7 @@ const Contact = () => {
                     className="w-full px-4 py-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                     placeholder="Your email or phone number"
                     required
+                    disabled={isAnalyzing || isSubmitted}
                   />
                 </div>
                 
@@ -292,22 +358,23 @@ const Contact = () => {
                     className="w-full px-4 py-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                     placeholder="How can we help you?"
                     required
+                    disabled={isAnalyzing || isSubmitted}
                   ></textarea>
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isSubmitting || isSubmitted || !validateContact(formData.contact)}
+                  disabled={isSubmitting || isSubmitted || isAnalyzing || !validateContact(formData.contact)}
                   className={`w-full py-4 px-6 text-white rounded-lg font-medium flex items-center justify-center transition-colors disabled:opacity-70 disabled:cursor-not-allowed text-lg
                     ${formProgress === 100 ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
                 >
-                  {isSubmitting ? (
+                  {isSubmitting || isAnalyzing ? (
                     <>
                       <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Sending...
+                      {isAnalyzing ? "Processing..." : "Sending..."}
                     </>
                   ) : isSubmitted ? (
                     <>
@@ -321,6 +388,55 @@ const Contact = () => {
                     </>
                   )}
                 </button>
+                
+                {/* AI Analysis Animation */}
+                <AnimatePresence>
+                  {isAnalyzing && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-6 p-4 bg-indigo-50 border border-indigo-100 rounded-lg"
+                    >
+                      <div className="flex items-center mb-3">
+                        <div className="mr-3 p-2 bg-indigo-100 rounded-full">
+                          {analysisStep <= 1 ? (
+                            <FaRobot className="w-5 h-5 text-indigo-600" />
+                          ) : analysisStep === 2 ? (
+                            <FaBrain className="w-5 h-5 text-indigo-600" />
+                          ) : (
+                            <FaChartLine className="w-5 h-5 text-indigo-600" />
+                          )}
+                        </div>
+                        <h4 className="font-medium text-indigo-800">AI Analysis</h4>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <motion.div 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.5 }}
+                          className="flex items-center"
+                        >
+                          <div className="mr-2 w-2 h-2 bg-indigo-600 rounded-full"></div>
+                          <p className="text-indigo-700">{analysisMessage}</p>
+                        </motion.div>
+                        
+                        {analysisStep >= 3 && specificInsight && (
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mt-4 p-3 bg-white rounded-lg border border-indigo-200"
+                          >
+                            <p className="text-gray-800 font-medium">
+                              {specificInsight}
+                            </p>
+                          </motion.div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
                 {isSubmitted && (
                   <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg text-center">
