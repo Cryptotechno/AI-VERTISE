@@ -20,6 +20,7 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isMapLoading, setIsMapLoading] = useState(true)
   const [formProgress, setFormProgress] = useState(0)
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
 
   const contactInfo = [
     {
@@ -89,11 +90,26 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmissionError(null)
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      console.log('Form submitted:', formData)
+      // Google Apps Script deployed web app URL
+      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjwybSVgn1Ap3BLPogvpkNNF7fuBsJRU77rQUcMFLo108kI8FSm7uaMwoZ7c8k032J/exec';
+      
+      // Send form data to Google Sheets
+      const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        mode: 'no-cors' // Required for Google Apps Script
+      });
+      
+      // Log submission (for debugging)
+      console.log('Form submitted to Google Sheet:', formData);
+      
+      // Set success state
       setIsSubmitted(true)
       
       // Reset form after 3 seconds
@@ -105,7 +121,8 @@ const Contact = () => {
         })
       }, 3000)
     } catch (error) {
-      console.error('Error submitting form:', error)
+      console.error('Error submitting form:', error);
+      setSubmissionError('Failed to submit form. Please try again later.');
     } finally {
       setIsSubmitting(false)
     }
@@ -318,6 +335,14 @@ const Contact = () => {
                   <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg text-center">
                     <p className="text-green-700">
                       Thanks for your message! We'll get back to you soon.
+                    </p>
+                  </div>
+                )}
+                
+                {submissionError && (
+                  <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-center">
+                    <p className="text-red-700">
+                      {submissionError}
                     </p>
                   </div>
                 )}
