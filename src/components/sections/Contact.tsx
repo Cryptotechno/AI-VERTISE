@@ -39,12 +39,12 @@ const Contact = () => {
       icon: FaMapMarkerAlt,
       title: "Visit Us",
       details: ["Bałtyk Tower", "Głogowska 40A", "60-734 Poznań, Poland"],
-      action: "https://goo.gl/maps/your-location"
+      action: "https://maps.app.goo.gl/QNYTr7XSbkhCGYd79"
     },
     {
       icon: FaClock,
       title: "Business Hours",
-      details: ["Mon - Fri: 9:00 - 17:00", "Weekend: By appointment"],
+      details: ["Mon - Fri: 9:00 - 17:00 CET", "Weekend: By appointment"],
       action: null
     }
   ]
@@ -52,7 +52,7 @@ const Contact = () => {
   const socialLinks = [
     {
       icon: FaLinkedin,
-      url: "https://linkedin.com/company/aivertise",
+      url: "https://www.linkedin.com/in/natalia-makota/",
       label: "LinkedIn"
     },
     {
@@ -237,7 +237,8 @@ const Contact = () => {
                     key={index}
                     href={link.url}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="me noopener noreferrer"
+                    aria-label={`Visit our ${link.label} page`}
                     className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 transition-all duration-300"
                   >
                     <link.icon className="w-5 h-5 lg:w-6 lg:h-6" />
