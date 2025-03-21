@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { 
   FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaLinkedin, 
-  FaFacebookSquare, FaInstagram, FaWhatsapp, FaClock,
+  FaTelegram, FaClock,
   FaCheckCircle, FaPaperPlane
 } from 'react-icons/fa'
 
@@ -56,19 +56,9 @@ const Contact = () => {
       label: "LinkedIn"
     },
     {
-      icon: FaFacebookSquare,
-      url: "https://facebook.com/aivertise",
-      label: "Facebook"
-    },
-    {
-      icon: FaInstagram,
-      url: "https://instagram.com/aivertise",
-      label: "Instagram"
-    },
-    {
-      icon: FaWhatsapp,
-      url: "https://wa.me/48503589781",
-      label: "WhatsApp"
+      icon: FaTelegram,
+      url: "https://t.me/natalymakota",
+      label: "Telegram"
     }
   ]
 
