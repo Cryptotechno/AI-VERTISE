@@ -6,10 +6,10 @@ const CookieConsent: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Check if user has already accepted cookies
-    const hasAccepted = localStorage.getItem('cookiesAccepted');
-    if (!hasAccepted) {
-      // Show cookie banner after 1 second
+    // Check if user has already acknowledged the cookie notice
+    const hasAcknowledged = localStorage.getItem('cookieNoticeAcknowledged');
+    if (!hasAcknowledged) {
+      // Show cookie notice after 1 second
       const timer = setTimeout(() => {
         setIsVisible(true);
       }, 1000);
@@ -17,15 +17,9 @@ const CookieConsent: React.FC = () => {
     }
   }, []);
 
-  const handleAccept = () => {
-    // Save consent to localStorage
-    localStorage.setItem('cookiesAccepted', 'true');
-    setIsVisible(false);
-  };
-
-  const handleDecline = () => {
-    // Save decline to localStorage and hide banner
-    localStorage.setItem('cookiesAccepted', 'false');
+  const handleAcknowledge = () => {
+    // Save acknowledgment to localStorage
+    localStorage.setItem('cookieNoticeAcknowledged', 'true');
     setIsVisible(false);
   };
 
@@ -42,10 +36,10 @@ const CookieConsent: React.FC = () => {
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex-1">
-                <h3 className="text-lg font-medium mb-2">We Value Your Privacy</h3>
+                <h3 className="text-lg font-medium mb-2">Cookie Notice</h3>
                 <p className="text-gray-300 text-sm md:text-base">
-                  We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
-                  By clicking "Accept", you consent to our use of cookies as described in our{' '}
+                  This website only uses essential cookies to enable basic functions and ensure the website operates 
+                  correctly. We do not use analytics or tracking cookies. For more information, please read our{' '}
                   <Link to="/privacy" className="text-indigo-400 hover:text-indigo-300 underline">
                     Privacy Policy
                   </Link>.
@@ -53,16 +47,10 @@ const CookieConsent: React.FC = () => {
               </div>
               <div className="flex flex-row gap-3 mt-2 md:mt-0">
                 <button 
-                  onClick={handleDecline}
-                  className="px-4 py-2 rounded-lg border border-indigo-400 text-indigo-400 hover:bg-indigo-800 hover:bg-opacity-30 transition-colors text-sm"
-                >
-                  Decline
-                </button>
-                <button 
-                  onClick={handleAccept}
+                  onClick={handleAcknowledge}
                   className="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors text-sm"
                 >
-                  Accept
+                  Acknowledge
                 </button>
               </div>
             </div>

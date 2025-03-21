@@ -21,83 +21,79 @@ const PrivacyPolicy: React.FC = () => {
               <h2 className="text-xl font-semibold mt-8 mb-4">1. Introduction</h2>
               <p>
                 At AI VERTISE, we respect your privacy and are committed to protecting your personal data. 
-                This Privacy Policy explains how we collect, use, and safeguard your information when you visit our 
-                website or use our services.
+                This simplified Privacy Policy explains how we handle your information when you use our contact form.
               </p>
               
               <h2 className="text-xl font-semibold mt-8 mb-4">2. Information We Collect</h2>
-              <p>We collect the following types of information:</p>
+              <p>We only collect information that you voluntarily provide via our contact form:</p>
               <ul className="list-disc pl-6 mb-4">
                 <li>
-                  <strong>Personal Information:</strong> When you fill out our contact form, we collect your email 
-                  address, phone number, and any other information you provide in your message.
-                </li>
-                <li>
-                  <strong>Usage Data:</strong> We automatically collect information about how you interact with our 
-                  website through cookies and similar technologies. This includes your IP address, browser type, pages 
-                  visited, and time spent on the site.
+                  <strong>Contact Information:</strong> Your email address, phone number, and any other details you provide in your message.
                 </li>
               </ul>
+              <p>
+                We do not use cookies for tracking, analytics, or advertising purposes. We do not use any third-party analytics services like Google Analytics.
+              </p>
               
               <h2 className="text-xl font-semibold mt-8 mb-4">3. How We Use Your Information</h2>
-              <p>We use the information we collect to:</p>
+              <p>We use the information you provide solely to:</p>
               <ul className="list-disc pl-6 mb-4">
-                <li>Respond to your inquiries and provide customer support</li>
-                <li>Improve our website and services</li>
-                <li>Send you marketing communications with your consent</li>
-                <li>Analyze usage patterns to enhance user experience</li>
-                <li>Comply with legal obligations</li>
+                <li>Respond to your inquiries</li>
+                <li>Provide the services you request</li>
+                <li>Communicate with you about your inquiry</li>
               </ul>
               
-              <h2 className="text-xl font-semibold mt-8 mb-4">4. Cookies</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4">4. Legal Basis for Processing</h2>
               <p>
-                Our website uses cookies to enhance your browsing experience. Cookies are small text files stored on 
-                your device that help us analyze website traffic and customize content to your preferences. You can 
-                control cookies through your browser settings, but disabling them may affect some functionality of our site.
+                Under the General Data Protection Regulation (GDPR), the legal basis for processing your personal data is:
               </p>
-              
-              <h2 className="text-xl font-semibold mt-8 mb-4">5. Google Analytics</h2>
-              <p>
-                We use Google Analytics to analyze website performance and user behavior. Google Analytics collects 
-                information using cookies, which is processed and stored on Google's servers. We've configured our 
-                Google Analytics implementation to anonymize IP addresses and respect Do Not Track settings.
-              </p>
-              
-              <h2 className="text-xl font-semibold mt-8 mb-4">6. Data Storage and Security</h2>
-              <p>
-                We implement appropriate technical and organizational measures to protect your personal data against 
-                unauthorized access, alteration, disclosure, or destruction. However, no method of internet transmission 
-                is 100% secure, and we cannot guarantee absolute security.
-              </p>
-              
-              <h2 className="text-xl font-semibold mt-8 mb-4">7. Your Rights</h2>
-              <p>Under applicable data protection laws, you have the right to:</p>
               <ul className="list-disc pl-6 mb-4">
-                <li>Access your personal data</li>
-                <li>Correct inaccurate data</li>
-                <li>Request deletion of your data</li>
-                <li>Object to processing of your data</li>
-                <li>Request restriction of processing</li>
-                <li>Request transfer of your data</li>
-                <li>Withdraw consent</li>
+                <li><strong>Legitimate Interest:</strong> To respond to your inquiries and provide requested information</li>
+                <li><strong>Consent:</strong> When you voluntarily submit your information through our contact form</li>
               </ul>
               
-              <h2 className="text-xl font-semibold mt-8 mb-4">8. Third-Party Links</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4">5. Data Retention</h2>
               <p>
-                Our website may contain links to third-party websites. We are not responsible for the privacy 
-                practices or content of these sites. We encourage you to read the privacy policies of any third-party 
-                sites you visit.
+                We retain your contact information only for as long as necessary to respond to your inquiry and 
+                any follow-up questions. We do not store your data for marketing purposes.
+              </p>
+              
+              <h2 className="text-xl font-semibold mt-8 mb-4">6. Your Rights Under GDPR</h2>
+              <p>As a data subject in the European Union, you have the following rights:</p>
+              <ul className="list-disc pl-6 mb-4">
+                <li>The right to access your personal data</li>
+                <li>The right to rectification of inaccurate data</li>
+                <li>The right to erasure of your data ("right to be forgotten")</li>
+                <li>The right to restrict processing of your data</li>
+                <li>The right to data portability</li>
+                <li>The right to object to processing</li>
+                <li>Rights related to automated decision making and profiling</li>
+              </ul>
+              <p>
+                To exercise any of these rights, please contact us using the information below.
+              </p>
+              
+              <h2 className="text-xl font-semibold mt-8 mb-4">7. Data Security</h2>
+              <p>
+                We implement appropriate security measures to protect your personal information. 
+                Your contact form submissions are securely stored and accessible only to authorized personnel who need 
+                the information to respond to your inquiry.
+              </p>
+              
+              <h2 className="text-xl font-semibold mt-8 mb-4">8. International Transfers</h2>
+              <p>
+                We do not transfer your personal data outside the European Economic Area (EEA) unless necessary 
+                to respond to your specific inquiry, and only with appropriate safeguards in place.
               </p>
               
               <h2 className="text-xl font-semibold mt-8 mb-4">9. Changes to This Policy</h2>
               <p>
-                We may update this Privacy Policy from time to time. Any changes will be posted on this page, and if 
-                significant changes are made, we will notify you through a prominent notice on our website or via email.
+                We may update this Privacy Policy occasionally. Any changes will be posted on this page.
               </p>
               
               <h2 className="text-xl font-semibold mt-8 mb-4">10. Contact Us</h2>
               <p>
-                If you have any questions about this Privacy Policy or our data practices, please contact us at:
+                If you have any questions about this Privacy Policy or wish to exercise your GDPR rights, please contact us at:
               </p>
               <p>
                 Email: natalymakota@gmail.com<br />
