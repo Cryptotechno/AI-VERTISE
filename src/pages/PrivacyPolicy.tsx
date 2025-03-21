@@ -32,7 +32,9 @@ const PrivacyPolicy: React.FC = () => {
                 </li>
               </ul>
               <p>
-                We do not use cookies for tracking, analytics, or advertising purposes. We do not use any third-party analytics services like Google Analytics.
+                Currently, we do not use cookies for tracking or analytics purposes. However, we plan to implement 
+                Google Analytics in the future for marketing and website improvement purposes. When implemented, Google 
+                Analytics will collect standard internet log information and visitor behavior information in an anonymous form.
               </p>
               
               <h2 className="text-xl font-semibold mt-8 mb-4">3. How We Use Your Information</h2>
@@ -41,6 +43,7 @@ const PrivacyPolicy: React.FC = () => {
                 <li>Respond to your inquiries</li>
                 <li>Provide the services you request</li>
                 <li>Communicate with you about your inquiry</li>
+                <li>In the future, analyze website usage to improve our services (through Google Analytics)</li>
               </ul>
               
               <h2 className="text-xl font-semibold mt-8 mb-4">4. Legal Basis for Processing</h2>
