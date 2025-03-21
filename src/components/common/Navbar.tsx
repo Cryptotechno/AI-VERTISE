@@ -32,6 +32,21 @@ export const Navbar: React.FC = () => {
       document.body.style.overflow = '';
     }
   }, [isMenuOpen]);
+  
+  // Restore scroll position when navigating
+  useEffect(() => {
+    // Reset scroll position when location changes
+    window.scrollTo(0, 0);
+    // Ensure body scroll is enabled after navigation
+    document.body.style.overflow = '';
+  }, [location.pathname]);
+
+  // Handle link navigation
+  const handleNavLinkClick = (to: string) => {
+    setIsMenuOpen(false);
+    // Ensure body scroll is enabled before navigation
+    document.body.style.overflow = '';
+  };
 
   return (
     <nav className="bg-white shadow-sm fixed w-full z-50">
@@ -78,30 +93,35 @@ export const Navbar: React.FC = () => {
             </button>
             <Link
               to="/services"
+              onClick={() => handleNavLinkClick('/services')}
               className={`${isActive('/services') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               Services
             </Link>
             <Link
               to="/about"
+              onClick={() => handleNavLinkClick('/about')}
               className={`${isActive('/about') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               About
             </Link>
             <Link
               to="/blog"
+              onClick={() => handleNavLinkClick('/blog')}
               className={`${isActive('/blog') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               Blog
             </Link>
             <Link
               to="/calculator"
+              onClick={() => handleNavLinkClick('/calculator')}
               className={`${isActive('/calculator') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
             >
               Calculator
             </Link>
             <Link
               to="/contact"
+              onClick={() => handleNavLinkClick('/contact')}
               className="bg-[#6C5CE7] text-white px-6 py-2 rounded-md hover:bg-[#5849c4] transition-colors duration-200 text-sm font-medium"
             >
               Contact Us
@@ -122,35 +142,35 @@ export const Navbar: React.FC = () => {
           <Link
             to="/services"
             className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/services') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => handleNavLinkClick('/services')}
           >
             Services
           </Link>
           <Link
             to="/about"
             className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/about') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => handleNavLinkClick('/about')}
           >
             About
           </Link>
           <Link
             to="/blog"
             className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/blog') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => handleNavLinkClick('/blog')}
           >
             Blog
           </Link>
           <Link
             to="/calculator"
             className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/calculator') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => handleNavLinkClick('/calculator')}
           >
             Calculator
           </Link>
           <Link
             to="/contact"
             className="block w-full text-left px-3 py-2 text-base font-medium bg-[#6C5CE7] text-white hover:bg-[#5849c4] rounded-md"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => handleNavLinkClick('/contact')}
           >
             Contact Us
           </Link>

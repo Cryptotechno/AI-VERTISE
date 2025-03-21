@@ -95,6 +95,23 @@ function App() {
     restDelta: 0.001
   })
 
+  // Reset scroll position on page navigation
+  useEffect(() => {
+    // Create a scroll restoration function
+    const handleScrollRestoration = () => {
+      // Reset scroll and ensure body can scroll
+      window.scrollTo(0, 0);
+      document.body.style.overflow = '';
+    };
+
+    // Listen for navigation events
+    window.addEventListener('popstate', handleScrollRestoration);
+    
+    return () => {
+      window.removeEventListener('popstate', handleScrollRestoration);
+    };
+  }, []);
+
   // Add keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
