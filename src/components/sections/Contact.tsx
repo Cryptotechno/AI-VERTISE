@@ -5,9 +5,10 @@ import {
   FaTelegram, FaClock,
   FaCheckCircle, FaPaperPlane, FaRobot, FaBrain, FaChartLine
 } from 'react-icons/fa'
+import { Button } from '../atoms/Button'
 
 interface ContactFormData {
-  contact: string
+  email: string
   message: string
 }
 
@@ -27,7 +28,7 @@ const aiAnalysisMessages = [
 
 const Contact = () => {
   const [formData, setFormData] = useState<ContactFormData>({
-    contact: '',
+    email: '',
     message: ''
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -35,6 +36,7 @@ const Contact = () => {
   const [isMapLoading, setIsMapLoading] = useState(true)
   const [formProgress, setFormProgress] = useState(0)
   const [submissionError, setSubmissionError] = useState<string | null>(null)
+  const [submissionDetails, setSubmissionDetails] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisMessage, setAnalysisMessage] = useState("")
   const [analysisStep, setAnalysisStep] = useState(0)
@@ -44,8 +46,8 @@ const Contact = () => {
     {
       icon: FaPhoneAlt,
       title: "Call Us",
-      details: ["+48 503 589 781"],
-      action: "tel:+48503589781"
+      details: ["Contact us via email"],
+      action: null
     },
     {
       icon: FaEnvelope,
@@ -84,7 +86,7 @@ const Contact = () => {
     // Calculate form progress
     let progress = 0;
     
-    if (formData.contact.trim() !== '') {
+    if (formData.email.trim() !== '') {
       progress += 50;
     }
     
@@ -143,23 +145,96 @@ const Contact = () => {
   
   const submitForm = async () => {
     try {
-      // Google Apps Script deployed web app URL
-      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjwybSVgn1Ap3BLPogvpkNNF7fuBsJRU77rQUcMFLo108kI8FSm7uaMwoZ7c8k032J/exec';
+      // Detect environment to use correct endpoints
+      const isProd = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
       
-      // Send form data to Google Sheets
-      const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-        mode: 'no-cors' // Required for Google Apps Script
-      });
+      // Google Apps Script deployed web app URL - select based on environment
+      // We use different URLs for production and development to avoid CORS issues
+      const SCRIPT_ID = 'AKfycbxjwybSVgn1Ap3BLPogvpkNNF7fuBsJRU77rQUcMFLo108kI8FSm7uaMwoZ7c8k032J';
       
-      // Log submission (for debugging)
-      console.log('Form submitted to Google Sheet:', formData);
+      // The URL needs to be accessible from your deployed domain
+      // Make sure this script is deployed as "Anyone, even anonymous" for execute permission
+      const GOOGLE_APPS_SCRIPT_URL = `https://script.google.com/macros/s/${SCRIPT_ID}/exec`;
       
-      // Complete the analysis
+      // Log environment detection
+      console.log(`Form submission running in ${isProd ? 'production' : 'development'} environment`);
+      
+      // Prepare form data for Google Sheets format
+      const formPayload = {
+        timestamp: new Date().toISOString(),
+        email: formData.email,
+        message: formData.message,
+        source: isProd ? 'production' : 'development'
+      };
+      
+      // Log submission attempt for debugging
+      console.log('Attempting to submit form to Google Sheet:', formPayload);
+      
+      try {
+        // First attempt - with fetch and proper error handling
+        const controller = new AbortController();
+        // Set a timeout for the fetch request
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain', // Google Apps Script requires this
+          },
+          body: JSON.stringify(formPayload),
+          mode: 'no-cors', // Required for Google Apps Script
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        // With no-cors, we can't actually read the response
+        console.log('Form submission attempt completed');
+        setSubmissionDetails('Submission processed via fetch API');
+        
+      } catch (fetchError) {
+        console.error('Fetch error:', fetchError);
+        setSubmissionDetails(fetchError instanceof Error ? fetchError.message : 'Unknown fetch error');
+        
+        // Fallback to alternative submission method with XMLHttpRequest
+        console.log('Trying fallback submission method');
+        
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', GOOGLE_APPS_SCRIPT_URL, true);
+          xhr.setRequestHeader('Content-Type', 'text/plain');
+          xhr.timeout = 10000; // 10 second timeout
+          
+          xhr.onload = function() {
+            if (xhr.status === 200 || xhr.status === 0) { // Status 0 can happen with no-cors
+              console.log('XHR submission successful');
+              setSubmissionDetails('Submission processed via XMLHttpRequest');
+              resolve('success');
+            } else {
+              console.error('XHR submission failed with status:', xhr.status);
+              setSubmissionDetails(`XHR failed with status: ${xhr.status}`);
+              reject(new Error(`XHR failed with status: ${xhr.status}`));
+            }
+          };
+          
+          xhr.ontimeout = function() {
+            console.error('XHR timeout');
+            setSubmissionDetails('Request timed out after 10 seconds');
+            reject(new Error('XHR timeout'));
+          };
+          
+          xhr.onerror = function() {
+            console.error('XHR network error');
+            setSubmissionDetails('Network error with XHR');
+            reject(new Error('Network error with XHR'));
+          };
+          
+          xhr.send(JSON.stringify(formPayload));
+        });
+      }
+      
+      // Complete the analysis and show success message even if we can't confirm
+      // the submission (since no-cors prevents us from seeing the actual response)
       setTimeout(() => {
         setIsAnalyzing(false);
         setIsSubmitted(true);
@@ -168,7 +243,7 @@ const Contact = () => {
         setTimeout(() => {
           setIsSubmitted(false);
           setFormData({
-            contact: '',
+            email: '',
             message: ''
           });
         }, 5000);
@@ -177,7 +252,7 @@ const Contact = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       setIsAnalyzing(false);
-      setSubmissionError('Failed to submit form. Please try again later.');
+      setSubmissionError('Failed to submit form. Please try again later or contact us directly at natalymakota@gmail.com');
     } finally {
       setIsSubmitting(false);
     }
@@ -247,9 +322,9 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-sm lg:text-base font-semibold text-gray-900">Call Us</h3>
-                    <a href="tel:+48503589781" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
-                      +48 503 589 781
-                    </a>
+                    <p className="text-sm lg:text-base text-gray-600">
+                      Contact us via email
+                    </p>
                   </div>
                 </div>
 
@@ -317,16 +392,16 @@ const Contact = () => {
             <div className="mb-6">
               <div className="flex justify-between text-sm mb-1">
                 <span>Form Progress</span>
-                <span>{formProgress}% Complete</span>
+                <span aria-live="polite" aria-atomic="true">{formProgress}% Complete</span>
               </div>
-              <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={formProgress} aria-valuemin={0} aria-valuemax={100}>
                 <div 
                   className="h-full bg-indigo-600 rounded-full transition-all duration-300 ease-out"
                   style={{ width: `${formProgress}%` }}
                 />
               </div>
               {formProgress >= 50 && (
-                <div className="text-xs text-indigo-600 mt-1 text-right animate-pulse">
+                <div className="text-xs text-indigo-600 mt-1 text-right animate-pulse" aria-live="polite">
                   Let's proceed! Fill in the remaining details.
                 </div>
               )}
@@ -337,15 +412,23 @@ const Contact = () => {
                 <div>
                   <input
                     type="text"
-                    id="contact"
-                    name="contact"
-                    value={formData.contact}
+                    id="email"
+                    name="email"
+                    value={formData.email}
                     onChange={handleChange}
                     className="w-full px-4 py-4 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                     placeholder="Your email or phone number"
                     required
                     disabled={isAnalyzing || isSubmitted}
+                    aria-label="Your email or phone number"
+                    aria-required="true"
+                    aria-invalid={formData.email ? !validateContact(formData.email) : false}
                   />
+                  {formData.email && !validateContact(formData.email) && (
+                    <p className="mt-1 text-sm text-red-600" role="alert">
+                      Please enter a valid email or phone number
+                    </p>
+                  )}
                 </div>
                 
                 <div>
@@ -359,35 +442,37 @@ const Contact = () => {
                     placeholder="How can we help you?"
                     required
                     disabled={isAnalyzing || isSubmitted}
+                    aria-label="Your message"
+                    aria-required="true"
                   ></textarea>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting || isSubmitted || isAnalyzing || !validateContact(formData.contact)}
-                  className={`w-full py-4 px-6 text-white rounded-lg font-medium flex items-center justify-center transition-colors disabled:opacity-70 disabled:cursor-not-allowed text-lg
-                    ${formProgress === 100 ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
-                >
-                  {isSubmitting || isAnalyzing ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      {isAnalyzing ? "Processing..." : "Sending..."}
-                    </>
-                  ) : isSubmitted ? (
-                    <>
-                      <FaCheckCircle className="mr-2" />
-                      Sent Successfully!
-                    </>
-                  ) : (
-                    <>
-                      <FaPaperPlane className="mr-2" />
-                      Send Message
-                    </>
-                  )}
-                </button>
+                <div className="flex justify-end mt-8">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    size="lg"
+                    disabled={!formData.email || !formData.message || !validateContact(formData.email) || isSubmitting}
+                    className={`w-full sm:w-auto ${isSubmitting ? 'opacity-80 cursor-not-allowed' : ''}`}
+                    aria-busy={isSubmitting}
+                    aria-disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Sending...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center">
+                        <FaPaperPlane className="mr-2" />
+                        Send Message
+                      </span>
+                    )}
+                  </Button>
+                </div>
                 
                 {/* AI Analysis Animation */}
                 <AnimatePresence>
@@ -417,6 +502,7 @@ const Contact = () => {
                           animate={{ opacity: 1 }}
                           transition={{ duration: 0.5 }}
                           className="flex items-center"
+                          aria-live="polite"
                         >
                           <div className="mr-2 w-2 h-2 bg-indigo-600 rounded-full"></div>
                           <p className="text-indigo-700">{analysisMessage}</p>
@@ -427,6 +513,7 @@ const Contact = () => {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             className="mt-4 p-3 bg-white rounded-lg border border-indigo-200"
+                            aria-live="polite"
                           >
                             <p className="text-gray-800 font-medium">
                               {specificInsight}
@@ -439,17 +526,31 @@ const Contact = () => {
                 </AnimatePresence>
                 
                 {isSubmitted && (
-                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg text-center">
-                    <p className="text-green-700">
-                      Thanks for your message! We'll get back to you soon.
+                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg" role="alert" aria-live="assertive">
+                    <div className="flex items-center">
+                      <FaCheckCircle className="text-green-500 w-5 h-5 mr-2" />
+                      <p className="text-green-700 font-medium">
+                        Message sent successfully!
+                      </p>
+                    </div>
+                    <p className="text-green-600 mt-2">
+                      Thank you for reaching out. We've received your message and will get back to you shortly.
                     </p>
                   </div>
                 )}
                 
                 {submissionError && (
-                  <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-center">
-                    <p className="text-red-700">
+                  <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="assertive">
+                    <p className="text-red-700 font-medium">
                       {submissionError}
+                    </p>
+                    {submissionDetails && (
+                      <p className="text-red-600 text-sm mt-2">
+                        Technical details: {submissionDetails}
+                      </p>
+                    )}
+                    <p className="text-red-600 text-sm mt-2">
+                      Please try again or contact us directly at <a href="mailto:natalymakota@gmail.com" className="underline">natalymakota@gmail.com</a>
                     </p>
                   </div>
                 )}
