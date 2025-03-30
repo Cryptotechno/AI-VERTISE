@@ -148,27 +148,18 @@ const Contact = () => {
       // Detect environment to use correct endpoints
       const isProd = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
       
-      // Google Apps Script deployed web app URL - select based on environment
-      // We use different URLs for production and development to avoid CORS issues
-      const SCRIPT_ID = 'AKfycbxjwybSVgn1Ap3BLPogvpkNNF7fuBsJRU77rQUcMFLo108kI8FSm7uaMwoZ7c8k032J';
+      // Google Apps Script deployed web app URL
+      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjwybSVgn1Ap3BLPogvpkNNF7fuBsJRU77rQUcMFLo108kI8FSm7uaMwoZ7c8k032J/exec';
       
-      // The URL needs to be accessible from your deployed domain
-      // Make sure this script is deployed as "Anyone, even anonymous" for execute permission
-      const GOOGLE_APPS_SCRIPT_URL = `https://script.google.com/macros/s/${SCRIPT_ID}/exec`;
-      
-      // Log environment detection
-      console.log(`Form submission running in ${isProd ? 'production' : 'development'} environment`);
-      
-      // Prepare form data for Google Sheets format
-      const formPayload = {
+      // Add timestamp and environment info to the formData
+      const payload = {
+        ...formData,
         timestamp: new Date().toISOString(),
-        email: formData.email,
-        message: formData.message,
         source: isProd ? 'production' : 'development'
       };
       
       // Log submission attempt for debugging
-      console.log('Attempting to submit form to Google Sheet:', formPayload);
+      console.log('Attempting to submit form data:', payload);
       
       try {
         // First attempt - with fetch and proper error handling
@@ -179,18 +170,21 @@ const Contact = () => {
         const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'text/plain', // Google Apps Script requires this
+            'Content-Type': 'application/json', // Using application/json instead of text/plain
           },
-          body: JSON.stringify(formPayload),
-          mode: 'no-cors', // Required for Google Apps Script
+          body: JSON.stringify(payload),
           signal: controller.signal
         });
         
         clearTimeout(timeoutId);
         
-        // With no-cors, we can't actually read the response
-        console.log('Form submission attempt completed');
-        setSubmissionDetails('Submission processed via fetch API');
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log('Form submission successful:', responseData);
+          setSubmissionDetails('Submission successful via fetch API');
+        } else {
+          throw new Error(`Server responded with status: ${response.status}`);
+        }
         
       } catch (fetchError) {
         console.error('Fetch error:', fetchError);
@@ -202,11 +196,11 @@ const Contact = () => {
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', GOOGLE_APPS_SCRIPT_URL, true);
-          xhr.setRequestHeader('Content-Type', 'text/plain');
+          xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.timeout = 10000; // 10 second timeout
           
           xhr.onload = function() {
-            if (xhr.status === 200 || xhr.status === 0) { // Status 0 can happen with no-cors
+            if (xhr.status === 200) {
               console.log('XHR submission successful');
               setSubmissionDetails('Submission processed via XMLHttpRequest');
               resolve('success');
@@ -229,12 +223,11 @@ const Contact = () => {
             reject(new Error('Network error with XHR'));
           };
           
-          xhr.send(JSON.stringify(formPayload));
+          xhr.send(JSON.stringify(payload));
         });
       }
       
-      // Complete the analysis and show success message even if we can't confirm
-      // the submission (since no-cors prevents us from seeing the actual response)
+      // Complete the analysis and show success message
       setTimeout(() => {
         setIsAnalyzing(false);
         setIsSubmitted(true);
