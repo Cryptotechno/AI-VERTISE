@@ -152,7 +152,7 @@ const Contact = () => {
       const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyw4zdOSI2ixCmSF8yaFsXQxyQMrFvJeen9a70Kh8djC5FC73AoEw1gtTOYuG3Yvw/exec';
       
       // Add timestamp and environment info to the formData
-      const payload = {
+      const payload: Record<string, string> = {
         ...formData,
         timestamp: new Date().toISOString(),
         source: isProd ? 'production' : 'development'
@@ -163,118 +163,102 @@ const Contact = () => {
       
       let submissionSuccess = false;
       
+      // IMPORTANT: Google Apps Script always requires no-cors mode for client-side submissions
       try {
-        // First attempt - with fetch and proper error handling
-        const controller = new AbortController();
-        // Set a timeout for the fetch request
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-        
+        console.log('Trying with no-cors mode first (recommended for Google Apps Script)');
         const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'text/plain', // Use text/plain for no-cors mode
           },
           body: JSON.stringify(payload),
-          signal: controller.signal,
-          // Re-add mode: 'no-cors' if we continue to have CORS issues
-          // mode: 'no-cors'
+          mode: 'no-cors' // Required for Google Apps Script
         });
         
-        clearTimeout(timeoutId);
+        // With no-cors, we can't read the response
+        console.log('Submitted with no-cors mode (response unreadable)');
+        setSubmissionDetails('Submitted with no-cors mode');
+        submissionSuccess = true; // Assume success since we can't verify
+      } catch (noCorsError) {
+        console.error('No-cors fetch failed:', noCorsError);
         
-        // Check if response is ok
-        if (response.ok) {
-          try {
-            // Try to parse JSON, but don't fail if it's not JSON
-            const responseData = await response.json();
-            console.log('Form submission successful:', responseData);
-            setSubmissionDetails('Submission successful via fetch API');
-            submissionSuccess = true;
-          } catch (jsonError) {
-            // If JSON parsing fails, the response might still be successful
-            console.log('Response wasn\'t JSON, but submission may still be successful');
-            setSubmissionDetails('Submission received, but response format unclear');
-            submissionSuccess = true;
-          }
-        } else {
-          throw new Error(`Server responded with status: ${response.status}`);
-        }
-        
-      } catch (fetchError) {
-        console.error('Fetch error:', fetchError);
-        
-        // Check if it's a CORS error
-        const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown fetch error';
-        setSubmissionDetails(errorMessage);
-        
-        const isCorsError = errorMessage.includes('CORS') || 
-                            errorMessage.includes('cross-origin') || 
-                            errorMessage.includes('opaque');
-        
-        if (isCorsError) {
-          console.log('CORS error detected, trying with no-cors mode');
-          try {
-            // Retry with no-cors mode
-            const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(payload),
-              mode: 'no-cors' // Use no-cors as fallback
-            });
+        // Try direct XMLHttpRequest with different content type
+        try {
+          console.log('Trying with XMLHttpRequest and text/plain content type');
+          const result = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', GOOGLE_APPS_SCRIPT_URL, true);
+            xhr.setRequestHeader('Content-Type', 'text/plain'); // Use text/plain instead of application/json
+            xhr.timeout = 10000; // 10 second timeout
             
-            // With no-cors, we can't read the response
-            console.log('Submitted with no-cors mode (response unreadable)');
-            setSubmissionDetails('Submitted with no-cors mode');
-            submissionSuccess = true; // Assume success since we can't verify
-          } catch (noCorsError) {
-            console.error('No-cors fetch also failed:', noCorsError);
-          }
-        }
-        
-        // If still not successful, try XMLHttpRequest as last resort
-        if (!submissionSuccess) {
-          console.log('Trying fallback XMLHttpRequest submission method');
+            xhr.onload = function() {
+              if (xhr.status === 200 || xhr.status === 0) { // Status 0 can happen with CORS
+                console.log('XHR submission successful');
+                setSubmissionDetails('Submission processed via XMLHttpRequest');
+                resolve('success');
+              } else {
+                console.error('XHR submission failed with status:', xhr.status);
+                setSubmissionDetails(`XHR failed with status: ${xhr.status}`);
+                reject(new Error(`XHR failed with status: ${xhr.status}`));
+              }
+            };
+            
+            xhr.ontimeout = function() {
+              console.error('XHR timeout');
+              setSubmissionDetails('Request timed out after 10 seconds');
+              reject(new Error('XHR timeout'));
+            };
+            
+            xhr.onerror = function() {
+              console.error('XHR network error');
+              setSubmissionDetails('Network error with XHR');
+              reject(new Error('Network error with XHR'));
+            };
+            
+            xhr.send(JSON.stringify(payload));
+          });
           
+          submissionSuccess = result === 'success';
+        } catch (xhrError) {
+          console.error('XHR attempt failed:', xhrError);
+          
+          // Last resort - try an alternative approach with form submission
           try {
-            const result = await new Promise((resolve, reject) => {
-              const xhr = new XMLHttpRequest();
-              xhr.open('POST', GOOGLE_APPS_SCRIPT_URL, true);
-              xhr.setRequestHeader('Content-Type', 'application/json');
-              xhr.timeout = 10000; // 10 second timeout
-              
-              xhr.onload = function() {
-                if (xhr.status === 200) {
-                  console.log('XHR submission successful');
-                  setSubmissionDetails('Submission processed via XMLHttpRequest');
-                  resolve('success');
-                } else {
-                  console.error('XHR submission failed with status:', xhr.status);
-                  setSubmissionDetails(`XHR failed with status: ${xhr.status}`);
-                  reject(new Error(`XHR failed with status: ${xhr.status}`));
-                }
-              };
-              
-              xhr.ontimeout = function() {
-                console.error('XHR timeout');
-                setSubmissionDetails('Request timed out after 10 seconds');
-                reject(new Error('XHR timeout'));
-              };
-              
-              xhr.onerror = function() {
-                console.error('XHR network error');
-                setSubmissionDetails('Network error with XHR');
-                reject(new Error('Network error with XHR'));
-              };
-              
-              xhr.send(JSON.stringify(payload));
-            });
+            console.log('Trying with form data submission approach');
             
-            submissionSuccess = result === 'success';
-          } catch (xhrError) {
-            console.error('XHR attempt failed:', xhrError);
-            submissionSuccess = false;
+            // Create a hidden form and submit it
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = GOOGLE_APPS_SCRIPT_URL;
+            form.target = '_blank'; // This will open in a new tab but that's ok for fallback
+            
+            // Add all data as hidden fields
+            for (const key in payload) {
+              if (Object.prototype.hasOwnProperty.call(payload, key)) {
+                const hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = key;
+                hiddenField.value = typeof payload[key] === 'string' 
+                  ? payload[key] 
+                  : JSON.stringify(payload[key]);
+                form.appendChild(hiddenField);
+              }
+            }
+            
+            // Add the form to the page and submit it
+            document.body.appendChild(form);
+            form.submit();
+            
+            // Remove the form after submission
+            setTimeout(() => {
+              document.body.removeChild(form);
+            }, 100);
+            
+            console.log('Fallback form submission attempted');
+            setSubmissionDetails('Submitted using form fallback method');
+            submissionSuccess = true;
+          } catch (formError) {
+            console.error('Form fallback also failed:', formError);
           }
         }
       }
