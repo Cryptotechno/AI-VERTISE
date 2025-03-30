@@ -149,7 +149,7 @@ const Contact = () => {
       const isProd = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
       
       // Google Apps Script deployed web app URL
-      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxjwybSVgn1Ap3BLPogvpkNNF7fuBsJRU77rQUcMFLo108kI8FSm7uaMwoZ7c8k032J/exec';
+      const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyw4zdOSI2ixCmSF8yaFsXQxyQMrFvJeen9a70Kh8djC5FC73AoEw1gtTOYuG3Yvw/exec';
       
       // Add timestamp and environment info to the formData
       const payload = {
