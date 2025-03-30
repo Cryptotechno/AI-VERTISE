@@ -10,42 +10,79 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ai-vertise.com/" />
-    <meta property="og:title" content="AI VERTISE - AI-Powered Digital Advertising Agency" />
-    <meta property="og:description" content="AI-powered digital advertising agency in Poznań, specializing in programmatic ads, paid social, and performance marketing." />
-    <meta property="og:image" content="https://ai-vertise.com/og-image.png" />
+    <meta property="og:url" content="https://ai-vertise.com" />
+    <meta property="og:title" content="AI VERTISE – AI-Powered Marketing" />
+    <meta property="og:description" content="Smart, automated, data-driven growth. Built with AI for brands ready to scale." />
+    <meta property="og:image" content="https://ai-vertise.com/og-image-optimized.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="AI VERTISE" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://ai-vertise.com/" />
-    <meta name="twitter:title" content="AI VERTISE - AI-Powered Digital Advertising Agency" />
-    <meta name="twitter:description" content="AI-powered digital advertising agency in Poznań, specializing in programmatic ads, paid social, and performance marketing." />
-    <meta name="twitter:image" content="https://ai-vertise.com/og-image.png" />
+    <meta name="twitter:url" content="https://ai-vertise.com" />
+    <meta name="twitter:title" content="AI VERTISE – AI-Powered Marketing" />
+    <meta name="twitter:description" content="Smart, automated, data-driven growth. Built with AI for brands ready to scale." />
+    <meta name="twitter:image" content="https://ai-vertise.com/og-image-optimized.png" />
     
-    <!-- Google tag (gtag.js) -->
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/assets/index-CaWdW3U1.css" as="style">
+    <link rel="preload" as="image" href="/og-image.webp" type="image/webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <!-- Google tag (gtag.js) - defer to improve initial load time -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NS08SGTMJ2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
-      gtag('config', 'G-NS08SGTMJ2');
+      gtag('config', 'G-NS08SGTMJ2', { 'send_page_view': false });
+      // Delayed sending of pageview
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          gtag('event', 'page_view');
+        }, 2000);
+      });
     </script>
     
-    <title>AI VERTISE - AI-Powered Digital Advertising Agency</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>AI VERTISE – AI-Powered Marketing</title>
     <meta name="theme-color" content="#4338CA" />
-    <script type="module" crossorigin src="/assets/index-BX8b81J-.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/vendor-Bj_q5tgp.js">
-    <link rel="modulepreload" crossorigin href="/assets/icons-DgeyuVJJ.js">
-    <link rel="modulepreload" crossorigin href="/assets/ui-B5iG2rlP.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-CaWdW3U1.css">
-  </head>
+    
+    <style>
+      /* Critical CSS inline for faster paint */
+      body {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9fafb;
+        color: #111827;
+      }
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      /* Font-display swap to prevent FOIT */
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2) format('woff2');
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/index-B0VsfEW6.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/deps-DxFG9Noz.js">
+    <link rel="modulepreload" crossorigin href="/assets/charts-5hgDnxlo.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-DDuOyjr_.js">
+    <link rel="modulepreload" crossorigin href="/assets/ui-MRMmkdtv.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BqVVyJo8.css">
+  <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
   <body>
     <div id="root"></div>
   </body>
