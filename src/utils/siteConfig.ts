@@ -10,8 +10,8 @@ export const SITE_URL = `https://${SITE_DOMAIN}`;
 
 // Site metadata
 export const SITE_NAME = 'AI VERTISE';
-export const SITE_TITLE = 'AI VERTISE - AI-Powered Digital Advertising Agency';
-export const SITE_DESCRIPTION = 'AI-powered digital advertising agency in Poznań, specializing in programmatic ads, paid social, and performance marketing.';
+export const SITE_TITLE = 'AI VERTISE – AI-Powered Marketing';
+export const SITE_DESCRIPTION = 'Smart, automated, data-driven growth. Built with AI for brands ready to scale.';
 export const SITE_KEYWORDS = 'AI advertising, programmatic ads, paid social, AI marketing, performance marketing, digital agency';
 
 // Social media
