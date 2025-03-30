@@ -13,6 +13,11 @@ export const ScrollProgressIndicator: React.FC = () => {
     <motion.div
       className="fixed top-0 left-0 right-0 h-1 bg-indigo-600 transform-none z-50"
       style={{ scaleX }}
+      role="progressbar"
+      aria-label="Reading progress"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(scrollYProgress.get() * 100)}
     />
   );
 }; 

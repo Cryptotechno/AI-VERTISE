@@ -61,7 +61,11 @@ const ReadingProgress: React.FC<{ scrollPercentage: number }> = ({ scrollPercent
 // Progress tracker component
 const ProgressTracker: React.FC<{ activeSection: number, totalSections: number }> = ({ activeSection, totalSections }) => {
   return (
-    <div className="fixed top-1/3 right-6 hidden xl:flex flex-col items-center space-y-2 z-20">
+    <div 
+      className="fixed top-1/3 right-6 hidden xl:flex flex-col items-center space-y-2 z-20"
+      role="navigation"
+      aria-label="Article sections navigation"
+    >
       {Array.from({ length: totalSections }).map((_, index) => (
         <div 
           key={index}
@@ -72,6 +76,14 @@ const ProgressTracker: React.FC<{ activeSection: number, totalSections: number }
                 ? 'bg-indigo-600 ring-4 ring-indigo-100' 
                 : 'bg-gray-300'
           } transition-all duration-300`}
+          role="button"
+          aria-label={`Jump to section ${index + 1}`}
+          aria-current={index === activeSection ? "true" : "false"}
+          onClick={() => {
+            const section = document.getElementById(`section-${index}`);
+            section?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          tabIndex={0}
         />
       ))}
     </div>

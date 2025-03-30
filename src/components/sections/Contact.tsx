@@ -426,10 +426,17 @@ const Contact = () => {
             {/* Progress Bar */}
             <div className="mb-6">
               <div className="flex justify-between text-sm mb-1">
-                <span>Form Progress</span>
+                <span id="form-progress-label">Form Progress</span>
                 <span aria-live="polite" aria-atomic="true">{formProgress}% Complete</span>
               </div>
-              <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={formProgress} aria-valuemin={0} aria-valuemax={100}>
+              <div 
+                className="w-full h-2 bg-gray-100 rounded-full overflow-hidden" 
+                role="progressbar" 
+                aria-labelledby="form-progress-label"
+                aria-valuenow={formProgress} 
+                aria-valuemin={0} 
+                aria-valuemax={100}
+              >
                 <div 
                   className="h-full bg-indigo-600 rounded-full transition-all duration-300 ease-out"
                   style={{ width: `${formProgress}%` }}
@@ -445,6 +452,9 @@ const Contact = () => {
             <div className="relative">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    Email or Phone Number
+                  </label>
                   <input
                     type="text"
                     id="email"
@@ -455,7 +465,6 @@ const Contact = () => {
                     placeholder="Your email or phone number"
                     required
                     disabled={isAnalyzing || isSubmitted}
-                    aria-label="Your email or phone number"
                     aria-required="true"
                     aria-invalid={formData.email ? !validateContact(formData.email) : false}
                   />
@@ -467,6 +476,9 @@ const Contact = () => {
                 </div>
                 
                 <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    Your Message
+                  </label>
                   <textarea
                     id="message"
                     name="message"
@@ -477,7 +489,6 @@ const Contact = () => {
                     placeholder="How can we help you?"
                     required
                     disabled={isAnalyzing || isSubmitted}
-                    aria-label="Your message"
                     aria-required="true"
                   ></textarea>
                 </div>
