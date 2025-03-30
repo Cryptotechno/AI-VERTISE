@@ -83,6 +83,14 @@ export const SEO: React.FC<SEOProps> = ({
       <meta name="author" content={SITE_NAME} />
       {robots && <meta name="robots" content={robots} />}
       
+      {/* Favicon support */}
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+      <link rel="manifest" href="/site.webmanifest" />
+      
       {/* AI/ML Model Metadata - Enhanced understanding for models */}
       {aiMetadataTags.map((tag, index) => (
         <meta key={`ai-meta-${index}`} name={tag.name} content={tag.content} />
