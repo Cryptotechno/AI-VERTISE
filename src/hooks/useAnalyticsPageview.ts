@@ -1,17 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-// Declare the global gtag function
-declare global {
-  interface Window {
-    gtag: (
-      command: string,
-      action: string,
-      params?: Record<string, any>
-    ) => void;
-  }
-}
-
 /**
  * A hook that tracks page views in Google Analytics
  * when the location changes in a React Router app.

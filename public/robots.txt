@@ -1,4 +1,6 @@
 # AI VERTISE Robots.txt
+# https://ai-vertise.com
+
 User-agent: *
 Allow: /
 
@@ -10,4 +12,32 @@ Crawl-delay: 10
 
 # Disallow certain paths
 Disallow: /terms/draft
-Disallow: /privacy/draft 
+Disallow: /privacy/draft
+Disallow: /api/
+Disallow: /admin/
+Disallow: /*?*query=
+
+# Media files - allow indexing
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.png$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Specific rules for Google
+User-agent: Googlebot
+Allow: /*.js$
+Allow: /*.css$
+
+# Specific rules for Bing
+User-agent: Bingbot
+Allow: /*.js$
+Allow: /*.css$
+
+# Block AI scraping bots that might consume too many resources
+User-agent: GPTBot
+Disallow: /blog/
+
+User-agent: ChatGPT-User
+Disallow: /blog/ 

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, memo } from 'react'
+import React, { lazy, Suspense, memo, useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom'
 import { Navbar } from './components/common/Navbar'
 import { Footer } from './components/common/Footer'
@@ -6,6 +6,7 @@ import CookieConsent from './components/common/CookieConsent'
 import { ScrollProgressIndicator } from './components/atoms/ScrollProgressIndicator'
 import { PageLoader } from './components/atoms/PageLoader'
 import { SiteStructuredData } from './components/common/SEO'
+import { PWAInstallPrompt } from './components/common/PWAInstallPrompt'
 import { useScrollHandler } from './hooks/useScrollHandler'
 import { useKeyboardNavigation } from './hooks/useKeyboardNavigation'
 import { useAnalyticsPageview } from './hooks/useAnalyticsPageview'
@@ -18,6 +19,7 @@ const BlogPage = lazy(() => import('./pages/BlogPage'))
 const BlogArticle = lazy(() => import('./components/sections/BlogArticle'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./pages/TermsOfService'))
+const OfflinePage = lazy(() => import('./pages/OfflinePage'))
 
 // Memoized for performance
 const MemoizedNavbar = memo(Navbar)
@@ -36,6 +38,33 @@ const AnalyticsTracker = () => {
   return null;
 };
 
+// Network detection component
+const NetworkDetector = () => {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+  
+  useEffect(() => {
+    if (!isOnline) {
+      // Navigate to offline page when user goes offline
+      window.location.href = '/offline';
+    }
+  }, [isOnline]);
+  
+  return null;
+};
+
 function App() {
   // Use our custom hooks
   useScrollHandler()
@@ -48,6 +77,7 @@ function App() {
           <ScrollProgressIndicator />
           <SiteStructuredData />
           <AnalyticsTracker />
+          <NetworkDetector />
           <MemoizedNavbar />
           <Suspense fallback={<PageLoader />}>
             <Routes>
@@ -56,11 +86,13 @@ function App() {
               <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
+              <Route path="/offline" element={<OfflinePage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
           <MemoizedFooter />
           <MemoizedCookieConsent />
+          <PWAInstallPrompt />
         </div>
       </ErrorBoundary>
     </Router>
