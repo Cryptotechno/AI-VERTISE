@@ -1,10 +1,42 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import PageTransition from '../components/ui/PageTransition';
+import { SEO } from '../components/common/SEO';
+import { SITE_URL } from '../utils/siteConfig';
+
+const privacySEOData = {
+  title: 'Privacy Policy | AI VERTISE',
+  description: 'Read our privacy policy to understand how AI VERTISE collects, uses, and protects your personal information when you use our services.',
+  keywords: 'privacy policy, data protection, AI marketing, privacy terms, personal data, GDPR compliance',
+  ogTitle: 'Privacy Policy | AI VERTISE',
+  ogDescription: 'Learn how we protect your data and respect your privacy at AI VERTISE',
+  ogType: 'website',
+  canonicalUrl: 'https://ai-vertise.com/privacy-policy',
+  structuredData: {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy",
+    "description": "AI VERTISE privacy policy explaining data collection, processing, and your rights",
+    "url": "https://ai-vertise.com/privacy-policy",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://ai-vertise.com/privacy-policy"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AI VERTISE",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ai-vertise.com/logo.png"
+      }
+    }
+  }
+};
 
 const PrivacyPolicy: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-16">
+      <SEO {...privacySEOData} />
       <PageTransition>
         <div className="container mx-auto px-4 max-w-4xl">
           <motion.div
@@ -99,8 +131,7 @@ const PrivacyPolicy: React.FC = () => {
                 If you have any questions about this Privacy Policy or wish to exercise your GDPR rights, please contact us at:
               </p>
               <p>
-                Email: natalymakota@gmail.com<br />
-                Phone: +48 503 589 781
+                Email: natalymakota@gmail.com
               </p>
             </div>
           </motion.div>

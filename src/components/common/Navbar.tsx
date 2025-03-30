@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaPhone, FaEnvelope, FaBars, FaTimes } from 'react-icons/fa';
+import { Button } from '../atoms/Button';
+import { useAppStore } from '../../store';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isMenuOpen, toggleMenu, closeMenu } = useAppStore();
 
   const handleHomeClick = () => {
     if (location.pathname !== '/') {
@@ -13,7 +15,7 @@ export const Navbar: React.FC = () => {
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    setIsMenuOpen(false);
+    closeMenu();
   };
 
   // Helper to determine if a nav item is active
@@ -35,7 +37,7 @@ export const Navbar: React.FC = () => {
   
   // Handle scroll to section
   const scrollToSection = (sectionId: string) => {
-    setIsMenuOpen(false);
+    closeMenu();
     // Ensure body scroll is enabled
     document.body.style.overflow = '';
     
@@ -88,9 +90,10 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile menu button */}
           <div className="flex items-center md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-[#6C5CE7] focus:outline-none"
+            <Button
+              onClick={toggleMenu}
+              variant="text"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-indigo-600"
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
@@ -103,53 +106,60 @@ export const Navbar: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               )}
-            </button>
+            </Button>
           </div>
 
           {/* Desktop menu */}
           <div className="hidden md:flex md:items-center md:space-x-8">
-            <button
+            <Button
               onClick={handleHomeClick}
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+              variant="text"
+              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="hero"
             >
               Home
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => scrollToSection('services')}
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+              variant="text"
+              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="services"
             >
               Services
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => scrollToSection('about')}
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+              variant="text"
+              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="about"
             >
               About
-            </button>
-            <Link
+            </Button>
+            <Button
+              as={Link}
               to="/blog"
-              className={`${isActive('/blog') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200`}
-              onClick={() => setIsMenuOpen(false)}
+              variant="text"
+              className={`${isActive('/blog') ? 'text-indigo-600' : 'text-gray-800'} hover:text-indigo-600 px-3 py-2 text-sm font-medium`}
             >
               Blog
-            </Link>
-            <button
+            </Button>
+            <Button
               onClick={() => scrollToSection('calculator')}
-              className="text-gray-800 hover:text-[#6C5CE7] px-3 py-2 text-sm font-medium transition-colors duration-200"
+              variant="text"
+              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="calculator"
             >
               Calculator
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => scrollToSection('contact')}
-              className="bg-[#6C5CE7] text-white px-6 py-2 rounded-md hover:bg-[#5849c4] transition-colors duration-200 text-sm font-medium"
+              variant="primary"
+              size="sm"
+              className="px-6 py-2"
               data-section="contact"
             >
               Contact Us
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -157,43 +167,49 @@ export const Navbar: React.FC = () => {
       {/* Mobile menu */}
       <div className={`${isMenuOpen ? 'block' : 'hidden'} md:hidden bg-white border-t border-gray-200`}>
         <div className="px-2 pt-2 pb-3 space-y-1">
-          <button
+          <Button
             onClick={handleHomeClick}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+            variant="text"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             Home
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => scrollToSection('services')}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+            variant="text"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             Services
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => scrollToSection('about')}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+            variant="text"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             About
-          </button>
-          <Link
+          </Button>
+          <Button
+            as={Link}
             to="/blog"
-            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/blog') ? 'text-[#6C5CE7]' : 'text-gray-800'} hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md`}
-            onClick={() => setIsMenuOpen(false)}
+            variant="text"
+            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/blog') ? 'text-indigo-600' : 'text-gray-800'} hover:text-indigo-600 hover:bg-gray-50 rounded-md`}
           >
             Blog
-          </Link>
-          <button
+          </Button>
+          <Button
             onClick={() => scrollToSection('calculator')}
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-[#6C5CE7] hover:bg-gray-50 rounded-md"
+            variant="text"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             Calculator
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => scrollToSection('contact')}
-            className="block w-full text-left px-3 py-2 text-base font-medium bg-[#6C5CE7] text-white hover:bg-[#5849c4] rounded-md"
+            variant="primary"
+            className="block w-full text-left px-3 py-2 text-base font-medium"
           >
             Contact Us
-          </button>
+          </Button>
         </div>
       </div>
     </nav>

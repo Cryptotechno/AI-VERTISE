@@ -187,6 +187,20 @@ const Services: React.FC = () => {
     },
   }
 
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      const offset = 80; // Adjust for fixed header
+      const elementPosition = contactSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <section id="services" className="py-20 relative overflow-hidden">
       {/* Background Elements */}
@@ -278,7 +292,7 @@ const Services: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => window.location.href = '#calculator'}
+                  onClick={scrollToContact}
                   className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 group transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   {service.cta}
@@ -299,7 +313,7 @@ const Services: React.FC = () => {
         >
           <div className="relative inline-block">
             <div 
-              onClick={() => window.location.href = '#calculator'}
+              onClick={scrollToContact}
               className="relative inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-50/90 to-purple-50/90 rounded-full border border-indigo-100/20 shadow-sm hover:from-indigo-100/90 hover:to-purple-100/90 transition-colors cursor-pointer"
             >
               <div className="p-1 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full">

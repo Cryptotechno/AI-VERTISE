@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaTelegram, FaLinkedin, FaEnvelope, FaPhone } from 'react-icons/fa';
+import { FaTelegram, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import GDPRLogo from './GDPRLogo';
 
 export const Footer: React.FC = () => {
@@ -20,20 +20,19 @@ export const Footer: React.FC = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Contact</h3>
-            <ul className="space-y-2">
-              <li className="flex items-center text-gray-400">
-                <FaPhone className="w-5 h-5 mr-2" />
-                <a href="tel:+48503589781" className="hover:text-white transition-colors">
-                  +48 503 589 781
-                </a>
-              </li>
-              <li className="flex items-center text-gray-400">
-                <FaEnvelope className="w-5 h-5 mr-2" />
+            <h5 className="text-sm font-semibold text-gray-300 mb-4">Contact</h5>
+            <ul className="space-y-2 text-sm">
+              <li>
                 <a href="mailto:natalymakota@gmail.com" className="hover:text-white transition-colors">
                   natalymakota@gmail.com
                 </a>
               </li>
+              <li>
+                <a href="mailto:natalymakota@gmail.com" className="hover:text-white transition-colors">
+                  Contact via email
+                </a>
+              </li>
+              <li>Poznań, Poland</li>
             </ul>
           </div>
 

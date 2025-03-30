@@ -1,10 +1,42 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import PageTransition from '../components/ui/PageTransition';
+import { SEO } from '../components/common/SEO';
+import { SITE_URL } from '../utils/siteConfig';
+
+const termsSEOData = {
+  title: 'Terms of Service | AI VERTISE',
+  description: 'Terms of Service for AI VERTISE, the AI-powered digital advertising agency.',
+  keywords: 'terms of service, legal terms, conditions, AI marketing, service agreement',
+  ogTitle: 'Terms of Service | AI VERTISE',
+  ogDescription: 'Read our terms of service for using AI VERTISE products and services',
+  ogType: 'website',
+  canonicalUrl: 'https://ai-vertise.com/terms-of-service',
+  structuredData: {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Terms of Service",
+    "description": "AI VERTISE terms of service and legal agreements",
+    "url": "https://ai-vertise.com/terms-of-service",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://ai-vertise.com/terms-of-service"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AI VERTISE",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://ai-vertise.com/logo.png"
+      }
+    }
+  }
+};
 
 const TermsOfService: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-16">
+      <SEO {...termsSEOData} />
       <PageTransition>
         <div className="container mx-auto px-4 max-w-4xl">
           <motion.div
@@ -13,15 +45,16 @@ const TermsOfService: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="bg-white rounded-xl shadow-md p-8 md:p-10"
           >
-            <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900">Terms of Service</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-8 text-gray-900" id="terms-heading">Terms of Service</h1>
             
-            <div className="prose prose-lg max-w-none">
+            <div className="prose prose-lg max-w-none" aria-labelledby="terms-heading">
               <p className="text-gray-700">Last updated: {new Date().toLocaleDateString()}</p>
               
-              <h2 className="text-xl font-semibold mt-8 mb-4">1. Acceptance of Terms</h2>
+              <h2 className="text-xl font-semibold mt-8 mb-4" id="acceptance">1. Acceptance of Terms</h2>
               <p>
-                Welcome to AI VERTISE. By accessing and using our website, you agree to be bound by these simplified Terms of 
-                Service and our Privacy Policy. If you do not agree with any of these terms, please do not use this website.
+                By accessing or using the services provided by AI VERTISE ("Company", "we", "us", or "our") through our 
+                website at <a href="https://ai-vertise.com" className="text-indigo-600 hover:underline">https://ai-vertise.com</a>, 
+                you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
               </p>
               
               <h2 className="text-xl font-semibold mt-8 mb-4">2. Services Overview</h2>
@@ -83,8 +116,7 @@ const TermsOfService: React.FC = () => {
                 If you have any questions about these Terms of Service, please contact us at:
               </p>
               <p>
-                Email: natalymakota@gmail.com<br />
-                Phone: +48 503 589 781
+                Email: natalymakota@gmail.com
               </p>
             </div>
           </motion.div>

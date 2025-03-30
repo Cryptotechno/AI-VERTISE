@@ -15,6 +15,7 @@ import {
   FaTools
 } from 'react-icons/fa';
 import DashboardMockup from '../DashboardMockup';
+import { Button } from '../atoms/Button';
 
 const Hero: React.FC = () => {
   const scrollToContact = () => {
@@ -214,21 +215,21 @@ const Hero: React.FC = () => {
             </motion.div>
 
             {/* CTA Button */}
-            <motion.button
-              onClick={scrollToContact}
-              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg 
-                font-medium transition-all shadow-md hover:shadow-lg active:shadow-sm
-                flex items-center justify-center gap-2 group text-base sm:text-lg
-                hover:from-indigo-500 hover:to-purple-500 transform hover:-translate-y-0.5"
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
             >
-              Get Free Strategy Session
-              <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-            </motion.button>
+              <Button
+                onClick={scrollToContact}
+                variant="primary"
+                size="lg"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 group"
+              >
+                Get Free Strategy Session
+                <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </motion.div>
           </motion.div>
 
           {/* Right Column - Dashboard */}

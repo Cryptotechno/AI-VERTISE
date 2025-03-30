@@ -11,6 +11,10 @@ export interface BlogPost {
   views: number;
   position: string;
   tags: string[];
+  excerpt?: string;
+  featuredImage?: string;
+  publishDate?: string;
+  lastUpdated?: string;
   content: {
     introduction: string;
     sections: {
@@ -32,6 +36,7 @@ export interface BlogPost {
       pattern?: string;
     }[];
     conclusion: string;
+    wordCount?: number;
   };
 }
 

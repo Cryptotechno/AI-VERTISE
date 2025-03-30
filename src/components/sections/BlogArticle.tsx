@@ -5,6 +5,8 @@ import { FaArrowLeft, FaClock, FaEye, FaShareAlt, FaLinkedin, FaTwitter, FaFaceb
 import { BlogPost } from '../../data/blogPosts';
 import { ProgrammaticAdSvg, SocialMediaSvg, PrivacySvg } from '../ui/BlogImages';
 import { IconType } from 'react-icons';
+import { SEO } from '../common/SEO';
+import { SITE_URL, SITE_DESCRIPTION, OG_IMAGE_ABSOLUTE_URL } from '../../utils/siteConfig';
 
 // Map pattern names to CSS classes
 const patternClasses: { [key: string]: string } = {
@@ -381,10 +383,14 @@ const NewsletterSignup: React.FC = () => (
     
     <form className="space-y-4">
       <div>
+        <label htmlFor="newsletter-email" className="sr-only">Email address</label>
         <input
           type="email"
+          id="newsletter-email"
+          name="email"
           placeholder="Your email address"
           className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors duration-200"
+          aria-describedby="newsletter-privacy"
         />
       </div>
       <button
@@ -393,7 +399,7 @@ const NewsletterSignup: React.FC = () => (
       >
         Subscribe
       </button>
-      <p className="text-sm text-gray-500 text-center">
+      <p id="newsletter-privacy" className="text-sm text-gray-500 text-center">
         We respect your privacy. Unsubscribe at any time.
       </p>
     </form>
@@ -417,10 +423,81 @@ const getPostImage = (post: BlogPost) => {
 const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
   const [activeSection, setActiveSection] = useState(0);
   const [scrollPercentage, setScrollPercentage] = useState(0);
-  const [readTime] = useState(post.readTime);
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const [isScrolled, setIsScrolled] = useState(false);
   const sections = post.content.sections;
   
+  const readTime = post.readTime || `${Math.max(1, Math.ceil((post.content.wordCount || 500) / 200))} min read`;
+  
+  // Calculate word count if not provided
+  const wordCount = post.content.wordCount || 
+    (post.content.introduction.split(' ').length + 
+    post.content.sections.reduce((acc, section) => acc + section.content.split(' ').length, 0) + 
+    post.content.conclusion.split(' ').length);
+  
+  // Prepare the article SEO data dynamically based on post content
+  const articleSEOData = {
+    title: `${post.title} | AI VERTISE Blog`,
+    description: post.excerpt || post.summary || SITE_DESCRIPTION,
+    keywords: post.tags.join(', '),
+    ogTitle: post.title,
+    ogDescription: post.excerpt || post.summary || SITE_DESCRIPTION,
+    ogType: 'article',
+    ogImage: post.image || post.featuredImage || OG_IMAGE_ABSOLUTE_URL,
+    twitterTitle: post.title,
+    twitterDescription: post.excerpt || post.summary || SITE_DESCRIPTION,
+    canonicalUrl: `https://ai-vertise.com/blog/${post.slug}`,
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.title,
+      "description": post.excerpt || post.summary,
+      "image": post.featuredImage || post.image || "https://ai-vertise.com/images/blog-featured.jpg",
+      "author": {
+        "@type": "Person",
+        "name": post.position || "AI VERTISE Team"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "AI VERTISE",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-vertise.com/logo.png"
+        }
+      },
+      "url": `https://ai-vertise.com/blog/${post.slug}`,
+      "datePublished": post.publishDate || post.date,
+      "dateModified": post.lastUpdated || post.publishDate || post.date,
+      "articleSection": post.category,
+      "keywords": post.tags.join(','),
+      "wordCount": wordCount,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://ai-vertise.com/blog/${post.slug}`
+      }
+    }
+  };
+
+  const handleScroll = () => {
+    // Calculate scroll percentage
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight;
+    const winHeight = window.innerHeight;
+    const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
+    setScrollPercentage(scrollPercent);
+    
+    // Determine active section
+    for (let i = 0; i < sections.length; i++) {
+      const element = document.getElementById(`section-${i}`);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        if (rect.top <= 150 && rect.bottom >= 150) {
+          setActiveSection(i);
+          break;
+        }
+      }
+    }
+  }
+
   // Ensure scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -428,111 +505,89 @@ const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
   
   // Handle scroll events to update the active section and scroll percentage
   useEffect(() => {
-    const handleScroll = () => {
-      // Calculate scroll percentage
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight;
-      const winHeight = window.innerHeight;
-      const scrollPercent = (scrollTop / (docHeight - winHeight)) * 100;
-      setScrollPercentage(scrollPercent);
-      
-      // Determine active section
-      for (let i = 0; i < sections.length; i++) {
-        const element = document.getElementById(`section-${i}`);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          if (rect.top <= 150 && rect.bottom >= 150) {
-            setActiveSection(i);
-            break;
-          }
-        }
-      }
-    };
-    
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [sections]);
+  }, []);
   
   return (
-    <article className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-16 relative">
+      <SEO {...articleSEOData} />
       <ReadingProgress scrollPercentage={scrollPercentage} />
+      <ProgressTracker activeSection={activeSection} totalSections={sections.length} />
       
-      <div className="mb-6">
-        <Link to="/blog" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition-colors mb-4">
-          <FaArrowLeft className="mr-2" />
-          <span>Back to all articles</span>
-        </Link>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 xl:col-span-9">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-            {post.title}
-          </h1>
-          
-          <ArticleMeta post={post} readTime={readTime} />
-          
-          <div className="rounded-xl overflow-hidden mb-10 h-64 md:h-80 lg:h-96 relative">
-            {getPostImage(post)}
-          </div>
+      <article className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="mb-6">
+          <Link to="/blog" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition-colors mb-4">
+            <FaArrowLeft className="mr-2" />
+            <span>Back to all articles</span>
+          </Link>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <div className="lg:col-span-8 xl:col-span-9">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              {post.title}
+            </h1>
+            
+            <ArticleMeta post={post} readTime={readTime} />
+            
+            <div className="rounded-xl overflow-hidden mb-10 h-64 md:h-80 lg:h-96 relative">
+              {getPostImage(post)}
+            </div>
 
-          <div className="prose prose-lg max-w-none mb-10">
-            <p className="text-xl leading-relaxed text-gray-700">{post.content.introduction}</p>
+            <div className="prose prose-lg max-w-none mb-10">
+              <p className="text-xl leading-relaxed text-gray-700">{post.content.introduction}</p>
+            </div>
+            
+            <TableOfContents 
+              sections={sections} 
+              activeSection={activeSection} 
+              setActiveSection={setActiveSection} 
+            />
+            
+            {sections.map((section, index) => (
+              <Section 
+                key={index} 
+                section={section} 
+                index={index} 
+                isActive={index === activeSection} 
+              />
+            ))}
+            
+            <div className="prose prose-lg max-w-none border-t border-gray-200 pt-10">
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Conclusion</h2>
+              <p className="text-gray-700 leading-relaxed">{post.content.conclusion}</p>
+            </div>
           </div>
           
-          <TableOfContents 
-            sections={sections} 
-            activeSection={activeSection} 
-            setActiveSection={setActiveSection} 
-          />
-          
-          {sections.map((section, index) => (
-            <Section 
-              key={index} 
-              section={section} 
-              index={index} 
-              isActive={index === activeSection} 
-            />
-          ))}
-          
-          <div className="prose prose-lg max-w-none border-t border-gray-200 pt-10">
-            <h2 className="text-3xl font-bold mb-6 text-gray-900">Conclusion</h2>
-            <p className="text-gray-700 leading-relaxed">{post.content.conclusion}</p>
+          <div className="lg:col-span-4 xl:col-span-3">
+            <div className="sticky top-24">
+              <div className="mb-8 flex justify-center lg:justify-start lg:pl-6">
+                <ShareBar title={post.title} url={window.location.href} />
+              </div>
+              
+              <div className="hidden lg:block">
+                <RelatedArticles />
+              </div>
+              
+              <div className="mt-10 hidden lg:block">
+                <NewsletterSignup />
+              </div>
+            </div>
           </div>
         </div>
         
-        <div className="lg:col-span-4 xl:col-span-3">
-          <div className="sticky top-24">
-            <div className="mb-8 flex justify-center lg:justify-start lg:pl-6">
-              <ShareBar title={post.title} url={currentUrl} />
-            </div>
-            
-            <div className="hidden lg:block">
-              <RelatedArticles />
-            </div>
-            
-            <div className="mt-10 hidden lg:block">
-              <NewsletterSignup />
-            </div>
-          </div>
+        <div className="mt-12 lg:hidden">
+          <RelatedArticles />
         </div>
-      </div>
-      
-      <div className="mt-12 lg:hidden">
-        <RelatedArticles />
-      </div>
-      
-      <div className="mt-10 lg:hidden">
-        <NewsletterSignup />
-      </div>
-      
-      <ProgressTracker
-        activeSection={activeSection}
-        totalSections={sections.length + 2} // +2 for intro and conclusion
-      />
-    </article>
+        
+        <div className="mt-10 lg:hidden">
+          <NewsletterSignup />
+        </div>
+      </article>
+    </div>
   );
 };
 

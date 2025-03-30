@@ -199,30 +199,35 @@ const NewsletterSignup: React.FC = () => {
           Get the latest insights about AI in digital advertising delivered straight to your inbox.
         </p>
         {submitted ? (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-inner text-center">
+          <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-inner text-center" role="status" aria-live="polite">
             <p className="font-medium">Thank you for subscribing!</p>
             <p className="text-sm mt-1">We'll be in touch soon with our latest insights.</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row max-w-xl mx-auto gap-3">
+            <label htmlFor="blog-email" className="sr-only">Email address</label>
             <input
               type="email"
+              id="blog-email"
+              name="email"
               placeholder="Enter your email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
               className="flex-grow px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition shadow-sm"
-              aria-label="Email address"
+              aria-describedby="newsletter-terms"
+              aria-required="true"
             />
             <button
               type="submit"
               className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md font-medium"
+              aria-label="Subscribe to newsletter"
             >
               Subscribe
             </button>
           </form>
         )}
-        <p className="text-xs text-center mt-4 text-gray-500">We respect your privacy. You can unsubscribe at any time.</p>
+        <p id="newsletter-terms" className="text-xs text-center mt-4 text-gray-500">We respect your privacy. You can unsubscribe at any time.</p>
       </div>
     </div>
   );
@@ -265,7 +270,7 @@ const Pagination: React.FC<{
           }`}
           aria-label="Previous page"
         >
-          <FaChevronLeft />
+          <FaChevronLeft aria-hidden="true" />
         </button>
         
         {startPage > 1 && (

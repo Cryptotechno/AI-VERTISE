@@ -1,79 +1,85 @@
 {
-  "hash": "d53a9bb3",
+  "hash": "95dbac79",
   "configHash": "119648c0",
-  "lockfileHash": "58d87c0c",
-  "browserHash": "963ed3c2",
+  "lockfileHash": "28af04d3",
+  "browserHash": "bf74eff8",
   "optimized": {
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "5297657f",
+      "fileHash": "ad08d092",
       "needsInterop": true
     },
     "react-dom": {
       "src": "../../node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "a99e4e53",
+      "fileHash": "35b067d5",
       "needsInterop": true
     },
     "react-router-dom": {
       "src": "../../node_modules/react-router-dom/dist/index.js",
       "file": "react-router-dom.js",
-      "fileHash": "409ddfb7",
+      "fileHash": "a851cfe6",
       "needsInterop": false
     },
     "framer-motion": {
       "src": "../../node_modules/framer-motion/dist/es/index.mjs",
       "file": "framer-motion.js",
-      "fileHash": "1207913b",
+      "fileHash": "4e5072cf",
       "needsInterop": false
     },
     "chart.js": {
       "src": "../../node_modules/chart.js/dist/chart.js",
       "file": "chart__js.js",
-      "fileHash": "d4f74703",
+      "fileHash": "52e5dd08",
       "needsInterop": false
     },
     "react-chartjs-2": {
       "src": "../../node_modules/react-chartjs-2/dist/index.js",
       "file": "react-chartjs-2.js",
-      "fileHash": "631efa13",
+      "fileHash": "34cd34aa",
       "needsInterop": false
     },
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "c775ae43",
+      "fileHash": "9ea844cd",
       "needsInterop": true
     },
     "react/jsx-runtime": {
       "src": "../../node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "19149b85",
+      "fileHash": "03e68601",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "0abbe3de",
+      "fileHash": "6160ee9d",
       "needsInterop": true
     },
     "react-helmet": {
       "src": "../../node_modules/react-helmet/es/Helmet.js",
       "file": "react-helmet.js",
-      "fileHash": "6813777f",
+      "fileHash": "063dcf39",
       "needsInterop": false
     },
     "react-icons/fa": {
       "src": "../../node_modules/react-icons/fa/index.esm.js",
       "file": "react-icons_fa.js",
-      "fileHash": "e034bf11",
+      "fileHash": "96b42ee9",
       "needsInterop": false
     },
     "xlsx": {
       "src": "../../node_modules/xlsx/xlsx.mjs",
       "file": "xlsx.js",
-      "fileHash": "8bb71bad",
+      "fileHash": "92b37455",
+      "needsInterop": false
+    },
+    "zustand": {
+      "src": "../../node_modules/zustand/esm/index.mjs",
+      "file": "zustand.js",
+      "fileHash": "3dcde1d4",
       "needsInterop": false
     }
   },

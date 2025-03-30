@@ -1,0 +1,13 @@
+# AI VERTISE Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://ai-vertise.com/sitemap.xml
+
+# Crawl delay for better server performance
+Crawl-delay: 10
+
+# Disallow certain paths
+Disallow: /terms/draft
+Disallow: /privacy/draft 

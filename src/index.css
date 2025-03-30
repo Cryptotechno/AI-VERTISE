@@ -42,22 +42,6 @@
     @apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
   }
 
-  /* Button styles */
-  .btn {
-    @apply px-6 py-2.5 rounded-lg font-medium transition-all duration-300 text-sm;
-  }
-
-  .btn-primary {
-    @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white
-      shadow-md hover:shadow-lg hover:from-indigo-500 hover:to-purple-500
-      active:shadow-sm transform hover:-translate-y-0.5 active:translate-y-0;
-  }
-
-  .btn-secondary {
-    @apply bg-white text-gray-600 border border-gray-200
-      hover:border-indigo-500 hover:text-indigo-600 hover:bg-indigo-50;
-  }
-
   /* Card styles */
   .card {
     @apply bg-white rounded-2xl p-6 shadow-lg border border-gray-100
@@ -193,37 +177,4 @@ a:hover {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: transparent;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-button:hover {
-  border-color: var(--primary);
-}
-button:focus,
-button:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: transparent;
-  }
 }

@@ -1,0 +1,30 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <rect width="1200" height="630" fill="url(#paint0_linear)" />
+  
+  <!-- Logo placeholder -->
+  <g transform="translate(400, 180)">
+    <text x="0" y="0" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="72" fill="white">AI VERTISE</text>
+    <text x="0" y="80" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="28" fill="white" opacity="0.9">AI-powered digital advertising agency</text>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="200" cy="180" r="80" fill="url(#paint1_radial)" opacity="0.5" />
+  <circle cx="1000" cy="480" r="100" fill="url(#paint2_radial)" opacity="0.3" />
+  
+  <!-- Definitions -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4338CA" />
+      <stop offset="1" stop-color="#6366F1" />
+    </linearGradient>
+    <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(200 180) rotate(90) scale(80)">
+      <stop stop-color="white" />
+      <stop offset="1" stop-color="white" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="paint2_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1000 480) rotate(90) scale(100)">
+      <stop stop-color="white" />
+      <stop offset="1" stop-color="white" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+</svg> 

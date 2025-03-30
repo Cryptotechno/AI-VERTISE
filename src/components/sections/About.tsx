@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 // Default fallback image
-const BALTYK_IMAGE = 'http://i.imgur.com/zpYk2iK.jpg'
+const BALTYK_IMAGE = 'https://i.imgur.com/zpYk2iK.jpg'
 
 const stats = [
   {

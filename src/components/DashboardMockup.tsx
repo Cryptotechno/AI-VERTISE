@@ -53,6 +53,20 @@ const DashboardMockup: React.FC = () => {
   const cpcData = [45, 40, 35, 45, 50, 55, 60]
   const roiData = [35, 45, 55, 60, 65, 70, 80]
 
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      const offset = 80; // Adjust for fixed header
+      const elementPosition = contactSection.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -72,13 +86,13 @@ const DashboardMockup: React.FC = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+          <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors" onClick={scrollToContact}>
             <FaRegBell className="w-4 h-4" />
           </button>
-          <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+          <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors" onClick={scrollToContact}>
             <FaCog className="w-4 h-4" />
           </button>
-          <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors">
+          <button className="p-2 text-gray-400 hover:text-indigo-600 transition-colors" onClick={scrollToContact}>
             <FaEllipsisH className="w-4 h-4" />
           </button>
         </div>
@@ -94,10 +108,16 @@ const DashboardMockup: React.FC = () => {
       {/* Time Period Selector */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <button className="px-3 py-1.5 text-xs bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium shadow-sm hover:from-indigo-500 hover:to-purple-500 transition-all">
+          <button 
+            className="px-3 py-1.5 text-xs bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium shadow-sm hover:from-indigo-500 hover:to-purple-500 transition-all cursor-pointer"
+            onClick={scrollToContact}
+          >
             This Month
           </button>
-          <button className="px-3 py-1.5 text-xs text-gray-600 hover:bg-indigo-50 rounded-lg font-medium transition-all">
+          <button 
+            className="px-3 py-1.5 text-xs text-gray-600 hover:bg-indigo-50 rounded-lg font-medium transition-all cursor-pointer"
+            onClick={scrollToContact}
+          >
             Last Month
           </button>
         </div>
@@ -241,11 +261,17 @@ const DashboardMockup: React.FC = () => {
 
       {/* Action Buttons */}
       <div className="flex items-center justify-between mt-4">
-        <button className="px-3 py-1.5 text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1.5">
+        <button 
+          className="px-3 py-1.5 text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1.5"
+          onClick={scrollToContact}
+        >
           <FaChartLine className="w-3.5 h-3.5" />
           View Details
         </button>
-        <button className="px-4 py-2 text-xs bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-500 hover:to-purple-500 transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
+        <button 
+          className="px-4 py-2 text-xs bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium hover:from-indigo-500 hover:to-purple-500 transition-all flex items-center gap-2 shadow-sm hover:shadow-md"
+          onClick={scrollToContact}
+        >
           <FaUserCircle className="w-3.5 h-3.5" />
           Try Live Demo
         </button>
