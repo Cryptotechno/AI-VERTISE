@@ -161,6 +161,8 @@ const Contact = () => {
       // Log submission attempt for debugging
       console.log('Attempting to submit form data:', payload);
       
+      let submissionSuccess = false;
+      
       try {
         // First attempt - with fetch and proper error handling
         const controller = new AbortController();
@@ -170,77 +172,133 @@ const Contact = () => {
         const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json', // Using application/json instead of text/plain
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
-          signal: controller.signal
+          signal: controller.signal,
+          // Re-add mode: 'no-cors' if we continue to have CORS issues
+          // mode: 'no-cors'
         });
         
         clearTimeout(timeoutId);
         
+        // Check if response is ok
         if (response.ok) {
-          const responseData = await response.json();
-          console.log('Form submission successful:', responseData);
-          setSubmissionDetails('Submission successful via fetch API');
+          try {
+            // Try to parse JSON, but don't fail if it's not JSON
+            const responseData = await response.json();
+            console.log('Form submission successful:', responseData);
+            setSubmissionDetails('Submission successful via fetch API');
+            submissionSuccess = true;
+          } catch (jsonError) {
+            // If JSON parsing fails, the response might still be successful
+            console.log('Response wasn\'t JSON, but submission may still be successful');
+            setSubmissionDetails('Submission received, but response format unclear');
+            submissionSuccess = true;
+          }
         } else {
           throw new Error(`Server responded with status: ${response.status}`);
         }
         
       } catch (fetchError) {
         console.error('Fetch error:', fetchError);
-        setSubmissionDetails(fetchError instanceof Error ? fetchError.message : 'Unknown fetch error');
         
-        // Fallback to alternative submission method with XMLHttpRequest
-        console.log('Trying fallback submission method');
+        // Check if it's a CORS error
+        const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown fetch error';
+        setSubmissionDetails(errorMessage);
         
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', GOOGLE_APPS_SCRIPT_URL, true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.timeout = 10000; // 10 second timeout
+        const isCorsError = errorMessage.includes('CORS') || 
+                            errorMessage.includes('cross-origin') || 
+                            errorMessage.includes('opaque');
+        
+        if (isCorsError) {
+          console.log('CORS error detected, trying with no-cors mode');
+          try {
+            // Retry with no-cors mode
+            const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(payload),
+              mode: 'no-cors' // Use no-cors as fallback
+            });
+            
+            // With no-cors, we can't read the response
+            console.log('Submitted with no-cors mode (response unreadable)');
+            setSubmissionDetails('Submitted with no-cors mode');
+            submissionSuccess = true; // Assume success since we can't verify
+          } catch (noCorsError) {
+            console.error('No-cors fetch also failed:', noCorsError);
+          }
+        }
+        
+        // If still not successful, try XMLHttpRequest as last resort
+        if (!submissionSuccess) {
+          console.log('Trying fallback XMLHttpRequest submission method');
           
-          xhr.onload = function() {
-            if (xhr.status === 200) {
-              console.log('XHR submission successful');
-              setSubmissionDetails('Submission processed via XMLHttpRequest');
-              resolve('success');
-            } else {
-              console.error('XHR submission failed with status:', xhr.status);
-              setSubmissionDetails(`XHR failed with status: ${xhr.status}`);
-              reject(new Error(`XHR failed with status: ${xhr.status}`));
-            }
-          };
-          
-          xhr.ontimeout = function() {
-            console.error('XHR timeout');
-            setSubmissionDetails('Request timed out after 10 seconds');
-            reject(new Error('XHR timeout'));
-          };
-          
-          xhr.onerror = function() {
-            console.error('XHR network error');
-            setSubmissionDetails('Network error with XHR');
-            reject(new Error('Network error with XHR'));
-          };
-          
-          xhr.send(JSON.stringify(payload));
-        });
+          try {
+            const result = await new Promise((resolve, reject) => {
+              const xhr = new XMLHttpRequest();
+              xhr.open('POST', GOOGLE_APPS_SCRIPT_URL, true);
+              xhr.setRequestHeader('Content-Type', 'application/json');
+              xhr.timeout = 10000; // 10 second timeout
+              
+              xhr.onload = function() {
+                if (xhr.status === 200) {
+                  console.log('XHR submission successful');
+                  setSubmissionDetails('Submission processed via XMLHttpRequest');
+                  resolve('success');
+                } else {
+                  console.error('XHR submission failed with status:', xhr.status);
+                  setSubmissionDetails(`XHR failed with status: ${xhr.status}`);
+                  reject(new Error(`XHR failed with status: ${xhr.status}`));
+                }
+              };
+              
+              xhr.ontimeout = function() {
+                console.error('XHR timeout');
+                setSubmissionDetails('Request timed out after 10 seconds');
+                reject(new Error('XHR timeout'));
+              };
+              
+              xhr.onerror = function() {
+                console.error('XHR network error');
+                setSubmissionDetails('Network error with XHR');
+                reject(new Error('Network error with XHR'));
+              };
+              
+              xhr.send(JSON.stringify(payload));
+            });
+            
+            submissionSuccess = result === 'success';
+          } catch (xhrError) {
+            console.error('XHR attempt failed:', xhrError);
+            submissionSuccess = false;
+          }
+        }
       }
       
-      // Complete the analysis and show success message
-      setTimeout(() => {
-        setIsAnalyzing(false);
-        setIsSubmitted(true);
-        
-        // Reset form after 5 seconds
+      // Only show success if we actually succeeded
+      if (submissionSuccess) {
+        // Complete the analysis and show success message
         setTimeout(() => {
-          setIsSubmitted(false);
-          setFormData({
-            email: '',
-            message: ''
-          });
-        }, 5000);
-      }, 1000);
+          setIsAnalyzing(false);
+          setIsSubmitted(true);
+          
+          // Reset form after 5 seconds
+          setTimeout(() => {
+            setIsSubmitted(false);
+            setFormData({
+              email: '',
+              message: ''
+            });
+          }, 5000);
+        }, 1000);
+      } else {
+        // If we get here, all submission attempts failed
+        throw new Error('All submission methods failed');
+      }
       
     } catch (error) {
       console.error('Error submitting form:', error);
