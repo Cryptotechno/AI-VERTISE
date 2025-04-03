@@ -80,7 +80,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <img
-                src="/logo.png"
+                src="/AI-VERTISE/logo.png"
                 alt="AI Vertise"
                 className="app-logo h-10 w-auto rounded-lg"
                 fetchPriority="high"
