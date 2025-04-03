@@ -34,7 +34,6 @@ const Contact = () => {
   })
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isMapLoading, setIsMapLoading] = useState(true)
   const [formProgress, setFormProgress] = useState(0)
   const [submissionError, setSubmissionError] = useState<string | null>(null)
   const [submissionDetails, setSubmissionDetails] = useState<string | null>(null)
@@ -309,17 +308,9 @@ const Contact = () => {
     return emailRegex.test(value) || phoneRegex.test(value)
   }
 
-  const mapUrl = "https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Baltyk+Tower,Poznan+Poland&zoom=16";
-
   return (
-    <section id="contact" className="py-24" style={{ backgroundColor: '#f9f7fd' }}>
-      {/* Background Elements */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full opacity-20 blur-3xl" />
-        <div className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-gradient-to-tr from-indigo-100 via-purple-100 to-indigo-50 rounded-full opacity-20 blur-3xl" />
-      </div>
-
-      <div className="container mx-auto px-4 relative">
+    <section id="contact" className="py-16 bg-[#f9f7fd]">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -340,7 +331,7 @@ const Contact = () => {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto mb-12 lg:mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
           {/* Contact Information */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -605,32 +596,6 @@ const Contact = () => {
             </div>
           </motion.div>
         </div>
-        
-        {/* Map */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="max-w-6xl mx-auto"
-        >
-          <div className="w-full rounded-xl lg:rounded-2xl overflow-hidden shadow-md border border-gray-100 bg-white aspect-video">
-            <iframe
-              src={mapUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen={false}
-              loading="lazy"
-              referrerPolicy="strict-origin-when-cross-origin"
-              title="AI Vertise Office Location"
-              onLoad={() => setIsMapLoading(false)}
-            ></iframe>
-            {isMapLoading && (
-              <div className="w-full h-full bg-gray-100 animate-pulse"></div>
-            )}
-          </div>
-        </motion.div>
       </div>
     </section>
   )
