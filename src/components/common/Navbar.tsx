@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaPhone, FaEnvelope, FaBars, FaTimes } from 'react-icons/fa';
 import Button from '../atoms/Button';
 import { useAppStore } from '../../store';
-import logoImage from '/logo.png';
+import logoImage from '../../assets/images/logo_optimized.png';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
