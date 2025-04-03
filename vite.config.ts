@@ -19,8 +19,8 @@ export default defineConfig({
         background_color: '#6B46C1',
         display: 'standalone',
         orientation: 'portrait',
-        scope: '/AI-VERTISE/',
-        start_url: '/AI-VERTISE/',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
             src: '/fav.png',
@@ -145,7 +145,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: '/AI-VERTISE/',
+  base: '/',
   build: {
     target: 'es2020',
     outDir: 'dist',
