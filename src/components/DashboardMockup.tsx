@@ -288,18 +288,6 @@ const DashboardMockup: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* Service Note */}
-      <motion.div 
-        className="bg-gradient-to-r from-indigo-50 via-purple-50 to-indigo-50 rounded-lg p-2.5 mb-6"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-      >
-        <p className="text-[10px] text-gray-600 leading-relaxed">
-          This interactive dashboard demonstrates our AI-powered approach to digital marketing. Experience how we combine data-driven insights with customer-centric strategies to maximize your campaign performance.
-        </p>
-      </motion.div>
-
       {/* Time Period Selector */}
       <motion.div 
         className="flex items-center justify-between mb-6"
