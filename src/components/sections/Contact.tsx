@@ -309,7 +309,7 @@ const Contact = () => {
     return emailRegex.test(value) || phoneRegex.test(value)
   }
 
-  const mapUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2433.8006646862307!2d16.90663857677015!3d52.40362497209754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47045b3b1e4cd855%3A0x7fb3e39084fa64e8!2sBa%C5%82tyk%20Tower!5e0!3m2!1sen!2spl!4v1710612433445!5m2!1sen!2spl"
+  const mapUrl = "https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Baltyk+Tower,Poznan+Poland&zoom=16";
 
   return (
     <section id="contact" className="py-24" style={{ backgroundColor: '#f9f7fd' }}>
@@ -622,9 +622,9 @@ const Contact = () => {
               style={{ border: 0 }}
               allowFullScreen={false}
               loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              onLoad={() => setIsMapLoading(false)}
+              referrerPolicy="strict-origin-when-cross-origin"
               title="AI Vertise Office Location"
+              onLoad={() => setIsMapLoading(false)}
             ></iframe>
             {isMapLoading && (
               <div className="w-full h-full bg-gray-100 animate-pulse"></div>

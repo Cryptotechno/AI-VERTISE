@@ -25,6 +25,12 @@ async function optimizeImages() {
       .png({ quality: 85, compressionLevel: 9 })
       .toFile('src/assets/images/fav_optimized.png');
 
+    // Optimize Baltyk image
+    await sharp('src/assets/images/baltyk.jpg')
+      .resize(1200) // Large enough for hero section
+      .jpeg({ quality: 85, progressive: true })
+      .toFile('src/assets/images/baltyk_optimized.jpg');
+
     console.log('Images optimized successfully!');
   } catch (error) {
     console.error('Error optimizing images:', error);
