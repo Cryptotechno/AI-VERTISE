@@ -78,14 +78,14 @@ export const Navbar: React.FC = () => {
       <div className="container mx-auto px-6">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <button
-              onClick={handleHomeClick}
-              className="flex items-center"
-            >
-              <span className="text-[28px] font-bold bg-gradient-to-r from-[#6C5CE7] via-[#8075FF] to-[#A091FF] bg-clip-text text-transparent">
-                AI VERTISE
-              </span>
-            </button>
+            <Link to="/" className="flex-shrink-0 flex items-center">
+              <img
+                src="/logo.png"
+                alt="AI Vertise"
+                className="app-logo h-10 w-auto rounded-lg"
+                fetchPriority="high"
+              />
+            </Link>
           </div>
 
           {/* Mobile menu button */}

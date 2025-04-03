@@ -11,10 +11,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'sitemap.xml'],
+      includeAssets: ['favicon.svg', 'logo.png', 'a-icon.svg', 'robots.txt', 'sitemap.xml'],
       manifest: {
         name: 'AI VERTISE',
-        short_name: 'AI VERTISE',
+        short_name: 'AI',
         description: 'Smart, automated, data-driven growth. Built with AI for brands ready to scale.',
         theme_color: '#4338CA',
         background_color: '#ffffff',
@@ -36,16 +36,31 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable'
+          },
+          {
+            src: '/favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any'
           }
         ]
       },
       workbox: {
+        // Force new cache version to bust any outdated caches
+        cacheId: 'aivertise-v3',
+        // Skip waiting makes service worker take over immediately
+        skipWaiting: true,
+        // Force update of cached assets
+        clientsClaim: true,
+        // Clean outdated caches
+        cleanupOutdatedCaches: true,
+        
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'google-fonts-cache',
+              cacheName: 'google-fonts-cache-v3',
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
@@ -59,7 +74,7 @@ export default defineConfig({
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'gstatic-fonts-cache',
+              cacheName: 'gstatic-fonts-cache-v3',
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
@@ -70,12 +85,12 @@ export default defineConfig({
             }
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|avif)$/i,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'images-cache',
+              cacheName: 'images-cache-v3',
               expiration: {
-                maxEntries: 50,
+                maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
               }
             }
@@ -84,10 +99,10 @@ export default defineConfig({
             urlPattern: /\.(?:js|css)$/i,
             handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'static-resources',
+              cacheName: 'static-resources-v3',
               expiration: {
-                maxEntries: 30,
-                maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24 // 1 day
               }
             }
           },
@@ -95,7 +110,7 @@ export default defineConfig({
             urlPattern: /^https:\/\/ai-vertise\.com\/api\/.*/i,
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'api-cache',
+              cacheName: 'api-cache-v3',
               networkTimeoutSeconds: 10,
               expiration: {
                 maxEntries: 50,
@@ -111,18 +126,23 @@ export default defineConfig({
     }),
     ViteImageOptimizer({
       png: {
-        quality: 75,
+        quality: 65,
+        colors: 256,
       },
       jpg: {
-        quality: 75,
+        quality: 65,
+        progressive: true,
+        optimizeScans: true,
       },
       webp: {
         lossless: false,
-        quality: 80,
+        quality: 65,
+        nearLossless: true,
+        smartSubsample: true,
       },
       avif: {
         lossless: false,
-        quality: 80,
+        quality: 60,
       },
       cache: false,
       logStats: true,
@@ -155,7 +175,17 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
+        // Ensure consistent chunk names using content hashing
+        experimentalMinChunkSize: 10000,
         manualChunks: (id) => {
+          // Routes - keep route chunks consistent
+          if (id.includes('/src/pages/') || id.includes('/src/routes/')) {
+            const routeName = id.split('/').pop()?.split('.')[0];
+            if (routeName) {
+              return `route-${routeName}`;
+            }
+          }
+          
           // Create vendor chunk for node_modules
           if (id.includes('node_modules')) {
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
@@ -175,8 +205,10 @@ export default defineConfig({
             return 'deps';
           }
         },
-        // Reduce chunk size for dynamic imports
-        chunkFileNames: 'assets/[name]-[hash].js',
+        // Ensure consistent chunk naming
+        chunkFileNames: 'assets/[name].[hash].js',
+        entryFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
     },
     cssCodeSplit: true,

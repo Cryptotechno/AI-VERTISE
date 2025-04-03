@@ -178,3 +178,176 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+
+/* Preload critical styles for the dashboard to improve LCP */
+.preload-dashboard .dashboard-mockup {
+  content-visibility: auto;
+  contain-intrinsic-size: 600px;
+}
+
+/* Priority image loading styles */
+img[fetchpriority="high"] {
+  content-visibility: auto;
+}
+
+/* Optimize layout shifts */
+.dashboard-mockup {
+  min-height: 600px;
+  overflow: visible;
+}
+
+/* Optimize lazy-loaded content */
+.lazy-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 800px;
+}
+
+/* Scroll animations */
+.animate-in {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply animations to tagged elements */
+h1.animate-in,
+div.animate-in {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Font loading states */
+.fonts-pending {
+  /* Use system fonts until custom fonts are loaded */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji";
+}
+
+.fonts-loaded {
+  /* Once fonts are loaded, use the custom fonts */
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Prevent FOIT by showing text immediately with system fonts */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Inter Regular'), local('Inter-Regular'), 
+       url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2) format('woff2');
+  font-synthesis: none;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Inter Medium'), local('Inter-Medium'),
+       url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hiA.woff2) format('woff2');
+  font-synthesis: none;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Inter SemiBold'), local('Inter-SemiBold'),
+       url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff2) format('woff2');
+  font-synthesis: none;
+}
+
+/* Fix text flashing on mobile */
+.text-loading-fix {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  backface-visibility: hidden;
+}
+
+/* Mobile performance optimizations for animations */
+@media (max-width: 767px) {
+  /* Apply hardware acceleration to all cards */
+  .card, 
+  motion-div,
+  div[data-framer-component-type="motion"],
+  div[class*="rounded-xl"],
+  .bg-white.rounded-xl,
+  .bg-white.p-3.rounded-xl,
+  .bg-white.p-4.rounded-xl {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+  }
+  
+  /* Simplify hover animations on mobile to prevent jank */
+  .transition-all {
+    transition-property: transform, opacity !important;
+    transition-duration: 0.2s !important;
+  }
+  
+  /* Use simplified shadows for performance */
+  .hover\:shadow-xl:hover {
+    box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  /* Disable complex animations on mobile */
+  .hover\:shadow-indigo-500\/10:hover {
+    box-shadow: none !important;
+  }
+  
+  /* Disable backdrop blur on mobile */
+  .backdrop-blur-sm, 
+  .backdrop-blur-lg, 
+  .backdrop-blur {
+    backdrop-filter: none !important;
+  }
+  
+  /* Optimize motion animations on mobile */
+  div[style*="transform: scale"] {
+    transform: translateZ(0) !important;
+  }
+  
+  /* Reduce hover animation intensity */
+  div[style*="transform: scale(1.02)"],
+  div[style*="transform: scale(1.03)"],
+  div[style*="transform: scale(1.05)"] {
+    transform: translateZ(0) scale(1.01) !important;
+  }
+}
+
+/* Optimizations for Framer Motion components on mobile */
+@media (max-width: 767px) {
+  /* Class to be applied by useMobileOptimization hook to problematic cards */
+  .mobile-card-fix {
+    transform: translateZ(0) !important;
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1) !important;
+  }
+  
+  /* Hardware accelerated hover animation fallback for mobile */
+  .mobile-card-fix:active {
+    transform: translateZ(0) scale(1.01) !important;
+  }
+}
+
+/* Remove dark mode related styles */
+
+/* Logo styles */
+.app-logo {
+  transition: transform 0.2s ease-in-out;
+}
+
+.app-logo:hover {
+  transform: scale(1.05);
+}
