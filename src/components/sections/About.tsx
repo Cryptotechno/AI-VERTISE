@@ -123,7 +123,7 @@ const About = () => {
   const [imageError, setImageError] = useState(false)
 
   return (
-    <section id="about" className="pt-0 -mt-32 lg:-mt-40 bg-[#f9f7fd]">
+    <section id="about" className="pt-0 -mt-48 lg:-mt-56 bg-[#f9f7fd]">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">

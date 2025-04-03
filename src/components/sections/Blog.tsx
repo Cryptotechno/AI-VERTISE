@@ -485,7 +485,7 @@ const Blog: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-12 pb-0 bg-[#f9f7fd]">
+    <section className="py-12 pb-0 bg-[#f9f7fd] -mb-12">
       <div className="container mx-auto px-6">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center gap-2 bg-white px-4 py-2 rounded-full text-indigo-600 text-sm font-medium mb-3 border border-gray-200 shadow-sm">
@@ -617,7 +617,7 @@ const Blog: React.FC = () => {
           <NewsletterSignup />
         </div>
 
-        <div className="text-center mt-8 mb-0">
+        <div className="text-center mt-8 mb-0 pb-0">
           <Link
             to="/calculator"
             className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium text-white bg-indigo-600 rounded-full shadow-lg hover:bg-indigo-700 transition-colors mb-4"
@@ -636,7 +636,7 @@ const Blog: React.FC = () => {
               />
             </svg>
           </Link>
-          <p className="text-gray-600 text-lg mb-0">
+          <p className="text-gray-600 text-lg mb-0 pb-0">
             Join these success stories and transform your digital marketing performance
           </p>
         </div>
