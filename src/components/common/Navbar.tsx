@@ -8,6 +8,9 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isMenuOpen, toggleMenu, closeMenu } = useAppStore();
+  
+  // Get base URL for assets
+  const baseUrl = import.meta.env.DEV ? '' : '/AI-VERTISE';
 
   const handleHomeClick = () => {
     if (location.pathname !== '/') {
@@ -80,7 +83,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <img
-                src="/AI-VERTISE/logo.png"
+                src={`${baseUrl}/logo.png`}
                 alt="AI Vertise"
                 className="app-logo h-10 w-auto rounded-lg"
                 fetchPriority="high"
