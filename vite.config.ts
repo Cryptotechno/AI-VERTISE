@@ -149,7 +149,7 @@ export default defineConfig({
   build: {
     target: 'es2020',
     outDir: 'dist',
-    sourcemap: true,
+    sourcemap: false,
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -159,40 +159,13 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
-        // Ensure consistent chunk names using content hashing
-        experimentalMinChunkSize: 10000,
-        manualChunks: (id) => {
-          // Routes - keep route chunks consistent
-          if (id.includes('/src/pages/') || id.includes('/src/routes/')) {
-            const routeName = id.split('/').pop()?.split('.')[0];
-            if (routeName) {
-              return `route-${routeName}`;
-            }
-          }
-          
-          // Create vendor chunk for node_modules
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
-              return 'vendor';
-            }
-            
-            if (id.includes('framer-motion')) {
-              return 'ui';
-            }
-            
-            // Chart libraries
-            if (id.includes('chart') || id.includes('d3')) {
-              return 'charts';
-            }
-            
-            // Other dependencies
-            return 'deps';
-          }
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['framer-motion'],
         },
-        // Ensure consistent chunk naming
-        chunkFileNames: 'assets/[name].[hash].js',
-        entryFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]'
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]'
       }
     },
     cssCodeSplit: true,
