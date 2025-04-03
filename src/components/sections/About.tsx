@@ -140,18 +140,18 @@ const About = () => {
                 <OptimizedImage
                   src={baltykImage}
                   alt="Bałtyk Business Center - Poznań's Modern Business Hub"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover brightness-90 contrast-110"
                   priority={true}
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 mix-blend-overlay" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 bg-gradient-to-t from-black/70 to-transparent">
+                <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-black/10 mix-blend-multiply" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 bg-gradient-to-t from-black/80 to-transparent">
                   <h3 className="text-xl lg:text-2xl font-bold mb-2 text-white">Bałtyk Business Center</h3>
                   <p className="text-base lg:text-lg text-white/90">Poznań's Modern Business Hub</p>
                   <div className="mt-3 lg:mt-4 flex flex-wrap gap-2">
-                    <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm">
+                    <span className="px-3 py-1 bg-black/20 backdrop-blur-sm rounded-full text-white/90 text-sm">
                       Innovation Hub
                     </span>
-                    <span className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm">
+                    <span className="px-3 py-1 bg-black/20 backdrop-blur-sm rounded-full text-white/90 text-sm">
                       AI Technology
                     </span>
                   </div>
