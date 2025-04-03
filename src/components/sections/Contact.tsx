@@ -309,9 +309,9 @@ const Contact = () => {
   }
 
   return (
-    <section id="contact" className="py-12 bg-[#f9f7fd] -mt-16">
+    <section id="contact" className="py-12 bg-[#f9f7fd] -mt-12 lg:-mt-16">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 lg:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

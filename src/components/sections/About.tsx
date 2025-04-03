@@ -200,20 +200,20 @@ const About = () => {
           </div>
 
           {/* Team Section */}
-          <div className="mt-12">
+          <div className="mt-8 lg:mt-12">
             <div className="text-center">
-              <div className="inline-block px-4 py-2 bg-white rounded-full mb-4 lg:mb-6 shadow-sm border border-gray-100">
+              <div className="inline-block px-4 py-2 bg-white rounded-full mb-4 shadow-sm border border-gray-100">
                 <span className="text-indigo-600 font-medium">Our Team</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
                 Expert Team at Your Service
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-6">
                 Our dedicated specialists work directly with you to ensure your advertising success, combining proven marketing expertise with smart technology.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               {experts.map((expert, index) => (
                 <motion.div
                   key={index}
