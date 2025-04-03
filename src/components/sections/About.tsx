@@ -6,7 +6,6 @@ import {
 } from 'react-icons/fa'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { OptimizedImage } from '../atoms/OptimizedImage'
 
 // Use public path for image
 const BALTYK_IMAGE = '/images/baltyk_optimized.jpg'
@@ -137,11 +136,11 @@ const About = () => {
               className="relative group order-2 lg:order-1"
             >
               <div className="relative aspect-[4/3] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl">
-                <OptimizedImage
-                  src={BALTYK_IMAGE}
+                <img
+                  src="/images/baltyk_optimized.jpg"
                   alt="Bałtyk Business Center - Poznań's Modern Business Hub"
                   className="w-full h-full object-cover brightness-90 contrast-110"
-                  priority={true}
+                  onError={(e) => console.error('Image failed to load:', e)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-black/10 mix-blend-multiply" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 bg-gradient-to-t from-black/80 to-transparent">
