@@ -22,19 +22,19 @@ const BlogCard: React.FC<{ post: typeof blogPosts[0]; featured?: boolean }> = ({
   <Link to={`/blog/${post.slug}`} className="block h-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-xl group">
     <motion.div
       whileHover={{ y: -5 }}
-      className={`bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full cursor-pointer transition-all duration-300 ${featured ? 'border-2 border-indigo-500' : ''} hover:shadow-xl`}
+      className={`bg-white rounded-xl shadow-sm overflow-hidden flex flex-col h-full cursor-pointer transition-all duration-300 ${featured ? 'border-2 border-indigo-500' : 'border border-gray-200'} hover:shadow-lg hover:border-indigo-300`}
     >
       <div className={`relative ${featured ? 'h-52' : 'h-48'} overflow-hidden`}>
         {getPostImage(post)}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/40 to-purple-600/40"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/30 to-purple-600/30"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
         <div className="absolute bottom-4 left-4 z-10">
-          <span className="bg-indigo-500/90 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm">
+          <span className="bg-indigo-500/90 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm backdrop-blur-sm">
             {post.category}
           </span>
         </div>
         {post.trending && (
-          <div className="absolute top-4 right-4 flex items-center gap-1 bg-red-500/90 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm z-10">
+          <div className="absolute top-4 right-4 flex items-center gap-1 bg-red-500/90 text-white px-3 py-1 rounded-full text-sm font-medium shadow-sm backdrop-blur-sm z-10">
             <FaFire className="text-white text-sm" />
             <span>Trending</span>
           </div>
@@ -119,13 +119,13 @@ const SearchAndFilter: React.FC<{
             placeholder="Search articles..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition shadow-sm"
+            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white shadow-sm hover:border-indigo-300"
             aria-label="Search articles"
           />
         </div>
         <button 
           onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className="sm:hidden bg-indigo-50 text-indigo-700 px-4 py-3 rounded-lg font-medium flex items-center gap-2 hover:bg-indigo-100 transition-colors"
+          className="sm:hidden bg-white text-indigo-600 px-4 py-3 rounded-lg font-medium flex items-center gap-2 hover:bg-indigo-50 transition-colors border border-gray-200"
           aria-expanded={isFilterOpen}
           aria-controls="category-filters"
         >
@@ -151,8 +151,8 @@ const SearchAndFilter: React.FC<{
                   onClick={() => setSelectedCategory(category)}
                   className={`px-4 py-2 rounded-lg transition-all duration-300 ${
                     selectedCategory === category 
-                      ? 'bg-indigo-600 text-white shadow-md' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-indigo-600 text-white shadow-sm' 
+                      : 'bg-white border border-gray-200 text-gray-700 hover:border-indigo-300 hover:text-indigo-600'
                   }`}
                 >
                   {category}
@@ -177,8 +177,8 @@ const NewsletterSignup: React.FC = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-50 via-indigo-100 to-purple-50 rounded-xl p-8 mt-16 relative overflow-hidden shadow-lg border border-indigo-100">
-      <div className="absolute inset-0 opacity-20">
+    <div className="bg-white rounded-xl p-8 mt-16 relative overflow-hidden shadow-sm border border-gray-200">
+      <div className="absolute inset-0 opacity-10">
         <svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -190,11 +190,11 @@ const NewsletterSignup: React.FC = () => {
       </div>
       <div className="relative z-10">
         <div className="flex items-center justify-center mb-6">
-          <div className="bg-indigo-600 p-3 rounded-full shadow-lg">
+          <div className="bg-indigo-600 p-3 rounded-full shadow-sm">
             <FaRss className="text-white text-xl" />
           </div>
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">Subscribe to our newsletter</h3>
+        <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-4 text-center">Subscribe to our newsletter</h3>
         <p className="text-gray-600 mb-6 text-center max-w-xl mx-auto">
           Get the latest insights about AI in digital advertising delivered straight to your inbox.
         </p>
@@ -349,17 +349,17 @@ const AIInsightsPanel: React.FC<{
   setSearch: (value: string) => void;
 }> = ({ setSelectedCategory, setSearch }) => {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24">
+    <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24 border border-gray-200">
       <div className="flex items-center gap-2 mb-6">
-        <FaBrain className="text-2xl text-indigo-500" />
-        <h3 className="text-xl font-bold text-gray-900">AI Content Insights</h3>
+        <FaBrain className="text-2xl text-indigo-600" />
+        <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">AI Content Insights</h3>
       </div>
       
       <div className="space-y-4">
-        <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+        <div className="p-4 bg-white rounded-lg border border-gray-200">
           <div className="flex items-center gap-2 mb-2">
-            <FaLightbulb className="text-lg text-indigo-500" />
-            <h4 className="font-semibold text-gray-900">Trending Topics</h4>
+            <FaLightbulb className="text-lg text-indigo-600" />
+            <h4 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">Trending Topics</h4>
           </div>
           <div className="space-y-2">
             <button
@@ -367,9 +367,9 @@ const AIInsightsPanel: React.FC<{
                 setSelectedCategory('Programmatic Advertising');
                 setSearch('');
               }}
-              className="w-full text-left px-3 py-2 rounded-md bg-white text-gray-700 hover:bg-indigo-50 transition-colors duration-200 flex items-center gap-2 group"
+              className="w-full text-left px-3 py-2 rounded-md bg-white text-gray-600 hover:bg-indigo-50 transition-colors duration-200 flex items-center gap-2 group border border-gray-200"
             >
-              <FaChartLine className="text-indigo-400 group-hover:text-indigo-500 transition-colors duration-200" />
+              <FaChartLine className="text-indigo-600 group-hover:text-indigo-600 transition-colors duration-200" />
               <span>Programmatic Trends</span>
             </button>
             <button
@@ -377,25 +377,25 @@ const AIInsightsPanel: React.FC<{
                 setSelectedCategory('Social Media');
                 setSearch('');
               }}
-              className="w-full text-left px-3 py-2 rounded-md bg-white text-gray-700 hover:bg-indigo-50 transition-colors duration-200 flex items-center gap-2 group"
+              className="w-full text-left px-3 py-2 rounded-md bg-white text-gray-600 hover:bg-indigo-50 transition-colors duration-200 flex items-center gap-2 group border border-gray-200"
             >
-              <FaRobot className="text-indigo-400 group-hover:text-indigo-500 transition-colors duration-200" />
-              <span>AI in Social Media</span>
+              <FaRobot className="text-indigo-600 group-hover:text-indigo-600 transition-colors duration-200" />
+              <span>Social Media</span>
             </button>
           </div>
         </div>
 
-        <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+        <div className="p-4 bg-white rounded-lg border border-gray-200">
           <div className="flex items-center gap-2 mb-2">
             <FaTags className="text-lg text-indigo-500" />
-            <h4 className="font-semibold text-gray-900">Popular Tags</h4>
+            <h4 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">Popular Tags</h4>
           </div>
           <div className="flex flex-wrap gap-2">
             {['ai', 'programmatic', 'privacy', 'optimization', 'social media'].map((tag) => (
               <button
                 key={tag}
                 onClick={() => setSearch(tag)}
-                className="px-2.5 py-1 bg-white rounded-md text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"
+                className="px-2.5 py-1 bg-white rounded-md text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200 border border-gray-200"
               >
                 {tag}
               </button>
@@ -403,14 +403,14 @@ const AIInsightsPanel: React.FC<{
           </div>
         </div>
 
-        <div className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg border border-indigo-100">
+        <div className="p-4 bg-white rounded-lg border border-gray-200">
           <div className="flex items-center gap-2 mb-2">
             <FaRss className="text-lg text-indigo-500" />
-            <h4 className="font-semibold text-gray-900">Latest Updates</h4>
+            <h4 className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">Latest Updates</h4>
           </div>
           <div className="space-y-2">
             {['New AI features', 'Privacy updates', 'Platform changes'].map((update) => (
-              <div key={update} className="px-3 py-2 bg-white rounded-md text-gray-700">
+              <div key={update} className="px-3 py-2 bg-white rounded-md text-gray-700 border border-gray-200">
                 {update}
               </div>
             ))}
@@ -485,25 +485,20 @@ const Blog: React.FC = () => {
   }, []);
 
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-indigo-50/30">
-      <div className="max-w-7xl mx-auto">
-        <motion.div 
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="inline-flex items-center justify-center gap-2 bg-indigo-50 px-4 py-2 rounded-full text-indigo-600 text-sm font-medium mb-3 border border-indigo-100 shadow-sm">
-            <FaRobot className="text-indigo-500" />
+    <section className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center gap-2 bg-white px-4 py-2 rounded-full text-indigo-600 text-sm font-medium mb-3 border border-gray-200 shadow-sm">
+            <FaRobot className="text-indigo-600" />
             <span>AI-Enhanced Content Platform</span>
           </div>
-          <h1 className="text-3xl font-bold sm:text-4xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600">
+          <h1 className="text-3xl font-bold sm:text-4xl mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
             Insights & Intelligence
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Discover AI-powered insights about digital advertising, programmatic strategies, and data-driven marketing.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
@@ -571,9 +566,9 @@ const Blog: React.FC = () => {
               >
                 <div className="max-w-md mx-auto">
                   <div className="mx-auto w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
-                    <FaSearch className="text-xl text-indigo-500" />
+                    <FaSearch className="text-xl text-indigo-600" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-3">No articles found</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">No articles found</h3>
                   <p className="text-gray-600 mb-6">Our AI couldn't find any articles matching your search criteria.</p>
                   <button 
                     onClick={() => {
@@ -595,25 +590,25 @@ const Blog: React.FC = () => {
         </div>
         
         <div className="mt-12 mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-            <div className="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:border-indigo-200 transition-colors">
+            <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 border border-gray-200">
               <FaBrain className="text-xl text-indigo-600" />
             </div>
-            <h3 className="text-lg font-bold mb-2">AI Content Analysis</h3>
+            <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-2">AI Content Analysis</h3>
             <p className="text-gray-600">Our AI analyzes content patterns to determine what information is most valuable to readers.</p>
           </div>
-          <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-            <div className="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:border-indigo-200 transition-colors">
+            <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 border border-gray-200">
               <FaRobot className="text-xl text-indigo-600" />
             </div>
-            <h3 className="text-lg font-bold mb-2">Personalized Insights</h3>
+            <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-2">Personalized Insights</h3>
             <p className="text-gray-600">Machine learning algorithms customize recommendations based on your interests.</p>
           </div>
-          <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-            <div className="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mb-4">
+          <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:border-indigo-200 transition-colors">
+            <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 border border-gray-200">
               <FaChartLine className="text-xl text-indigo-600" />
             </div>
-            <h3 className="text-lg font-bold mb-2">Trend Prediction</h3>
+            <h3 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-2">Trend Prediction</h3>
             <p className="text-gray-600">Our predictive algorithms identify emerging marketing trends before they go mainstream.</p>
           </div>
         </div>

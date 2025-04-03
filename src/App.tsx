@@ -121,7 +121,7 @@ function App() {
   return (
     <Router>
       <ErrorBoundary>
-        <div className="relative min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen overflow-x-hidden" style={{ backgroundColor: '#f9f7fd' }}>
           {/* Optimize animations for mobile */}
           <MobileAnimationOptimizer />
           {/* Preload critical assets for LCP */}
@@ -132,22 +132,24 @@ function App() {
           <NetworkDetector />
           <MemoizedNavbar />
           
-          {/* Special handling for homepage (not lazy-loaded) */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="*" element={
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/blog" element={<BlogPage />} />
-                  <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
-                  <Route path="/privacy" element={<PrivacyPolicy />} />
-                  <Route path="/terms" element={<TermsOfService />} />
-                  <Route path="/offline" element={<OfflinePage />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Suspense>
-            } />
-          </Routes>
+          <main className="flex-grow">
+            {/* Special handling for homepage (not lazy-loaded) */}
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="*" element={
+                <Suspense fallback={<PageLoader />}>
+                  <Routes>
+                    <Route path="/blog" element={<BlogPage />} />
+                    <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/offline" element={<OfflinePage />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </Suspense>
+              } />
+            </Routes>
+          </main>
           
           <MemoizedFooter />
           <MemoizedCookieConsent />

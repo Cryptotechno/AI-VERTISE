@@ -312,7 +312,7 @@ const Contact = () => {
   const mapUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2433.8006646862307!2d16.90663857677015!3d52.40362497209754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47045b3b1e4cd855%3A0x7fb3e39084fa64e8!2sBa%C5%82tyk%20Tower!5e0!3m2!1sen!2spl!4v1710612433445!5m2!1sen!2spl"
 
   return (
-    <section id="contact" className="py-24 bg-gradient-to-br from-indigo-50 via-white to-purple-50 relative overflow-hidden">
+    <section id="contact" className="py-24" style={{ backgroundColor: '#f9f7fd' }}>
       {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full opacity-20 blur-3xl" />
@@ -330,10 +330,10 @@ const Contact = () => {
             <div className="inline-block px-4 py-2 bg-white rounded-full mb-6 shadow-sm border border-gray-100">
               <span className="text-indigo-600 font-medium">Contact Us</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-800 bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
               Let's Start Your Digital Growth
             </h2>
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Ready to transform your advertising strategy? We're here to help you achieve 
               exceptional results with AI-powered solutions.
             </p>
@@ -357,7 +357,7 @@ const Contact = () => {
                     <FaPhoneAlt className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm lg:text-base font-semibold text-gray-900">Call Us</h3>
+                    <h3 className="text-sm lg:text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">Call Us</h3>
                     <p className="text-sm lg:text-base text-gray-600">
                       Contact us via email
                     </p>
@@ -370,7 +370,7 @@ const Contact = () => {
                     <FaEnvelope className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm lg:text-base font-semibold text-gray-900">Email Us</h3>
+                    <h3 className="text-sm lg:text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">Email Us</h3>
                     <a href="mailto:contact@ai-vertise.com" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
                       contact@ai-vertise.com
                     </a>
@@ -383,7 +383,7 @@ const Contact = () => {
                     <FaMapMarkerAlt className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
-                    <h3 className="text-sm lg:text-base font-semibold text-gray-900">Visit Us</h3>
+                    <h3 className="text-sm lg:text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">Visit Us</h3>
                     <p className="text-sm lg:text-base text-gray-600">
                       Bałtyk Tower<br />
                       Głogowska 40A<br />
@@ -396,7 +396,7 @@ const Contact = () => {
 
             {/* Social Links */}
             <div className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100">
-              <h3 className="text-sm lg:text-base font-semibold text-gray-900 mb-4">Follow Us</h3>
+              <h3 className="text-sm lg:text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-4">Follow Us</h3>
               <div className="flex space-x-4">
                 {socialLinks.map((link, index) => (
                   <a
@@ -422,13 +422,13 @@ const Contact = () => {
             transition={{ duration: 0.5 }}
             className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100"
           >
-            <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Get in Touch</h3>
+            <h3 className="text-xl lg:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-6">Get in Touch</h3>
             
             {/* Progress Bar */}
             <div className="mb-6">
               <div className="flex justify-between text-sm mb-1">
-                <span id="form-progress-label">Form Progress</span>
-                <span aria-live="polite" aria-atomic="true">{formProgress}% Complete</span>
+                <span id="form-progress-label" className="text-gray-900">Form Progress</span>
+                <span aria-live="polite" aria-atomic="true" className="text-gray-600">{formProgress}% Complete</span>
               </div>
               <div 
                 className="w-full h-2 bg-gray-100 rounded-full overflow-hidden" 

@@ -14,7 +14,7 @@ import {
 
 const SuccessStories = () => {
   return (
-    <section id="success-stories" className="py-16 bg-gradient-to-b from-white to-indigo-50/30 relative overflow-hidden">
+    <section id="success-stories" className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
       {/* Background patterns */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.15]">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-100 rounded-full blur-3xl" />
@@ -30,7 +30,7 @@ const SuccessStories = () => {
           transition={{ duration: 0.5 }}
           className="text-center max-w-3xl mx-auto mb-12"
         >
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 bg-clip-text text-transparent">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
             Success Stories
           </h2>
           <p className="text-lg text-gray-600 mb-4">
@@ -79,7 +79,7 @@ const SuccessStories = () => {
                       247% ROAS
                     </span>
                   </div>
-                  <p className="text-gray-500 text-sm flex items-center gap-2">
+                  <p className="text-gray-600 text-sm flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                     Digital Transformation Success
                   </p>

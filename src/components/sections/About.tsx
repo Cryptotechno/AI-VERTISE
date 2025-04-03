@@ -123,7 +123,7 @@ const About = () => {
   const [imageError, setImageError] = useState(false)
 
   return (
-    <section id="about" className="py-24 bg-gradient-to-br from-indigo-50 via-white to-purple-50 relative overflow-hidden">
+    <section id="about" className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
       {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full opacity-20 blur-3xl" />
@@ -180,7 +180,7 @@ const About = () => {
             <div className="inline-block px-4 py-2 bg-white rounded-full mb-6 shadow-sm border border-gray-100">
               <span className="text-indigo-600 font-medium">About Us</span>
             </div>
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4 lg:mb-6 text-gray-900">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
               Empowering Businesses with AI-Driven Marketing
             </h2>
             <p className="text-base lg:text-lg text-gray-600 mb-8">
@@ -197,7 +197,7 @@ const About = () => {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center shadow-md border border-gray-100 hover:shadow-lg transition-all"
                 >
-                  <div className={`text-2xl lg:text-3xl font-bold mb-1 lg:mb-2 bg-gradient-to-br ${stat.color} bg-clip-text text-transparent`}>
+                  <div className={`text-2xl lg:text-3xl font-bold mb-1 lg:mb-2 text-indigo-600`}>
                     {stat.number}
                   </div>
                   <div className="text-xs lg:text-sm text-gray-600">{stat.label}</div>
@@ -219,7 +219,9 @@ const About = () => {
             <div className="inline-block px-4 py-2 bg-white rounded-full mb-4 lg:mb-6 shadow-sm border border-gray-100">
               <span className="text-indigo-600 font-medium">Our Team</span>
             </div>
-            <h3 className="text-2xl lg:text-3xl font-bold mb-3 lg:mb-4 text-gray-900">Expert Team at Your Service</h3>
+            <h3 className="text-2xl lg:text-3xl font-bold mb-3 lg:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
+              Expert Team at Your Service
+            </h3>
             <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
               Our dedicated specialists work directly with you to ensure your advertising success, 
               combining proven marketing expertise with smart technology.
@@ -286,7 +288,7 @@ const About = () => {
 
                   {/* Specialization */}
                   <div>
-                    <h5 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                    <h5 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
                       <FaLightbulb className="w-4 h-4 mr-2 text-indigo-600" />
                       Specialization:
                     </h5>
@@ -301,7 +303,7 @@ const About = () => {
 
                   {/* Areas of Focus */}
                   <div>
-                    <h5 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                    <h5 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
                       <FaUserTie className="w-4 h-4 mr-2 text-indigo-600" />
                       Areas of Focus:
                     </h5>
@@ -316,7 +318,7 @@ const About = () => {
 
                   {/* Certifications */}
                   <div>
-                    <h5 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                    <h5 className="text-sm font-semibold text-gray-900 mb-3 flex items-center">
                       <FaCertificate className="w-4 h-4 mr-2 text-indigo-600" />
                       Industry Certifications:
                     </h5>

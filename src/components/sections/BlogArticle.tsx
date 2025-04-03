@@ -524,82 +524,84 @@ const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
   }, []);
   
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-16 relative">
-      <SEO {...articleSEOData} />
-      <ReadingProgress scrollPercentage={scrollPercentage} />
-      <ProgressTracker activeSection={activeSection} totalSections={sections.length} />
-      
-      <article className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="mb-6">
-          <Link to="/blog" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition-colors mb-4">
-            <FaArrowLeft className="mr-2" />
-            <span>Back to all articles</span>
-          </Link>
-        </div>
+    <article className="py-24" style={{ backgroundColor: '#f9f7fd' }}>
+      <div className="container mx-auto px-4">
+        <SEO {...articleSEOData} />
+        <ReadingProgress scrollPercentage={scrollPercentage} />
+        <ProgressTracker activeSection={activeSection} totalSections={sections.length} />
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8 xl:col-span-9">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              {post.title}
-            </h1>
-            
-            <ArticleMeta post={post} readTime={readTime} />
-            
-            <div className="rounded-xl overflow-hidden mb-10 h-64 md:h-80 lg:h-96 relative">
-              {getPostImage(post)}
-            </div>
+        <article className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="mb-6">
+            <Link to="/blog" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition-colors mb-4">
+              <FaArrowLeft className="mr-2" />
+              <span>Back to all articles</span>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-8 xl:col-span-9">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+                {post.title}
+              </h1>
+              
+              <ArticleMeta post={post} readTime={readTime} />
+              
+              <div className="rounded-xl overflow-hidden mb-10 h-64 md:h-80 lg:h-96 relative">
+                {getPostImage(post)}
+              </div>
 
-            <div className="prose prose-lg max-w-none mb-10">
-              <p className="text-xl leading-relaxed text-gray-700">{post.content.introduction}</p>
+              <div className="prose prose-lg max-w-none mb-10">
+                <p className="text-xl leading-relaxed text-gray-700">{post.content.introduction}</p>
+              </div>
+              
+              <TableOfContents 
+                sections={sections} 
+                activeSection={activeSection} 
+                setActiveSection={setActiveSection} 
+              />
+              
+              {sections.map((section, index) => (
+                <Section 
+                  key={index} 
+                  section={section} 
+                  index={index} 
+                  isActive={index === activeSection} 
+                />
+              ))}
+              
+              <div className="prose prose-lg max-w-none border-t border-gray-200 pt-10">
+                <h2 className="text-3xl font-bold mb-6 text-gray-900">Conclusion</h2>
+                <p className="text-gray-700 leading-relaxed">{post.content.conclusion}</p>
+              </div>
             </div>
             
-            <TableOfContents 
-              sections={sections} 
-              activeSection={activeSection} 
-              setActiveSection={setActiveSection} 
-            />
-            
-            {sections.map((section, index) => (
-              <Section 
-                key={index} 
-                section={section} 
-                index={index} 
-                isActive={index === activeSection} 
-              />
-            ))}
-            
-            <div className="prose prose-lg max-w-none border-t border-gray-200 pt-10">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Conclusion</h2>
-              <p className="text-gray-700 leading-relaxed">{post.content.conclusion}</p>
+            <div className="lg:col-span-4 xl:col-span-3">
+              <div className="sticky top-24">
+                <div className="mb-8 flex justify-center lg:justify-start lg:pl-6">
+                  <ShareBar title={post.title} url={window.location.href} />
+                </div>
+                
+                <div className="hidden lg:block">
+                  <RelatedArticles />
+                </div>
+                
+                <div className="mt-10 hidden lg:block">
+                  <NewsletterSignup />
+                </div>
+              </div>
             </div>
           </div>
           
-          <div className="lg:col-span-4 xl:col-span-3">
-            <div className="sticky top-24">
-              <div className="mb-8 flex justify-center lg:justify-start lg:pl-6">
-                <ShareBar title={post.title} url={window.location.href} />
-              </div>
-              
-              <div className="hidden lg:block">
-                <RelatedArticles />
-              </div>
-              
-              <div className="mt-10 hidden lg:block">
-                <NewsletterSignup />
-              </div>
-            </div>
+          <div className="mt-12 lg:hidden">
+            <RelatedArticles />
           </div>
-        </div>
-        
-        <div className="mt-12 lg:hidden">
-          <RelatedArticles />
-        </div>
-        
-        <div className="mt-10 lg:hidden">
-          <NewsletterSignup />
-        </div>
-      </article>
-    </div>
+          
+          <div className="mt-10 lg:hidden">
+            <NewsletterSignup />
+          </div>
+        </article>
+      </div>
+    </article>
   );
 };
 

@@ -16,11 +16,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply text-gray-900 bg-white;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    width: 100%;
   }
 
   /* Glass effect */
@@ -87,6 +90,11 @@
 
   .icon-container-light {
     @apply bg-white/20 text-white;
+  }
+
+  /* Ensure all sections contain their content */
+  section {
+    @apply overflow-hidden;
   }
 }
 

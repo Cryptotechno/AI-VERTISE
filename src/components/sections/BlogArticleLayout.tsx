@@ -31,7 +31,7 @@ export const BlogArticleLayout: React.FC<BlogArticleLayoutProps> = ({
   previousArticle
 }) => {
   return (
-    <article className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <article className="min-h-screen" style={{ backgroundColor: '#f9f7fd' }}>
       <div className="max-w-4xl mx-auto px-4 py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

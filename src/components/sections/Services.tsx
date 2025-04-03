@@ -202,32 +202,19 @@ const Services: React.FC = () => {
   };
 
   return (
-    <section id="services" className="py-20 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-purple-50" />
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full opacity-20 blur-3xl" />
-        <div className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-gradient-to-tr from-indigo-100 via-purple-100 to-indigo-50 rounded-full opacity-20 blur-3xl" />
-      </div>
-
+    <section className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-8">
           <div className="inline-block px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full mb-4 border border-indigo-100/50 shadow-sm">
             <span className="text-indigo-600 font-medium">What We Offer</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-800 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
             Let's Grow Together
           </h2>
-          <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Ready to take your digital presence to the next level? Our AI-powered solutions make it happen.
           </p>
-        </motion.div>
+        </div>
 
         <motion.div
           variants={containerVariants}
@@ -238,7 +225,7 @@ const Services: React.FC = () => {
         >
           {services.map((service, index) => (
             <motion.div
-              key={index}
+              key={service.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -271,7 +258,7 @@ const Services: React.FC = () => {
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h3>
+                <h3 className="bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] text-xl font-bold mb-2">{service.title}</h3>
                 <p className="text-gray-600 mb-4 flex-grow">{service.description}</p>
 
                 {/* AI Impact Badge */}

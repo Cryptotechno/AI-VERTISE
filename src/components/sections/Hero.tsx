@@ -12,7 +12,8 @@ import {
   FaUsersCog,
   FaShieldAlt,
   FaBrain,
-  FaTools
+  FaTools,
+  FaChartLine
 } from 'react-icons/fa';
 import DashboardMockup from '../DashboardMockup';
 import { Button } from '../atoms/Button';
@@ -125,11 +126,11 @@ const Hero: React.FC = () => {
   ];
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-white">
+    <section className="relative min-h-screen w-full overflow-hidden" style={{ backgroundColor: '#f9f7fd' }}>
       {/* Background Elements - simplified for better performance */}
-      <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
-        <div className="absolute top-0 -right-1/4 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full blur-3xl" />
-        <div className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-gradient-to-tr from-indigo-100 via-purple-100 to-indigo-50 rounded-full blur-3xl" />
+      <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden" aria-hidden="true">
+        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full blur-3xl transform translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-indigo-100 via-purple-100 to-indigo-50 rounded-full blur-3xl transform -translate-x-1/4" />
       </div>
 
       {/* Main hero content */}
@@ -150,7 +151,7 @@ const Hero: React.FC = () => {
             
             <h1 
               ref={headingRef}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold mb-4 sm:mb-6 lg:mb-4 bg-gradient-to-br from-gray-900 via-indigo-900 to-purple-900 bg-clip-text text-transparent transition-transform duration-700 ease-out opacity-0 translate-y-4"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold mb-4 sm:mb-6 lg:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]"
               style={{ willChange: 'opacity, transform' }}
             >
               Transform Your Business with Smart Advertising
@@ -220,7 +221,7 @@ const Hero: React.FC = () => {
                     <benefit.icon className="w-4 h-4 lg:w-3.5 lg:h-3.5 text-indigo-600" />
                   </div>
                   <div className="flex-1">
-                    <span className="text-sm lg:text-xs text-gray-700 block">{benefit.text}</span>
+                    <span className="text-sm lg:text-xs text-gray-900 block">{benefit.text}</span>
                     <span className="text-xs lg:text-[10px] text-gray-500">{benefit.subtext}</span>
                   </div>
                 </div>
@@ -242,7 +243,7 @@ const Hero: React.FC = () => {
           </motion.div>
 
           {/* Right Column - Dashboard - prioritized for LCP */}
-          <div className="relative hidden lg:block lg:scale-95 lg:transform lg:origin-center">
+          <div className="relative hidden lg:block lg:scale-95 lg:transform lg:origin-center overflow-hidden">
             <DashboardMockup />
           </div>
         </div>

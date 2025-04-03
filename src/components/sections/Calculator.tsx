@@ -457,7 +457,7 @@ const Calculator = () => {
   }, [])
 
   return (
-    <section id="calculator" className="py-8">
+    <section id="calculator" className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -488,15 +488,9 @@ const Calculator = () => {
             </motion.div>
             <span className="text-indigo-600 font-medium text-sm">AI-Powered Calculator</span>
           </motion.div>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-2xl font-bold mb-2 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 bg-clip-text text-transparent"
-          >
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
             Smart Media Mix Optimizer
-          </motion.h2>
+          </h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
