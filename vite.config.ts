@@ -157,6 +157,7 @@ export default defineConfig({
         drop_debugger: true,
       },
     },
+    assetsDir: 'assets',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -165,7 +166,12 @@ export default defineConfig({
         },
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash].[ext]'
+        assetFileNames: ({name}) => {
+          if (/\.(gif|jpe?g|png|svg)$/.test(name ?? '')) {
+            return 'assets/images/[name]-[hash][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
       }
     },
     cssCodeSplit: true,

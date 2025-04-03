@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaPhone, FaEnvelope, FaBars, FaTimes } from 'react-icons/fa';
 import Button from '../atoms/Button';
 import { useAppStore } from '../../store';
+import logoImage from '/logo.png';
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -80,7 +81,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center">
               <img
-                src="/logo.png"
+                src={logoImage}
                 alt="AI Vertise"
                 className="app-logo h-10 w-auto rounded-lg"
                 fetchPriority="high"
