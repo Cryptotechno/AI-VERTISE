@@ -34,13 +34,14 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   sizes = '100vw'
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
   
   // Determine if this should be eagerly loaded
   const shouldEagerLoad = priority || loading === 'eager';
   
   // Generate paths for next-gen formats
-  const basePath = src.split('?')[0]; // Remove query params if any
+  const basePath = src.startsWith('/') ? src : `/${src}`;
   const webpSrc = basePath.replace(/\.(jpe?g|png)$/i, '.webp');
   const avifSrc = basePath.replace(/\.(jpe?g|png)$/i, '.avif');
   
@@ -53,7 +54,14 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Function to handle image loading
   const handleLoad = () => {
     setIsLoaded(true);
+    setHasError(false);
     if (onLoad) onLoad();
+  };
+
+  // Function to handle image error
+  const handleError = () => {
+    setHasError(true);
+    console.error(`Failed to load image: ${src}`);
   };
   
   // Set explicit dimensions if available to prevent layout shifts
@@ -71,6 +79,17 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     // Reduced animation complexity
     transition: 'opacity 0.3s',
   } : {};
+  
+  if (hasError) {
+    return (
+      <div 
+        className={`${className} bg-gray-100 flex items-center justify-center`}
+        style={{ ...dimensionProps }}
+      >
+        <span className="text-gray-400">Failed to load image</span>
+      </div>
+    );
+  }
   
   return (
     <picture>
@@ -90,12 +109,13 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       
       {/* Original format fallback */}
       <img
-        src={src}
+        src={basePath}
         alt={alt}
         className={`${className} ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
         loading={shouldEagerLoad ? 'eager' : 'lazy'}
         decoding={shouldEagerLoad ? 'sync' : 'async'}
         onLoad={handleLoad}
+        onError={handleError}
         fetchPriority={fetchPriority}
         sizes={mobileSizes}
         style={{

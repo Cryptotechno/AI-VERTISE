@@ -8,8 +8,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { OptimizedImage } from '../atoms/OptimizedImage'
 
-// Import optimized image
-import baltykImage from '../../assets/images/baltyk_optimized.jpg'
+// Use public path for image
+const BALTYK_IMAGE = '/images/baltyk_optimized.jpg'
 
 const stats = [
   {
@@ -138,7 +138,7 @@ const About = () => {
             >
               <div className="relative aspect-[4/3] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl lg:shadow-2xl">
                 <OptimizedImage
-                  src={baltykImage}
+                  src={BALTYK_IMAGE}
                   alt="Bałtyk Business Center - Poznań's Modern Business Hub"
                   className="w-full h-full object-cover brightness-90 contrast-110"
                   priority={true}
