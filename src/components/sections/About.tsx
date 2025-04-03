@@ -208,12 +208,12 @@ const About = () => {
               <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
                 Expert Team at Your Service
               </h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-6">
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-4">
                 Our dedicated specialists work directly with you to ensure your advertising success, combining proven marketing expertise with smart technology.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-0">
               {experts.map((expert, index) => (
                 <motion.div
                   key={index}
