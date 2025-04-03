@@ -309,7 +309,7 @@ const Contact = () => {
   }
 
   return (
-    <section id="contact" className="py-12 bg-[#f9f7fd]">
+    <section id="contact" className="py-12 bg-[#f9f7fd] -mt-12">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <motion.div

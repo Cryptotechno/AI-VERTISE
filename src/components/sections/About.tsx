@@ -199,28 +199,21 @@ const About = () => {
             </motion.div>
           </div>
 
-          {/* Features Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mt-12 lg:mt-20"
-          >
-            <div className="text-center mb-8 lg:mb-12">
+          {/* Team Section */}
+          <div className="mt-12">
+            <div className="text-center">
               <div className="inline-block px-4 py-2 bg-white rounded-full mb-4 lg:mb-6 shadow-sm border border-gray-100">
                 <span className="text-indigo-600 font-medium">Our Team</span>
               </div>
-              <h3 className="text-2xl lg:text-3xl font-bold mb-3 lg:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
                 Expert Team at Your Service
-              </h3>
-              <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto">
-                Our dedicated specialists work directly with you to ensure your advertising success, 
-                combining proven marketing expertise with smart technology.
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
+                Our dedicated specialists work directly with you to ensure your advertising success, combining proven marketing expertise with smart technology.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               {experts.map((expert, index) => (
                 <motion.div
                   key={index}
@@ -326,7 +319,7 @@ const About = () => {
                 </motion.div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
