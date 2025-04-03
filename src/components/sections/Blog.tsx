@@ -589,7 +589,7 @@ const Blog: React.FC = () => {
           </div>
         </div>
         
-        <div className="mt-12 mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mt-12 mb-0 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200 hover:border-indigo-200 transition-colors">
             <div className="bg-white w-12 h-12 rounded-full flex items-center justify-center mb-4 border border-gray-200">
               <FaBrain className="text-xl text-indigo-600" />
@@ -613,9 +613,11 @@ const Blog: React.FC = () => {
           </div>
         </div>
         
-        <NewsletterSignup />
+        <div className="mt-12 mb-0">
+          <NewsletterSignup />
+        </div>
 
-        <div className="text-center mb-0 pb-0">
+        <div className="text-center mt-8 mb-0">
           <Link
             to="/calculator"
             className="inline-flex items-center justify-center px-6 py-3 text-lg font-medium text-white bg-indigo-600 rounded-full shadow-lg hover:bg-indigo-700 transition-colors mb-4"
@@ -634,7 +636,7 @@ const Blog: React.FC = () => {
               />
             </svg>
           </Link>
-          <p className="text-gray-600 text-lg mb-0 pb-0">
+          <p className="text-gray-600 text-lg mb-0">
             Join these success stories and transform your digital marketing performance
           </p>
         </div>
