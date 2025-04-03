@@ -213,7 +213,7 @@ const About = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 pb-0">
               {experts.map((expert, index) => (
                 <motion.div
                   key={index}
