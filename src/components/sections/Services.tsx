@@ -205,7 +205,7 @@ const Services: React.FC = () => {
     <section className="py-12 bg-[#f9f7fd]">
       <div className="container mx-auto px-6">
         <div className="text-center mb-8">
-          <div className="inline-block px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full mb-4 border border-indigo-100/50 shadow-sm">
+          <div className="inline-block px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full mb-4 shadow-lg">
             <span className="text-indigo-600 font-medium">What We Offer</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
@@ -230,10 +230,10 @@ const Services: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300"
+              className="relative bg-white rounded-xl lg:rounded-2xl shadow-lg hover:shadow-xl transition-all group"
             >
               {/* AI Score Badge */}
-              <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-full border border-indigo-100/20">
+              <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-full">
                 <FaStar className="w-3 h-3 text-indigo-600" />
                 <span className="text-xs font-semibold text-indigo-600">
                   {aiRecommendations[service.title].score}% Match
@@ -301,7 +301,7 @@ const Services: React.FC = () => {
           <div className="relative inline-block">
             <div 
               onClick={scrollToContact}
-              className="relative inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-50/90 to-purple-50/90 rounded-full border border-indigo-100/20 shadow-sm hover:from-indigo-100/90 hover:to-purple-100/90 transition-colors cursor-pointer"
+              className="relative inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-50/90 to-purple-50/90 rounded-full shadow-lg hover:from-indigo-100/90 hover:to-purple-100/90 transition-colors cursor-pointer"
             >
               <div className="p-1 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full">
                 <FaCogs className="w-3 h-3 text-white" />

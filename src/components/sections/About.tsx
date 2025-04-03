@@ -123,7 +123,7 @@ const About = () => {
   const [imageError, setImageError] = useState(false)
 
   return (
-    <section id="about" className="pt-0 -mt-48 lg:-mt-56 bg-[#f9f7fd]">
+    <section id="about" className="pt-0 -mt-16 lg:-mt-24 bg-[#f9f7fd] relative z-10 overflow-hidden">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -169,7 +169,7 @@ const About = () => {
               transition={{ duration: 0.5 }}
               className="order-1 lg:order-2"
             >
-              <div className="inline-block px-4 py-2 bg-white rounded-full mb-6 shadow-sm border border-gray-100">
+              <div className="inline-block px-4 py-2 bg-white rounded-full mb-6 shadow-lg">
                 <span className="text-indigo-600 font-medium">About Us</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
@@ -187,7 +187,7 @@ const About = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center shadow-md border border-gray-100 hover:shadow-lg transition-all"
+                    className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 text-center shadow-lg hover:shadow-xl transition-all"
                   >
                     <div className={`text-2xl lg:text-3xl font-bold mb-1 lg:mb-2 text-indigo-600`}>
                       {stat.number}
@@ -202,7 +202,7 @@ const About = () => {
           {/* Team Section */}
           <div className="mt-8 lg:mt-12">
             <div className="text-center">
-              <div className="inline-block px-4 py-2 bg-white rounded-full mb-4 shadow-sm border border-gray-100">
+              <div className="inline-block px-4 py-2 bg-white rounded-full mb-4 shadow-lg">
                 <span className="text-indigo-600 font-medium">Our Team</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
@@ -221,7 +221,7 @@ const About = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100 hover:shadow-lg transition-all group"
+                  className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all group"
                 >
                   <div className="flex items-center mb-4 lg:mb-6">
                     <div className="inline-flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 group-hover:scale-110 transition-transform">

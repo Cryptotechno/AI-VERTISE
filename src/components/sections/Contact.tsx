@@ -309,8 +309,8 @@ const Contact = () => {
   }
 
   return (
-    <section id="contact" className="pt-0 pb-12 bg-[#f9f7fd] -mt-32 lg:-mt-40">
-      <div className="container mx-auto px-6">
+    <section id="contact" className="pt-0 pb-12 bg-[#f9f7fd] -mt-16 lg:-mt-24 relative z-20 overflow-hidden">
+      <div className="container mx-auto px-6 relative">
         <div className="text-center mb-12 lg:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -318,7 +318,7 @@ const Contact = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-block px-4 py-2 bg-white rounded-full mb-6 shadow-sm border border-gray-100">
+            <div className="inline-block px-4 py-2 bg-white rounded-full mb-6 shadow-sm transition-all duration-300 hover:shadow-md">
               <span className="text-indigo-600 font-medium">Contact Us</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
@@ -340,11 +340,11 @@ const Contact = () => {
             transition={{ duration: 0.5 }}
             className="space-y-4 lg:space-y-6"
           >
-            <div className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm transition-all duration-300 hover:shadow-md">
               <div className="space-y-4 lg:space-y-6">
                 {/* Phone */}
                 <div className="flex items-center space-x-3 lg:space-x-4">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 transition-all duration-300 hover:scale-105">
                     <FaPhoneAlt className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
@@ -357,7 +357,7 @@ const Contact = () => {
 
                 {/* Email */}
                 <div className="flex items-center space-x-3 lg:space-x-4">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 transition-all duration-300 hover:scale-105">
                     <FaEnvelope className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
@@ -370,7 +370,7 @@ const Contact = () => {
 
                 {/* Location */}
                 <div className="flex items-center space-x-3 lg:space-x-4">
-                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 transition-all duration-300 hover:scale-105">
                     <FaMapMarkerAlt className="w-5 h-5 lg:w-6 lg:h-6" />
                   </div>
                   <div>
@@ -386,7 +386,7 @@ const Contact = () => {
             </div>
 
             {/* Social Links */}
-            <div className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100">
+            <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm transition-all duration-300 hover:shadow-md">
               <h3 className="text-sm lg:text-base font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-4">Follow Us</h3>
               <div className="flex space-x-4">
                 {socialLinks.map((link, index) => (
@@ -396,7 +396,7 @@ const Contact = () => {
                     target="_blank"
                     rel="me noopener noreferrer"
                     aria-label={`Visit our ${link.label} page`}
-                    className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 transition-all duration-300"
+                    className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 text-indigo-600 hover:from-indigo-100 hover:to-purple-100 transition-all duration-300 hover:scale-105"
                   >
                     <link.icon className="w-5 h-5 lg:w-6 lg:h-6" />
                   </a>
@@ -411,7 +411,7 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-xl lg:rounded-2xl p-6 lg:p-8 shadow-md border border-gray-100"
+            className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm transition-all duration-300 hover:shadow-md"
           >
             <h3 className="text-xl lg:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] mb-6">Get in Touch</h3>
             
