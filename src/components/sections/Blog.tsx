@@ -634,7 +634,7 @@ const Blog: React.FC = () => {
               />
             </svg>
           </Link>
-          <p className="text-gray-600 text-lg mb-0">
+          <p className="text-gray-600 text-lg">
             Join these success stories and transform your digital marketing performance
           </p>
         </div>
