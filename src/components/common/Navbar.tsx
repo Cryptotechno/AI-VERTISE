@@ -9,9 +9,6 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { isMenuOpen, toggleMenu, closeMenu } = useAppStore();
   
-  // Get base URL for assets
-  const baseUrl = import.meta.env.DEV ? '' : '/AI-VERTISE';
-
   const handleHomeClick = () => {
     if (location.pathname !== '/') {
       navigate('/');
