@@ -202,8 +202,8 @@ const Services: React.FC = () => {
   };
 
   return (
-    <section className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
-      <div className="container mx-auto px-4 relative z-10">
+    <section className="py-12 bg-[#f9f7fd]">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-8">
           <div className="inline-block px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full mb-4 border border-indigo-100/50 shadow-sm">
             <span className="text-indigo-600 font-medium">What We Offer</span>

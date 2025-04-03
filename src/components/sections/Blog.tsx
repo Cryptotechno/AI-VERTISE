@@ -485,8 +485,8 @@ const Blog: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
-      <div className="container mx-auto px-4">
+    <section className="py-12 bg-[#f9f7fd]">
+      <div className="container mx-auto px-6">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center gap-2 bg-white px-4 py-2 rounded-full text-indigo-600 text-sm font-medium mb-3 border border-gray-200 shadow-sm">
             <FaRobot className="text-indigo-600" />

@@ -126,15 +126,15 @@ const Hero: React.FC = () => {
   ];
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden" style={{ backgroundColor: '#f9f7fd' }}>
-      {/* Background Elements - simplified for better performance */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden" aria-hidden="true">
-        <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full blur-3xl transform translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-indigo-100 via-purple-100 to-indigo-50 rounded-full blur-3xl transform -translate-x-1/4" />
-      </div>
+    <section className="relative bg-[#f9f7fd] overflow-hidden">
+      <div className="relative container mx-auto px-4 py-12 md:py-16 lg:py-20 min-h-[80vh] lg:min-h-[70vh] flex items-center" style={{ contain: 'layout paint' }}>
+        {/* Background Elements - simplified for better performance */}
+        <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden" aria-hidden="true">
+          <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-br from-purple-100 via-indigo-100 to-purple-50 rounded-full blur-3xl transform translate-x-1/4" />
+          <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-indigo-100 via-purple-100 to-indigo-50 rounded-full blur-3xl transform -translate-x-1/4" />
+        </div>
 
-      {/* Main hero content */}
-      <div className="relative container mx-auto px-4 py-16 md:py-24 lg:py-20 min-h-[80vh] lg:min-h-[70vh] flex items-center" style={{ contain: 'layout paint' }}>
+        {/* Main hero content */}
         <div className="grid lg:grid-cols-2 gap-6 md:gap-10 lg:gap-8 items-center w-full">
           {/* Left Column - Content */}
           <motion.div 

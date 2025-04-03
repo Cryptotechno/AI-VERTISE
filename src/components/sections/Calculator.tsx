@@ -457,8 +457,8 @@ const Calculator = () => {
   }, [])
 
   return (
-    <section id="calculator" className="relative py-8" style={{ backgroundColor: '#f9f7fd' }}>
-      <div className="container mx-auto px-4">
+    <section id="calculator" className="py-12 bg-[#f9f7fd]">
+      <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
