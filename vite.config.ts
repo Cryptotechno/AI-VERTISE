@@ -11,37 +11,21 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'logo.png', 'a-icon.svg', 'robots.txt', 'sitemap.xml'],
+      includeAssets: ['favicon.svg', 'logo.png', 'fav.png', 'robots.txt', 'sitemap.xml'],
       manifest: {
-        name: 'AI VERTISE',
-        short_name: 'AI',
-        description: 'Smart, automated, data-driven growth. Built with AI for brands ready to scale.',
-        theme_color: '#4338CA',
-        background_color: '#ffffff',
+        name: 'AI Vertise',
+        short_name: 'AI Vertise',
+        theme_color: '#6B46C1',
+        background_color: '#6B46C1',
         display: 'standalone',
-        start_url: '/',
+        orientation: 'portrait',
+        scope: '/AI-VERTISE/',
+        start_url: '/AI-VERTISE/',
         icons: [
           {
-            src: '/favicon/android-chrome-192x192.png',
+            src: '/fav.png',
             sizes: '192x192',
             type: 'image/png'
-          },
-          {
-            src: '/favicon/android-chrome-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: '/favicon/android-chrome-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable'
-          },
-          {
-            src: '/favicon.svg',
-            sizes: 'any',
-            type: 'image/svg+xml',
-            purpose: 'any'
           }
         ]
       },
@@ -161,7 +145,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: '/',
+  base: '/AI-VERTISE/',
   build: {
     target: 'es2020',
     outDir: 'dist',

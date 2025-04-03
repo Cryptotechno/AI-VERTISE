@@ -1,0 +1,146 @@
+/* Critical path CSS - to be inlined in the HTML header */
+
+/* Base reset and typography */
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: block;
+  width: 100%;
+}
+
+/* Layout */
+.min-h-screen {
+  min-height: 100vh;
+  height: auto;
+}
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  max-width: 100%;
+}
+
+.relative {
+  position: relative;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+/* Dashboard mockup critical styles */
+.dashboard-mockup {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(0.5rem);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(243, 244, 246, 0.5);
+  min-height: 600px;
+  opacity: 1 !important;
+  transform: none !important;
+  will-change: opacity, transform;
+  contain: layout style;
+  display: block;
+  overflow: visible;
+}
+
+/* Hero section critical styles */
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-transparent {
+  color: transparent;
+}
+
+.bg-clip-text {
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Grid layout */
+.grid {
+  display: grid;
+}
+
+.gap-12 {
+  gap: 3rem;
+}
+
+/* LCP optimization helpers */
+[data-priority="true"] .dashboard-mockup {
+  content-visibility: auto;
+  contain-intrinsic-size: 600px;
+}
+
+.lcp-optimized .dashboard-mockup {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Preload styles */
+.preload-dashboard .dashboard-mockup {
+  content-visibility: auto;
+}
+
+/* Optimization for above-the-fold content */
+.dashboard-mockup img {
+  content-visibility: auto;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .dashboard-mockup {
+    min-height: 400px;
+    padding: 1rem;
+  }
+  
+  .text-3xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .gap-12 {
+    gap: 1.5rem;
+  }
+} 

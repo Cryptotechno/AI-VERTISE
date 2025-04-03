@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaPhone, FaEnvelope, FaBars, FaTimes } from 'react-icons/fa';
-import { Button } from '../atoms/Button';
+import Button from '../atoms/Button';
 import { useAppStore } from '../../store';
 
-export const Navbar: React.FC = () => {
+const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isMenuOpen, toggleMenu, closeMenu } = useAppStore();
@@ -214,4 +214,6 @@ export const Navbar: React.FC = () => {
       </div>
     </nav>
   );
-}; 
+};
+
+export default Navbar; 

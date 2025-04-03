@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaTelegram, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import GDPRLogo from './GDPRLogo';
+import { SOCIAL_LINKEDIN_COMPANY, SOCIAL_TELEGRAM } from '../../utils/siteConfig';
 
 export const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -23,12 +24,12 @@ export const Footer: React.FC = () => {
             <h5 className="text-sm font-semibold text-gray-300 mb-4">Contact</h5>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:natalymakota@gmail.com" className="hover:text-white transition-colors">
-                  natalymakota@gmail.com
+                <a href="mailto:contact@ai-vertise.com" className="hover:text-white transition-colors">
+                  contact@ai-vertise.com
                 </a>
               </li>
               <li>
-                <a href="mailto:natalymakota@gmail.com" className="hover:text-white transition-colors">
+                <a href="mailto:contact@ai-vertise.com" className="hover:text-white transition-colors">
                   Contact via email
                 </a>
               </li>
@@ -68,7 +69,7 @@ export const Footer: React.FC = () => {
             <h3 className="text-xl font-bold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
               <a
-                href="https://t.me/natalyineu"
+                href={SOCIAL_TELEGRAM}
                 target="_blank"
                 rel="me noopener noreferrer"
                 aria-label="Visit our Telegram page"
@@ -77,10 +78,10 @@ export const Footer: React.FC = () => {
                 <FaTelegram className="w-6 h-6" />
               </a>
               <a
-                href="https://www.linkedin.com/in/nataliia-r/"
+                href={SOCIAL_LINKEDIN_COMPANY}
                 target="_blank"
                 rel="me noopener noreferrer"
-                aria-label="Visit our LinkedIn page"
+                aria-label="Visit our LinkedIn company page"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <FaLinkedin className="w-6 h-6" />

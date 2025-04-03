@@ -6,6 +6,7 @@ import {
   FaCheckCircle, FaPaperPlane, FaRobot, FaBrain, FaChartLine
 } from 'react-icons/fa'
 import { Button } from '../atoms/Button'
+import { SOCIAL_LINKEDIN_COMPANY, SOCIAL_TELEGRAM } from '../../utils/siteConfig'
 
 interface ContactFormData {
   email: string
@@ -52,8 +53,8 @@ const Contact = () => {
     {
       icon: FaEnvelope,
       title: "Email Us",
-      details: ["natalymakota@gmail.com"],
-      action: "mailto:natalymakota@gmail.com"
+      details: ["contact@ai-vertise.com"],
+      action: "mailto:contact@ai-vertise.com"
     },
     {
       icon: FaMapMarkerAlt,
@@ -72,12 +73,12 @@ const Contact = () => {
   const socialLinks = [
     {
       icon: FaLinkedin,
-      url: "https://www.linkedin.com/in/nataliia-r/",
+      url: SOCIAL_LINKEDIN_COMPANY,
       label: "LinkedIn"
     },
     {
       icon: FaTelegram,
-      url: "https://t.me/natalyineu",
+      url: SOCIAL_TELEGRAM,
       label: "Telegram"
     }
   ]
@@ -287,7 +288,7 @@ const Contact = () => {
     } catch (error) {
       console.error('Error submitting form:', error);
       setIsAnalyzing(false);
-      setSubmissionError('Failed to submit form. Please try again later or contact us directly at natalymakota@gmail.com');
+      setSubmissionError('Failed to submit form. Please try again later or contact us directly at contact@ai-vertise.com');
     } finally {
       setIsSubmitting(false);
     }
@@ -370,8 +371,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="text-sm lg:text-base font-semibold text-gray-900">Email Us</h3>
-                    <a href="mailto:natalymakota@gmail.com" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
-                      natalymakota@gmail.com
+                    <a href="mailto:contact@ai-vertise.com" className="text-sm lg:text-base text-indigo-600 hover:text-indigo-700 transition-colors">
+                      contact@ai-vertise.com
                     </a>
                   </div>
                 </div>
@@ -596,7 +597,7 @@ const Contact = () => {
                       </p>
                     )}
                     <p className="text-red-600 text-sm mt-2">
-                      Please try again or contact us directly at <a href="mailto:natalymakota@gmail.com" className="underline">natalymakota@gmail.com</a>
+                      Please try again or contact us directly at <a href="mailto:contact@ai-vertise.com" className="underline">contact@ai-vertise.com</a>
                     </p>
                   </div>
                 )}

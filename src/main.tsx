@@ -1,49 +1,60 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import App from './App'
+import './index.css'
+import { executeWhenIdle } from './utils/idleLoader'
 
-const rootElement = document.getElementById('root')
-if (!rootElement) {
-  console.error('Failed to find the root element')
-  throw new Error('Failed to find the root element')
+// Preload critical fonts
+const fontPreloadLink = document.createElement('link')
+fontPreloadLink.rel = 'preload'
+fontPreloadLink.as = 'font'
+fontPreloadLink.type = 'font/woff2'
+fontPreloadLink.href = '/fonts/inter-var-latin.woff2'
+fontPreloadLink.crossOrigin = 'anonymous'
+document.head.appendChild(fontPreloadLink)
+
+// Initialize core app
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(registration => {
+      console.log('SW registered:', registration)
+    }).catch(error => {
+      console.log('SW registration failed:', error)
+    })
+  })
 }
 
-const root = createRoot(rootElement)
-
-try {
-  root.render(
-    <StrictMode>
-      <App />
-    </StrictMode>
-  )
-} catch (error) {
-  console.error('Error rendering the app:', error)
-  rootElement.innerHTML = `
-    <div style="
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      text-align: center;
-      font-family: system-ui, -apple-system, sans-serif;
-    ">
-      <h1 style="color: #4F46E5; margin-bottom: 1rem;">Something went wrong</h1>
-      <p style="color: #6B7280; margin-bottom: 1rem;">We're having trouble loading the application.</p>
-      <button 
-        onclick="window.location.reload()" 
-        style="
-          background: #4F46E5;
-          color: white;
-          padding: 0.5rem 1rem;
-          border: none;
-          border-radius: 0.375rem;
-          cursor: pointer;
-        "
-      >
-        Reload Page
-      </button>
-    </div>
-  `
-}
+// Initialize non-critical features when browser is idle
+executeWhenIdle(() => {
+  // Load analytics
+  import('./utils/analytics').then(module => {
+    module.initAnalytics()
+  }).catch(err => console.warn('Failed to load analytics:', err))
+  
+  // Load other non-critical features
+  const loadNonCritical = async () => {
+    try {
+      // Preconnect to any third-party domains
+      const domains = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com']
+      domains.forEach(domain => {
+        const link = document.createElement('link')
+        link.rel = 'preconnect'
+        link.href = domain
+        document.head.appendChild(link)
+      })
+      
+      // Load any remaining deferred features
+    } catch (error) {
+      console.warn('Error loading non-critical features:', error)
+    }
+  }
+  
+  loadNonCritical()
+})

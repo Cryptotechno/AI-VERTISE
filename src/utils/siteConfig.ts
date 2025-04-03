@@ -15,7 +15,8 @@ export const SITE_DESCRIPTION = 'Smart, automated, data-driven growth. Built wit
 export const SITE_KEYWORDS = 'AI advertising, programmatic ads, paid social, AI marketing, performance marketing, digital agency';
 
 // Social media
-export const SOCIAL_LINKEDIN = 'https://www.linkedin.com/in/nataliia-r/';
+export const SOCIAL_LINKEDIN_PERSONAL = 'https://www.linkedin.com/in/nataliia-r/';
+export const SOCIAL_LINKEDIN_COMPANY = 'https://www.linkedin.com/company/aivertise';
 export const SOCIAL_TELEGRAM = 'https://t.me/natalyineu';
 
 // Images and assets
@@ -29,7 +30,7 @@ export const DEFAULT_OG_TYPE = 'website';
 export const DEFAULT_TWITTER_CARD = 'summary_large_image';
 
 // Contact information
-export const CONTACT_EMAIL = 'natalymakota@gmail.com';
+export const CONTACT_EMAIL = 'contact@ai-vertise.com';
 export const COMPANY_ADDRESS = {
   street: 'Głogowska 40A',
   city: 'Poznań',

@@ -7,11 +7,16 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "postbuild": "node inline-critical-css.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "generate-media-plan": "tsx src/utils/generateMediaPlan.ts"
+    "generate-media-plan": "tsx src/utils/generateMediaPlan.ts",
+    "optimize-images": "node image-optimizer.js",
+    "generate-favicons": "node create-favicons.js",
+    "optimize-svgs": "node optimize-svgs.js",
+    "prebuild": "npm run optimize-images && npm run optimize-svgs && npm run generate-favicons"
   },
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.25.9",

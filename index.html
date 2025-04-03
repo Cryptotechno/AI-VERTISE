@@ -2,13 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Favicon support -->
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/fav.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="AI VERTISE - AI-powered digital advertising agency in Poznań, specializing in programmatic ads, paid social, and performance marketing." />
     <meta name="keywords" content="AI advertising, digital marketing, programmatic ads, paid social, performance marketing, Poznań" />
@@ -16,70 +11,200 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ai-vertise.com" />
+    <meta property="og:url" content="https://ai-vertise.com/" />
     <meta property="og:title" content="AI VERTISE – AI-Powered Marketing" />
     <meta property="og:description" content="Smart, automated, data-driven growth. Built with AI for brands ready to scale." />
-    <meta property="og:image" content="https://ai-vertise.com/og-image-optimized.png" />
+    <meta property="og:image" content="https://ai-vertise.com/images/og/og-image-new.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="AI VERTISE" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://ai-vertise.com" />
+    <meta name="twitter:url" content="https://ai-vertise.com/" />
     <meta name="twitter:title" content="AI VERTISE – AI-Powered Marketing" />
     <meta name="twitter:description" content="Smart, automated, data-driven growth. Built with AI for brands ready to scale." />
-    <meta name="twitter:image" content="https://ai-vertise.com/og-image-optimized.png" />
+    <meta name="twitter:image" content="https://ai-vertise.com/images/og/og-image-new.png" />
+    
+    <!-- Add canonical URL -->
+    <link rel="canonical" href="https://ai-vertise.com/" />
     
     <!-- Preload critical assets -->
     <link rel="preload" href="/assets/index-CaWdW3U1.css" as="style">
-    <link rel="preload" as="image" href="/og-image.webp" type="image/webp">
+    <link rel="preload" as="image" href="/images/og/og-image.webp" type="image/webp">
+    
+    <!-- Font preloading -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hiA.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    </noscript>
     
-    <!-- Google tag (gtag.js) - defer to improve initial load time -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NS08SGTMJ2"></script>
+    <!-- Optimized font loading -->
+    <script src="/font-loading.js"></script>
+    
+    <!-- Mobile optimization -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-NS08SGTMJ2', { 'send_page_view': false });
-      // Delayed sending of pageview
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          gtag('event', 'page_view');
-        }, 2000);
-      });
+      (function() {
+        // Check if mobile device
+        if (window.innerWidth < 768) {
+          // Add text rendering smoothing class to body
+          document.documentElement.classList.add('text-loading-fix');
+          
+          // Mobile optimization flags
+          window.isMobileOptimized = true;
+          
+          // Defer non-critical scripts
+          const deferScripts = function() {
+            // Wait until the main content has loaded
+            window.addEventListener('load', function() {
+              // Set a 3-second delay before loading analytics on mobile
+              setTimeout(function() {
+                // Load Google Analytics dynamically for mobile
+                const analyticsScript = document.querySelector('script[src*="googletagmanager"]');
+                if (analyticsScript) {
+                  // Remove synchronous analytics to load it later
+                  analyticsScript.parentNode.removeChild(analyticsScript);
+                  
+                  // Create a new script tag
+                  const newScript = document.createElement('script');
+                  newScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-NS08SGTMJ2';
+                  newScript.async = true;
+                  document.head.appendChild(newScript);
+                }
+              }, 3000);
+            });
+          };
+          
+          // Add preconnect hints for critical domains
+          const addPreconnects = function() {
+            const domains = [
+              'https://fonts.googleapis.com',
+              'https://fonts.gstatic.com',
+              'https://ai-vertise.com'
+            ];
+            
+            domains.forEach(domain => {
+              const link = document.createElement('link');
+              link.rel = 'preconnect';
+              link.href = domain;
+              link.crossOrigin = 'anonymous';
+              document.head.appendChild(link);
+            });
+          };
+          
+          // We're using our optimized font-loading.js script now
+          
+          // Optimize image loading
+          const optimizeImageLoading = function() {
+            // Add intersection observer for proper lazy loading 
+            if ('IntersectionObserver' in window) {
+              const lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(function(entry) {
+                  if (entry.isIntersecting) {
+                    const lazyImage = entry.target;
+                    if (lazyImage.dataset.src) {
+                      lazyImage.src = lazyImage.dataset.src;
+                      lazyImage.removeAttribute('data-src');
+                      lazyImageObserver.unobserve(lazyImage);
+                    }
+                  }
+                });
+              });
+              
+              // Initialize the observer on all images with data-src
+              document.addEventListener('DOMContentLoaded', function() {
+                const lazyImages = document.querySelectorAll('img[data-src]');
+                lazyImages.forEach(function(lazyImage) {
+                  lazyImageObserver.observe(lazyImage);
+                });
+              });
+            }
+          };
+          
+          // Apply all mobile optimizations
+          deferScripts();
+          addPreconnects();
+          optimizeImageLoading();
+          
+          // Add helper functions to window for other components
+          window.mobilePerformance = {
+            // Function to defer expensive calculations
+            deferCalculation: function(fn, delay = 500) {
+              return setTimeout(fn, delay);
+            },
+            
+            // Function to use reduced animation versions
+            useReducedAnimation: true,
+            
+            // Mobile-specific image loader
+            loadOptimizedImage: function(element) {
+              if (element instanceof HTMLImageElement) {
+                const src = element.getAttribute('data-src');
+                if (src) {
+                  // Try WebP first
+                  const webpSrc = src.replace(/\.(jpe?g|png)$/i, '.webp');
+                  const img = new Image();
+                  img.onload = function() {
+                    element.src = webpSrc;
+                    element.removeAttribute('data-src');
+                  };
+                  img.onerror = function() {
+                    // Fallback to original
+                    element.src = src;
+                    element.removeAttribute('data-src');
+                  };
+                  img.src = webpSrc;
+                }
+              }
+            }
+          };
+        }
+      })();
     </script>
     
-    <title>AI VERTISE – AI-Powered Marketing</title>
-    <meta name="theme-color" content="#4338CA" />
+    <title>AI VERTISE</title>
+    <meta name="theme-color" content="#6B46C1">
     
     <style>
       /* Critical CSS inline for faster paint */
       body {
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         margin: 0;
         padding: 0;
         background-color: #f9fafb;
         color: #111827;
+        text-rendering: optimizeSpeed;
       }
+      
       #root {
         min-height: 100vh;
         display: flex;
         flex-direction: column;
       }
-      /* Font-display swap to prevent FOIT */
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2) format('woff2');
+      
+      /* Add logo styling */
+      .app-logo {
+        height: 3rem;
+        width: auto;
+      }
+      /* Prevent layout shift */
+      img, svg {
+        height: auto;
+        max-width: 100%;
+      }
+      
+      /* Mobile-specific optimizations */
+      @media (max-width: 767px) {
+        /* Prevent text flashing during font load */
+        h1, h2, h3, p, span, a, button {
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Improve tap targets */
+        button, a, input, select, textarea {
+          min-height: 44px;
+          min-width: 44px;
+        }
       }
     </style>
   </head>

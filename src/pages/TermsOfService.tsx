@@ -116,7 +116,7 @@ const TermsOfService: React.FC = () => {
                 If you have any questions about these Terms of Service, please contact us at:
               </p>
               <p>
-                Email: natalymakota@gmail.com
+                Email: contact@ai-vertise.com
               </p>
             </div>
           </motion.div>

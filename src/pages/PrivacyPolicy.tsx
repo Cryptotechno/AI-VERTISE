@@ -131,7 +131,7 @@ const PrivacyPolicy: React.FC = () => {
                 If you have any questions about this Privacy Policy or wish to exercise your GDPR rights, please contact us at:
               </p>
               <p>
-                Email: natalymakota@gmail.com
+                Email: contact@ai-vertise.com
               </p>
             </div>
           </motion.div>

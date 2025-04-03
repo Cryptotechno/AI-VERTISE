@@ -13,7 +13,7 @@ interface AppState {
 export const useAppStore = create<AppState>((set) => ({
   cookieConsent: localStorage.getItem('cookieConsent') === 'true',
   isMenuOpen: false,
-  isDarkMode: localStorage.getItem('darkMode') === 'true',
+  isDarkMode: false,
   
   setCookieConsent: (value) => {
     localStorage.setItem('cookieConsent', String(value));
@@ -24,9 +24,5 @@ export const useAppStore = create<AppState>((set) => ({
   
   closeMenu: () => set({ isMenuOpen: false }),
   
-  toggleDarkMode: () => set((state) => {
-    const newDarkMode = !state.isDarkMode;
-    localStorage.setItem('darkMode', String(newDarkMode));
-    return { isDarkMode: newDarkMode };
-  }),
+  toggleDarkMode: () => set({ isDarkMode: false }),
 })); 
