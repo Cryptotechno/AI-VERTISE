@@ -181,19 +181,12 @@ export default defineConfig({
     postcss: './postcss.config.js'
   },
   server: {
-    port: 5173,
-    strictPort: false,
-    hmr: false,
-    watch: {
-      usePolling: false,
-    },
-    open: true,
+    port: 3000,
     host: true
   },
   preview: {
-    port: 5173,
-    strictPort: false,
-    host: true,
+    port: 3000,
+    host: true
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'framer-motion', 'chart.js', 'react-chartjs-2'],
