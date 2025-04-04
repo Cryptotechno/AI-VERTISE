@@ -1,70 +1,45 @@
-import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router-dom';
 import {
   SITE_TITLE,
   SITE_DESCRIPTION,
-  SITE_KEYWORDS,
-  SITE_URL,
   SITE_NAME,
-  OG_IMAGE_PATH,
+  SITE_URL,
   OG_IMAGE_ABSOLUTE_URL,
-  DEFAULT_OG_TYPE,
-  DEFAULT_TWITTER_CARD,
-  COMPANY_ADDRESS,
   CONTACT_EMAIL,
   SOCIAL_LINKEDIN_COMPANY,
-  SOCIAL_TELEGRAM,
-  assetUrl,
-  canonicalUrl
+  SOCIAL_TELEGRAM
 } from '../../utils/siteConfig';
-import { 
-  createOrganizationSchema, 
-  createFaqSchema,
-  createDatasetSchema
-} from '../../utils/schemaMarkup';
-import {
-  generateAIMetadata,
-  aiModelSchemas
-} from '../../utils/aiModelMetadata';
-import { useLocation } from 'react-router-dom';
-import { Helmet as HelmetAsync } from 'react-helmet-async';
-
-interface SEOProps {
-  title?: string;
-  description?: string;
-  keywords?: string;
-  ogTitle?: string;
-  ogDescription?: string;
-  ogType?: string;
-  ogImage?: string;
-  twitterCard?: string;
-  twitterTitle?: string;
-  twitterDescription?: string;
-  twitterImage?: string;
-  path?: string;
-  structuredData?: object;
-  includeFaq?: boolean;
-  includeDataset?: boolean;
-  includeTechnologyService?: boolean;
-  includeSoftwareApplication?: boolean;
-  canonicalUrl?: string;
-  robots?: string;
-}
+import { blogPosts } from '../../data/blogPosts';
 
 interface MetaData {
   title: string;
   description: string;
-  image?: string;
-  type?: string;
+  image: string;
+  type: string;
+  keywords: string[];
 }
 
 const getMetaData = (pathname: string): MetaData => {
   const defaultMeta = {
-    title: 'AI Vertise - AI-Powered Digital Marketing Solutions',
-    description: 'Transform your digital marketing with AI Vertise. Expert AI solutions for programmatic advertising, social media, and privacy-first marketing strategies.',
-    image: '/logo_optimized.png',
-    type: 'website'
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    image: OG_IMAGE_ABSOLUTE_URL,
+    type: 'website',
+    keywords: [
+      'AI Marketing',
+      'Digital Marketing',
+      'AI Advertising',
+      'Programmatic Ads',
+      'Marketing Automation'
+    ]
   };
+
+  // Find blog post if we're on a blog page
+  const blogPost = pathname.startsWith('/blog/') 
+    ? blogPosts.find(post => post.slug === pathname.split('/blog/')[1])
+    : null;
 
   switch (pathname) {
     case '/':
@@ -72,30 +47,38 @@ const getMetaData = (pathname: string): MetaData => {
     case '/blog':
       return {
         ...defaultMeta,
-        title: 'AI Vertise Blog - Latest AI Marketing Insights',
-        description: 'Discover the latest insights on AI in digital marketing, programmatic advertising, and marketing automation.',
+        title: 'AI Marketing Blog | Latest Insights - AI Vertise',
+        description: 'Discover cutting-edge insights on AI in digital marketing, programmatic advertising, and marketing automation strategies.',
+        keywords: [
+          'AI Marketing Blog',
+          'Digital Marketing Insights',
+          'AI Advertising Tips',
+          'Marketing Strategy',
+          'AI Technology'
+        ]
       };
     case '/privacy':
       return {
         ...defaultMeta,
         title: 'Privacy Policy - AI Vertise',
-        description: 'Our commitment to protecting your privacy and data security at AI Vertise.',
+        description: 'Learn about our commitment to protecting your privacy and data security at AI Vertise.',
+        type: 'WebPage'
       };
     case '/terms':
       return {
         ...defaultMeta,
         title: 'Terms of Service - AI Vertise',
-        description: 'Terms and conditions for using AI Vertise services and platforms.',
+        description: 'Read our terms and conditions for using AI Vertise services and platforms.',
+        type: 'WebPage'
       };
     default:
-      if (pathname.startsWith('/blog/')) {
-        // Handle blog posts
+      if (blogPost) {
         return {
-          ...defaultMeta,
+          title: `${blogPost.title} - AI Vertise Blog`,
+          description: blogPost.excerpt || defaultMeta.description,
+          image: blogPost.image || defaultMeta.image,
           type: 'article',
-          // You can enhance this by getting actual blog post data
-          title: `${pathname.split('/').pop()?.split('-').join(' ')} - AI Vertise Blog`,
-          description: 'Read our latest insights on AI-powered digital marketing strategies.',
+          keywords: [...blogPost.tags || [], ...defaultMeta.keywords]
         };
       }
       return defaultMeta;
@@ -105,60 +88,104 @@ const getMetaData = (pathname: string): MetaData => {
 export const SEO: React.FC = () => {
   const { pathname } = useLocation();
   const meta = getMetaData(pathname);
+  const fullUrl = `${SITE_URL}${pathname}`;
 
   return (
-    <HelmetAsync>
+    <Helmet>
+      {/* Primary Meta Tags */}
       <title>{meta.title}</title>
       <meta name="description" content={meta.description} />
+      <meta name="keywords" content={meta.keywords.join(', ')} />
       
       {/* Open Graph / Facebook */}
-      <meta property="og:type" content={meta.type} />
+      <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:title" content={meta.title} />
       <meta property="og:description" content={meta.description} />
-      {meta.image && <meta property="og:image" content={meta.image} />}
+      <meta property="og:type" content={meta.type} />
+      <meta property="og:url" content={fullUrl} />
+      <meta property="og:image" content={meta.image} />
+      <meta property="og:locale" content="en_US" />
       
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={meta.title} />
       <meta name="twitter:description" content={meta.description} />
-      {meta.image && <meta name="twitter:image" content={meta.image} />}
+      <meta name="twitter:image" content={meta.image} />
       
       {/* Canonical URL */}
-      <link rel="canonical" href={`https://ai-vertise.com${pathname}`} />
-    </HelmetAsync>
+      <link rel="canonical" href={fullUrl} />
+      
+      {/* Favicon */}
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      
+      {/* PWA */}
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="theme-color" content="#6B46C1" />
+      
+      {/* Additional Meta */}
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="robots" content="index, follow" />
+      <meta name="author" content={SITE_NAME} />
+    </Helmet>
   );
 };
 
 export const SiteStructuredData: React.FC = () => {
-  useEffect(() => {
-    // Use enhanced organization schema for better AI model understanding
-    const structuredData = createOrganizationSchema();
+  const { pathname } = useLocation();
+  const meta = getMetaData(pathname);
+  const fullUrl = `${SITE_URL}${pathname}`;
 
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(structuredData);
-    
-    // Check if a script with the same type already exists to avoid duplicates
-    const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
-    for (let i = 0; i < existingScripts.length; i++) {
-      try {
-        const scriptData = JSON.parse(existingScripts[i].textContent || '{}');
-        if (scriptData['@type'] === 'Organization') {
-          return; // Organization schema already exists, don't add another
-        }
-      } catch (e) {
-        console.error('Error parsing existing schema:', e);
+  const baseStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": SITE_NAME,
+    "url": SITE_URL,
+    "logo": OG_IMAGE_ABSOLUTE_URL,
+    "email": CONTACT_EMAIL,
+    "description": SITE_DESCRIPTION,
+    "sameAs": [
+      SOCIAL_LINKEDIN_COMPANY,
+      SOCIAL_TELEGRAM
+    ]
+  };
+
+  const pageStructuredData = pathname.startsWith('/blog/') ? {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": meta.title,
+    "description": meta.description,
+    "image": meta.image,
+    "author": {
+      "@type": "Organization",
+      "name": SITE_NAME
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": SITE_NAME,
+      "logo": {
+        "@type": "ImageObject",
+        "url": OG_IMAGE_ABSOLUTE_URL
       }
+    },
+    "url": fullUrl,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": fullUrl
     }
-    
-    document.head.appendChild(script);
+  } : null;
 
-    return () => {
-      if (script.parentNode) {
-        document.head.removeChild(script);
-      }
-    };
-  }, []);
-
-  return null;
+  return (
+    <>
+      <script type="application/ld+json">
+        {JSON.stringify(baseStructuredData)}
+      </script>
+      {pageStructuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(pageStructuredData)}
+        </script>
+      )}
+    </>
+  );
 }; 
