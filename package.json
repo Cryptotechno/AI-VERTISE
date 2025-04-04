@@ -19,13 +19,10 @@
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0",
     "react-helmet-async": "^2.0.5",
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.22.3",
     "react-syntax-highlighter": "^15.6.1",
-    "xlsx": "^0.18.5",
-    "xlsx-js-style": "^1.2.0",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
@@ -36,22 +33,13 @@
     "@typescript-eslint/parser": "^6.14.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "10.4.15",
-    "caniuse-lite": "1.0.30001563",
     "eslint": "^8.55.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "gh-pages": "^6.3.0",
     "postcss": "8.4.29",
-    "sharp": "^0.33.5",
-    "svgo": "^3.3.2",
     "tailwindcss": "3.3.3",
-    "terser": "^5.39.0",
-    "tsx": "^4.19.3",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
-    "vite-plugin-compression": "^0.5.1",
-    "vite-plugin-image-optimizer": "^1.1.8",
-    "vite-plugin-pwa": "^1.0.0",
-    "xml2js": "^0.6.2"
+    "vite-plugin-pwa": "^1.0.0"
   }
 }
