@@ -20,7 +20,8 @@ import {
   FaSyncAlt,
   FaChartLine,
   FaDownload,
-  FaRegLightbulb
+  FaRegLightbulb,
+  FaCalculator
 } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 
@@ -457,37 +458,13 @@ const Calculator = () => {
   }, [])
 
   return (
-    <section id="calculator" className="py-12 bg-[#f9f7fd]">
-      <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-6"
-        >
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-full mb-2 border border-indigo-100/20"
-          >
-            <motion.div
-              animate={{ 
-                rotate: [0, 10, -10, 0],
-                scale: [1, 1.1, 1]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              <FaBrain className="w-4 h-4 text-indigo-600" />
-            </motion.div>
-            <span className="text-indigo-600 font-medium text-sm">AI-Powered Calculator</span>
-          </motion.div>
+    <section className="section -mt-12">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-full mb-2 shadow-lg">
+            <FaCalculator className="w-4 h-4 text-indigo-600" />
+            <span className="text-indigo-600 font-medium">AI-Powered Calculator</span>
+          </div>
           <h2 className="text-3xl sm:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1]">
             Smart Media Mix Optimizer
           </h2>
@@ -500,7 +477,7 @@ const Calculator = () => {
           >
             Our AI analyzes your goals and budget to create the optimal media mix with real-time predictions and insights.
           </motion.p>
-        </motion.div>
+        </div>
 
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-4">

@@ -22,6 +22,7 @@ import {
   FaChartPie
 } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { Card } from '../ui/Card'
 
 interface AIRecommendation {
   score: number;
@@ -202,8 +203,8 @@ const Services: React.FC = () => {
   };
 
   return (
-    <section className="py-12 bg-[#f9f7fd]">
-      <div className="container mx-auto px-6">
+    <section className="section pb-0">
+      <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <div className="inline-block px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full mb-4 shadow-lg">
             <span className="text-indigo-600 font-medium">What We Offer</span>
@@ -212,83 +213,61 @@ const Services: React.FC = () => {
             Let's Grow Together
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Ready to take your digital presence to the next level? Our AI-powered solutions make it happen.
+            Discover our AI-powered solutions to transform your digital presence.
           </p>
         </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
           {services.map((service, index) => (
-            <motion.div
+            <Card
               key={service.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative bg-white rounded-xl lg:rounded-2xl shadow-lg hover:shadow-xl transition-all group"
+              pattern
+              patternColor="from-indigo-600/10 to-purple-600/5"
+              className="p-7"
             >
               {/* AI Score Badge */}
-              <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2 py-1 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-full">
-                <FaStar className="w-3 h-3 text-indigo-600" />
-                <span className="text-xs font-semibold text-indigo-600">
-                  {aiRecommendations[service.title].score}% Match
+              <div className="absolute top-6 right-6 flex items-center gap-2 px-3.5 py-2 bg-white rounded-full shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] border border-gray-100/80">
+                <FaStar className="w-4 h-4 text-indigo-600" />
+                <span className="text-sm font-semibold text-indigo-600">
+                  {aiRecommendations[service.title]?.score || 90}% Match
                 </span>
               </div>
 
-              {/* Pattern Background */}
-              <div className="absolute top-0 right-0 w-32 h-32 opacity-10 transition-transform group-hover:scale-110">
-                <div className="absolute transform rotate-45 translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-r from-indigo-600 to-purple-600" />
-              </div>
-
-              <div className="p-4 sm:p-6 h-full flex flex-col">
-                <div className="mb-4 relative">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform">
-                    <service.icon className="w-6 h-6" />
-                  </div>
-                  {/* AI Trend Tag */}
-                  <div className="absolute left-14 -top-1 inline-flex items-center">
-                    <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
-                      {aiRecommendations[service.title].trend}
-                    </span>
-                  </div>
+              <div className="mb-7 relative">
+                <div className="w-16 h-16 rounded-[20px] bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center text-indigo-600 group-hover:scale-105 transition-transform duration-300">
+                  <service.icon className="w-8 h-8" />
                 </div>
-
-                <h3 className="bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] text-xl font-bold mb-2">{service.title}</h3>
-                <p className="text-gray-600 mb-4 flex-grow">{service.description}</p>
-
-                {/* AI Impact Badge */}
-                <div className="mb-4 flex items-center gap-2">
-                  <FaAward className="w-4 h-4 text-indigo-600" />
-                  <span className="text-sm font-medium text-indigo-600">
-                    {aiRecommendations[service.title].impact}
+                {/* AI Trend Tag */}
+                <div className="absolute left-20 top-1 inline-flex items-center">
+                  <span className="text-sm font-semibold text-indigo-600 bg-white px-3.5 py-1.5 rounded-full shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] border border-gray-100/80">
+                    {aiRecommendations[service.title]?.trend || 'Trending'}
                   </span>
                 </div>
-
-                <div className="space-y-2 mb-6">
-                  {service.benefits.map((benefit, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <FaCheck className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                      <span className="text-sm text-gray-600">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={scrollToContact}
-                  className="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg font-medium flex items-center justify-center gap-2 group transition-all duration-300 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  {service.cta}
-                  <FaArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-                </button>
               </div>
-            </motion.div>
+
+              <h3 className="bg-clip-text text-transparent bg-gradient-to-r from-[#312e81] via-[#4338ca] to-[#6366f1] text-xl font-bold mb-3">
+                {service.title}
+              </h3>
+              <p className="text-gray-600 mb-7 flex-grow">{service.description}</p>
+
+              <div className="space-y-3 mb-7">
+                {service.benefits.map((benefit, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] border border-gray-100/80">
+                      <FaCheck className="w-3 h-3 text-indigo-600" />
+                    </div>
+                    <span className="text-sm text-gray-600">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+
+              <button className="w-full px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-2xl font-medium flex items-center justify-center gap-2 group/btn transition-all duration-300 hover:scale-[1.02] shadow-[0_4px_12px_-2px_rgba(79,70,229,0.3)] hover:shadow-[0_6px_16px_-2px_rgba(79,70,229,0.4)]">
+                {service.cta}
+                <FaArrowRight className="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" />
+              </button>
+            </Card>
           ))}
-        </motion.div>
+        </div>
 
         {/* Additional Info */}
         <motion.div
@@ -296,20 +275,20 @@ const Services: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-12 text-center"
+          className="text-center mb-0"
         >
-          <div className="relative inline-block">
+          <div className="relative inline-block mb-1">
             <div 
               onClick={scrollToContact}
-              className="relative inline-flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-indigo-50/90 to-purple-50/90 rounded-full shadow-lg hover:from-indigo-100/90 hover:to-purple-100/90 transition-colors cursor-pointer"
+              className="relative inline-flex items-center gap-3 px-5 py-2 bg-gradient-to-r from-indigo-50/90 to-purple-50/90 rounded-full shadow-lg hover:from-indigo-100/90 hover:to-purple-100/90 transition-colors cursor-pointer"
             >
-              <div className="p-1 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full">
-                <FaCogs className="w-3 h-3 text-white" />
+              <div className="p-1.5 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-full">
+                <FaCogs className="w-4 h-4 text-white" />
               </div>
-              <span className="text-sm text-indigo-600 font-medium">Let's Customize Your Plan</span>
+              <span className="text-base text-indigo-600 font-medium">Let's Customize Your Plan</span>
             </div>
           </div>
-          <p className="mt-3 text-sm text-gray-600 max-w-xl mx-auto">
+          <p className="text-sm text-gray-600 max-w-xl mx-auto mb-0">
             Not sure where to start? Let's chat and find the perfect mix of services for your goals.
           </p>
         </motion.div>

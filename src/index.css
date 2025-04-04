@@ -10,20 +10,28 @@
   --text-primary: theme(colors.gray.900);
   --text-secondary: theme(colors.gray.700);
   --background: theme(colors.white);
-  --background-alt: theme(colors.gray.50);
+  --background-alt: #f9f7fd;
 }
 
 @layer base {
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    background-color: var(--background-alt);
   }
 
   body {
-    @apply text-gray-900 bg-[#f9f7fd];
+    @apply text-gray-900;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
     width: 100%;
+    min-height: 100vh;
+    background-color: var(--background-alt);
+  }
+
+  #root {
+    background-color: var(--background-alt);
+    min-height: 100vh;
   }
 
   /* Glass effect */
@@ -58,9 +66,10 @@
 
   /* Section styles */
   .section {
-    @apply py-20 relative overflow-hidden;
-    margin-top: 0 !important;
-    padding-top: 0 !important;
+    @apply relative overflow-hidden;
+    background-color: var(--background-alt);
+    padding: 3rem 0;
+    margin: 0;
   }
 
   .section-title {
@@ -102,14 +111,15 @@
   }
 
   section + section {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
+    padding-top: 0;
   }
 
   /* Container styles */
   .container {
     position: relative;
     z-index: 2;
+    width: 100%;
+    margin: 0 auto;
   }
 
   /* Optimize transitions */

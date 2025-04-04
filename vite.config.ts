@@ -145,7 +145,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: '/',
+  base: '/AI-VERTISE/',
   build: {
     target: 'es2020',
     outDir: 'dist',
