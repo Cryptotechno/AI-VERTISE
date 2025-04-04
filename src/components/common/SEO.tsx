@@ -26,6 +26,8 @@ import {
   generateAIMetadata,
   aiModelSchemas
 } from '../../utils/aiModelMetadata';
+import { useLocation } from 'react-router-dom';
+import { Helmet as HelmetAsync } from 'react-helmet-async';
 
 interface SEOProps {
   title?: string;
@@ -49,106 +51,81 @@ interface SEOProps {
   robots?: string;
 }
 
-export const SEO: React.FC<SEOProps> = ({
-  title = SITE_TITLE,
-  description = SITE_DESCRIPTION,
-  keywords = SITE_KEYWORDS,
-  ogTitle = title,
-  ogDescription = description,
-  ogType = DEFAULT_OG_TYPE,
-  ogImage = OG_IMAGE_ABSOLUTE_URL,
-  twitterCard = DEFAULT_TWITTER_CARD,
-  twitterTitle = ogTitle,
-  twitterDescription = ogDescription,
-  twitterImage = ogImage,
-  path = '',
-  structuredData,
-  includeFaq = false,
-  includeDataset = false,
-  includeTechnologyService = false,
-  includeSoftwareApplication = false,
-  canonicalUrl: customCanonicalUrl,
-  robots
-}) => {
-  const pageUrl = customCanonicalUrl || (path ? canonicalUrl(path) : SITE_URL);
-  const aiMetadataTags = generateAIMetadata({ title, description });
-  
+interface MetaData {
+  title: string;
+  description: string;
+  image?: string;
+  type?: string;
+}
+
+const getMetaData = (pathname: string): MetaData => {
+  const defaultMeta = {
+    title: 'AI Vertise - AI-Powered Digital Marketing Solutions',
+    description: 'Transform your digital marketing with AI Vertise. Expert AI solutions for programmatic advertising, social media, and privacy-first marketing strategies.',
+    image: '/logo_optimized.png',
+    type: 'website'
+  };
+
+  switch (pathname) {
+    case '/':
+      return defaultMeta;
+    case '/blog':
+      return {
+        ...defaultMeta,
+        title: 'AI Vertise Blog - Latest AI Marketing Insights',
+        description: 'Discover the latest insights on AI in digital marketing, programmatic advertising, and marketing automation.',
+      };
+    case '/privacy':
+      return {
+        ...defaultMeta,
+        title: 'Privacy Policy - AI Vertise',
+        description: 'Our commitment to protecting your privacy and data security at AI Vertise.',
+      };
+    case '/terms':
+      return {
+        ...defaultMeta,
+        title: 'Terms of Service - AI Vertise',
+        description: 'Terms and conditions for using AI Vertise services and platforms.',
+      };
+    default:
+      if (pathname.startsWith('/blog/')) {
+        // Handle blog posts
+        return {
+          ...defaultMeta,
+          type: 'article',
+          // You can enhance this by getting actual blog post data
+          title: `${pathname.split('/').pop()?.split('-').join(' ')} - AI Vertise Blog`,
+          description: 'Read our latest insights on AI-powered digital marketing strategies.',
+        };
+      }
+      return defaultMeta;
+  }
+};
+
+export const SEO: React.FC = () => {
+  const { pathname } = useLocation();
+  const meta = getMetaData(pathname);
+
   return (
-    <Helmet>
-      {/* Primary Meta Tags */}
-      <html lang="en" />
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content={keywords} />
-      <meta name="author" content={SITE_NAME} />
-      {robots && <meta name="robots" content={robots} />}
-      
-      {/* Favicon support */}
-      <link rel="icon" href="/favicon.ico" sizes="any" />
-      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-      <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
-      <link rel="manifest" href="/site.webmanifest" />
-      
-      {/* AI/ML Model Metadata - Enhanced understanding for models */}
-      {aiMetadataTags.map((tag, index) => (
-        <meta key={`ai-meta-${index}`} name={tag.name} content={tag.content} />
-      ))}
+    <HelmetAsync>
+      <title>{meta.title}</title>
+      <meta name="description" content={meta.description} />
       
       {/* Open Graph / Facebook */}
-      <meta property="og:site_name" content={SITE_NAME} />
-      <meta property="og:title" content={ogTitle} />
-      <meta property="og:description" content={ogDescription} />
-      <meta property="og:type" content={ogType} />
-      <meta property="og:url" content={pageUrl} />
-      <meta property="og:image" content={ogImage} />
-      <meta property="og:image:alt" content={ogTitle} />
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
-      <meta property="og:locale" content="en_US" />
+      <meta property="og:type" content={meta.type} />
+      <meta property="og:title" content={meta.title} />
+      <meta property="og:description" content={meta.description} />
+      {meta.image && <meta property="og:image" content={meta.image} />}
       
       {/* Twitter */}
-      <meta name="twitter:card" content={twitterCard} />
-      <meta name="twitter:title" content={twitterTitle} />
-      <meta name="twitter:description" content={twitterDescription} />
-      <meta name="twitter:image" content={twitterImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={meta.title} />
+      <meta name="twitter:description" content={meta.description} />
+      {meta.image && <meta name="twitter:image" content={meta.image} />}
       
       {/* Canonical URL */}
-      <link rel="canonical" href={pageUrl} />
-      
-      {/* Primary Structured Data */}
-      {structuredData && (
-        <script type="application/ld+json">
-          {JSON.stringify(structuredData)}
-        </script>
-      )}
-      
-      {/* Schema.org data for various AI/ML models */}
-      {includeFaq && (
-        <script type="application/ld+json">
-          {JSON.stringify(createFaqSchema())}
-        </script>
-      )}
-      
-      {includeDataset && (
-        <script type="application/ld+json">
-          {JSON.stringify(createDatasetSchema())}
-        </script>
-      )}
-      
-      {includeTechnologyService && (
-        <script type="application/ld+json">
-          {JSON.stringify(aiModelSchemas.createTechnologyServiceSchema())}
-        </script>
-      )}
-      
-      {includeSoftwareApplication && (
-        <script type="application/ld+json">
-          {JSON.stringify(aiModelSchemas.createSoftwareApplicationSchema())}
-        </script>
-      )}
-    </Helmet>
+      <link rel="canonical" href={`https://ai-vertise.com${pathname}`} />
+    </HelmetAsync>
   );
 };
 

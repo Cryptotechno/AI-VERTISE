@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, memo, useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/common/Navbar'
 import { Footer } from './components/common/Footer'
 import CookieConsent from './components/common/CookieConsent'
@@ -119,44 +120,46 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <ErrorBoundary>
-        <div className="flex flex-col min-h-screen overflow-x-hidden" style={{ backgroundColor: '#f9f7fd' }}>
-          {/* Optimize animations for mobile */}
-          <MobileAnimationOptimizer />
-          {/* Preload critical assets for LCP */}
-          <LCPPreload />
-          <ScrollProgressIndicator />
-          <SiteStructuredData />
-          <AnalyticsTracker />
-          <NetworkDetector />
-          <MemoizedNavbar />
-          
-          <main className="flex-grow">
-            {/* Special handling for homepage (not lazy-loaded) */}
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="*" element={
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    <Route path="/blog" element={<BlogPage />} />
-                    <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
-                    <Route path="/privacy" element={<PrivacyPolicy />} />
-                    <Route path="/terms" element={<TermsOfService />} />
-                    <Route path="/offline" element={<OfflinePage />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </Suspense>
-              } />
-            </Routes>
-          </main>
-          
-          <MemoizedFooter />
-          <MemoizedCookieConsent />
-          <PWAInstallPrompt />
-        </div>
-      </ErrorBoundary>
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <ErrorBoundary>
+          <div className="flex flex-col min-h-screen overflow-x-hidden" style={{ backgroundColor: '#f9f7fd' }}>
+            {/* Optimize animations for mobile */}
+            <MobileAnimationOptimizer />
+            {/* Preload critical assets for LCP */}
+            <LCPPreload />
+            <ScrollProgressIndicator />
+            <SiteStructuredData />
+            <AnalyticsTracker />
+            <NetworkDetector />
+            <MemoizedNavbar />
+            
+            <main className="flex-grow">
+              {/* Special handling for homepage (not lazy-loaded) */}
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="*" element={
+                  <Suspense fallback={<PageLoader />}>
+                    <Routes>
+                      <Route path="/blog" element={<BlogPage />} />
+                      <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
+                      <Route path="/privacy" element={<PrivacyPolicy />} />
+                      <Route path="/terms" element={<TermsOfService />} />
+                      <Route path="/offline" element={<OfflinePage />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </Suspense>
+                } />
+              </Routes>
+            </main>
+            
+            <MemoizedFooter />
+            <MemoizedCookieConsent />
+            <PWAInstallPrompt />
+          </div>
+        </ErrorBoundary>
+      </Router>
+    </HelmetProvider>
   )
 }
 
