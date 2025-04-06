@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/common/SEO';
+import { Helmet } from 'react-helmet-async';
 
 const OfflinePage: React.FC = () => {
   return (
@@ -9,8 +10,11 @@ const OfflinePage: React.FC = () => {
       <SEO 
         title="You're Offline | AI VERTISE"
         description="It looks like you're currently offline. Some features may be unavailable."
-        robots="noindex, nofollow"
       />
+      
+      <Helmet>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       
       <div className="flex flex-col items-center justify-center min-h-screen px-4 py-12 text-center bg-indigo-50">
         <motion.div
