@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft, FaClock, FaEye, FaShareAlt, FaLinkedin, FaTwitter, FaFacebook, FaLink, FaBookmark, FaChartLine, FaLightbulb, FaFire, FaChartBar, FaBullseye, FaDatabase, FaBrain, FaInfoCircle } from 'react-icons/fa';
-import { BlogPost } from '../../data/blogPosts';
+import { BlogPost } from '../../types/BlogPost';
 import { ProgrammaticAdSvg, SocialMediaSvg, PrivacySvg } from '../ui/BlogImages';
 import { IconType } from 'react-icons';
 import { SEO } from '../common/SEO';
@@ -118,32 +118,55 @@ const ShareBar: React.FC<{ title: string, url: string }> = ({ title, url }) => {
   const encodedTitle = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(url);
 
+  const handleTwitterShare = () => {
+    if (typeof window !== 'undefined') {
+      window.open(`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`, '_blank');
+    }
+  };
+
+  const handleLinkedInShare = () => {
+    if (typeof window !== 'undefined') {
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, '_blank');
+    }
+  };
+
+  const handleFacebookShare = () => {
+    if (typeof window !== 'undefined') {
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, '_blank');
+    }
+  };
+
+  const handleCopyLink = () => {
+    if (typeof window !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(url)
+        .then(() => alert('Link copied to clipboard!'))
+        .catch(err => console.error('Failed to copy link:', err));
+    }
+  };
+
   return (
     <div className="flex flex-col items-center space-y-4">
       <div 
         className="p-2 lg:p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-        onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`, '_blank')}
+        onClick={handleTwitterShare}
       >
         <FaTwitter className="text-[#1DA1F2] text-lg lg:text-xl" />
       </div>
       <div 
         className="p-2 lg:p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-        onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`, '_blank')}
+        onClick={handleLinkedInShare}
       >
         <FaLinkedin className="text-[#0077B5] text-lg lg:text-xl" />
       </div>
       <div 
         className="p-2 lg:p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-        onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, '_blank')}
+        onClick={handleFacebookShare}
       >
         <FaFacebook className="text-[#4267B2] text-lg lg:text-xl" />
       </div>
       <div 
         className="p-2 lg:p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-        onClick={() => {
-          navigator.clipboard.writeText(url);
-          alert('Link copied to clipboard!');
-        }}
+        onClick={handleCopyLink}
       >
         <FaLink className="text-gray-600 text-lg lg:text-xl" />
       </div>
@@ -243,7 +266,28 @@ const AccentBox: React.FC<{
 };
 
 // Section component
-const Section: React.FC<{ section: BlogPost['content']['sections'][0], index: number, isActive: boolean }> = ({ section, index, isActive }) => {
+const Section: React.FC<{ 
+  section: {
+    title: string;
+    content: string;
+    pattern?: string;
+    quote?: {
+      text: string;
+      author?: string;
+      role?: string;
+      company?: string;
+      position?: string;
+    };
+    accent?: {
+      type: 'note' | 'highlight' | 'statistic';
+      content: string;
+      icon?: string;
+    };
+    list?: string[] | { title?: string; items: string[] };
+  }, 
+  index: number, 
+  isActive: boolean 
+}> = ({ section, index, isActive }) => {
   // On mobile, border should be thinner and less intrusive
   const patternClass = section.pattern ? patternClasses[section.pattern] || '' : '';
 
@@ -264,8 +308,11 @@ const Section: React.FC<{ section: BlogPost['content']['sections'][0], index: nu
       </h2>
       
       {/* Mobile optimized content container */}
-      <div className={`prose prose-lg max-w-none mb-6 ${patternClass} p-4 md:p-6 rounded-xl border-l-2 md:border-l-4`}>
-        <p className="text-gray-700 leading-relaxed mb-6">{section.content}</p>
+      <div className={`prose prose-lg max-w-none mb-6 ${patternClass} p-4 md:p-6 rounded-xl border-l-2 md:border-l-4 blog-content`}>
+        <div 
+          className="text-gray-700 leading-relaxed mb-6 prose prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-p:my-4 prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6 prose-li:my-2 blog-content"
+          dangerouslySetInnerHTML={{ __html: section.content }}
+        />
         
         {section.quote && (
           <blockquote className="border-l-2 md:border-l-4 border-indigo-400 pl-4 italic my-8 relative bg-indigo-50 p-4 md:p-6 rounded-r-lg">
@@ -292,18 +339,36 @@ const Section: React.FC<{ section: BlogPost['content']['sections'][0], index: nu
           />
         )}
         
-        {section.list && section.list.length > 0 && (
+        {section.list && (
           <div className="my-6">
-            <ul className="space-y-3">
-              {section.list.map((item, idx) => (
-                <li key={idx} className="flex items-start">
-                  <span className="inline-flex items-center justify-center bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 text-sm font-bold mr-3 mt-0.5 flex-shrink-0">
-                    {idx + 1}
-                  </span>
-                  <span className="text-gray-700">{item}</span>
-                </li>
-              ))}
-            </ul>
+            {Array.isArray(section.list) ? (
+              <ul className="space-y-3">
+                {section.list.map((item: string, idx: number) => (
+                  <li key={idx} className="flex items-start">
+                    <span className="inline-flex items-center justify-center bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 text-sm font-bold mr-3 mt-0.5 flex-shrink-0">
+                      {idx + 1}
+                    </span>
+                    <span className="text-gray-700">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : section.list.items && (
+              <div>
+                {section.list.title && (
+                  <h4 className="font-medium text-gray-900 mb-2">{section.list.title}</h4>
+                )}
+                <ul className="space-y-2">
+                  {section.list.items.map((item: string, idx: number) => (
+                    <li key={idx} className="flex items-start">
+                      <span className="inline-flex items-center justify-center bg-indigo-100 text-indigo-800 rounded-full w-6 h-6 text-sm font-bold mr-3 mt-0.5 flex-shrink-0">
+                        {idx + 1}
+                      </span>
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -436,34 +501,72 @@ const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
   const [activeSection, setActiveSection] = useState(0);
   const [scrollPercentage, setScrollPercentage] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const sections = post.content.sections;
   
-  const readTime = post.readTime || `${Math.max(1, Math.ceil((post.content.wordCount || 500) / 200))} min read`;
+  // Extract sections from post content
+  const sections = React.useMemo(() => {
+    if (typeof post.content === 'object' && post.content?.sections) {
+      return post.content.sections;
+    }
+    return [];
+  }, [post.content]);
+  
+  // Calculate read time
+  const readTime = post.readTime || `${Math.max(1, Math.ceil(calculateWordCount(post.content) / 200))} min read`;
   
   // Calculate word count if not provided
-  const wordCount = post.content.wordCount || 
-    (post.content.introduction.split(' ').length + 
-    post.content.sections.reduce((acc, section) => acc + section.content.split(' ').length, 0) + 
-    post.content.conclusion.split(' ').length);
+  const wordCount = React.useMemo(() => {
+    if (typeof post.content === 'object' && post.content?.wordCount) {
+      return post.content.wordCount;
+    }
+    return calculateWordCount(post.content);
+  }, [post.content]);
   
+  // Helper function to calculate word count
+  function calculateWordCount(content: BlogPost['content']): number {
+    if (typeof content === 'string') {
+      return content.split(/\s+/).length;
+    }
+    
+    if (typeof content === 'object') {
+      let count = 0;
+      
+      if (content.introduction) {
+        count += content.introduction.split(/\s+/).length;
+      }
+      
+      if (content.sections) {
+        count += content.sections.reduce((acc, section) => 
+          acc + (section.content ? section.content.split(/\s+/).length : 0), 0);
+      }
+      
+      if (content.conclusion) {
+        count += content.conclusion.split(/\s+/).length;
+      }
+      
+      return count;
+    }
+    
+    return 500; // Default fallback
+  }
+
   // Prepare the article SEO data dynamically based on post content
   const articleSEOData = {
-    title: `${post.title} | AI VERTISE Blog`,
-    description: post.excerpt || post.summary || SITE_DESCRIPTION,
-    keywords: post.tags.join(', '),
-    ogTitle: post.title,
-    ogDescription: post.excerpt || post.summary || SITE_DESCRIPTION,
+    title: `${post.title || 'Article'} | AI VERTISE Blog`,
+    description: (post.excerpt || post.summary || SITE_DESCRIPTION) || '',
+    keywords: post.tags && post.tags.length > 0 ? post.tags.join(', ') : '',
+    ogTitle: post.title || 'Article',
+    ogDescription: (post.excerpt || post.summary || SITE_DESCRIPTION) || '',
     ogType: 'article',
-    ogImage: post.image || post.featuredImage || OG_IMAGE_ABSOLUTE_URL,
-    twitterTitle: post.title,
-    twitterDescription: post.excerpt || post.summary || SITE_DESCRIPTION,
-    canonicalUrl: `https://ai-vertise.com/blog/${post.slug}`,
+    ogImage: (post.image || (post.featuredImage || OG_IMAGE_ABSOLUTE_URL)) || '',
+    twitterTitle: post.title || 'Article',
+    twitterDescription: (post.excerpt || post.summary || SITE_DESCRIPTION) || '',
+    canonicalUrl: `https://ai-vertise.com/blog/${post.slug || ''}`,
     structuredData: {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
-      "headline": post.title,
-      "description": post.excerpt || post.summary,
-      "image": post.featuredImage || post.image || "https://ai-vertise.com/images/blog-featured.jpg",
+      "headline": post.title || '',
+      "description": (post.excerpt || post.summary) || '',
+      "image": (post.featuredImage || post.image || "https://ai-vertise.com/images/blog-featured.jpg") || '',
       "author": {
         "@type": "Person",
         "name": post.position || "AI VERTISE Team"
@@ -476,20 +579,22 @@ const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
           "url": "https://ai-vertise.com/logo.png"
         }
       },
-      "url": `https://ai-vertise.com/blog/${post.slug}`,
-      "datePublished": post.publishDate || post.date,
-      "dateModified": post.lastUpdated || post.publishDate || post.date,
-      "articleSection": post.category,
-      "keywords": post.tags.join(','),
+      "url": `https://ai-vertise.com/blog/${post.slug || ''}`,
+      "datePublished": post.publishDate || post.date || new Date().toISOString(),
+      "dateModified": post.lastUpdated || post.publishDate || post.date || new Date().toISOString(),
+      "articleSection": post.category || '',
+      "keywords": post.tags && post.tags.length > 0 ? post.tags.join(',') : '',
       "wordCount": wordCount,
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://ai-vertise.com/blog/${post.slug}`
+        "@id": `https://ai-vertise.com/blog/${post.slug || ''}`
       }
     }
   };
 
   const handleScroll = () => {
+    if (typeof window === 'undefined') return;
+    
     // Calculate scroll percentage
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight;
@@ -512,15 +617,19 @@ const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
 
   // Ensure scroll to top when component mounts
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+    }
   }, []);
   
   // Handle scroll events to update the active section and scroll percentage
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll);
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }
   }, []);
   
   return (
@@ -550,8 +659,22 @@ const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
                 {getPostImage(post)}
               </div>
 
-              <div className="prose prose-lg max-w-none mb-10">
-                <p className="text-xl leading-relaxed text-gray-700">{post.content.introduction}</p>
+              <div className="prose prose-lg max-w-none mb-10 blog-content">
+                {post.content && typeof post.content === 'object' ? (
+                  <div 
+                    dangerouslySetInnerHTML={{ 
+                      __html: post.content.introduction || '' 
+                    }} 
+                    className="text-xl leading-relaxed text-gray-700 prose prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-ul:text-gray-700 prose-li:my-1 prose-li:pl-1 blog-content" 
+                  />
+                ) : (
+                  <div 
+                    dangerouslySetInnerHTML={{ 
+                      __html: typeof post.content === 'string' ? post.content : '' 
+                    }} 
+                    className="text-xl leading-relaxed text-gray-700 prose prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-p:my-4 prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6 prose-li:my-2 blog-content" 
+                  />
+                )}
               </div>
               
               <TableOfContents 
@@ -569,16 +692,25 @@ const BlogArticle: React.FC<{ post: BlogPost }> = ({ post }) => {
                 />
               ))}
               
-              <div className="prose prose-lg max-w-none border-t border-gray-200 pt-10">
+              <div className="prose prose-lg max-w-none border-t border-gray-200 pt-10 blog-content">
                 <h2 className="text-3xl font-bold mb-6 text-gray-900">Conclusion</h2>
-                <p className="text-gray-700 leading-relaxed">{post.content.conclusion}</p>
+                {post.content && typeof post.content === 'object' && post.content.conclusion ? (
+                  <div 
+                    dangerouslySetInnerHTML={{ 
+                      __html: post.content.conclusion 
+                    }} 
+                    className="text-gray-700 leading-relaxed prose prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-p:my-4 prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6 prose-li:my-2 blog-content" 
+                  />
+                ) : (
+                  <p className="text-gray-700 leading-relaxed"></p>
+                )}
               </div>
             </div>
             
             <div className="lg:col-span-4 xl:col-span-3">
               <div className="sticky top-24">
                 <div className="mb-8 flex justify-center lg:justify-start lg:pl-6">
-                  <ShareBar title={post.title} url={window.location.href} />
+                  <ShareBar title={post.title} url={typeof window !== 'undefined' ? window.location.href : `https://ai-vertise.com/blog/${post.slug || ''}`} />
                 </div>
                 
                 <div className="hidden lg:block">

@@ -46,7 +46,7 @@ export const Button: React.FC<ButtonProps> = ({
     primary: 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 active:from-indigo-700 active:to-purple-700 hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:pointer-events-none',
     secondary: 'bg-gray-100 text-gray-800 hover:bg-gray-200 active:bg-gray-300 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:pointer-events-none',
     outline: 'border border-indigo-600 text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:pointer-events-none',
-    text: 'text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:pointer-events-none',
+    text: 'hover:bg-indigo-50 active:bg-indigo-100 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:pointer-events-none',
     subtle: 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 active:bg-indigo-200 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-70 disabled:pointer-events-none'
   };
   

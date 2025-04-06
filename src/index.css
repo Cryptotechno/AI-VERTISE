@@ -356,3 +356,62 @@ section + section {
   margin-top: 0;
   padding-top: 0;
 }
+
+/* Blog content styling */
+.blog-content ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.blog-content li {
+  margin-bottom: 0.5rem;
+}
+
+.blog-content h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #1e293b;
+}
+
+.blog-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #334155;
+}
+
+.blog-content p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.blog-content blockquote {
+  border-left-width: 4px;
+  border-left-color: #818cf8;
+  padding-left: 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* Apply these styles to the article content */
+.prose ul:not(.list-none) {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.prose ul:not(.list-none) li {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.prose ul:not(.list-none) li::marker {
+  color: #6366f1;
+}

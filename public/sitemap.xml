@@ -5,39 +5,69 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <loc>https://ai-vertise.com/</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://ai-vertise.com/blog</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ai-vertise.com/blog/programmatic-advertising-ai</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ai-vertise.com/blog/social-media-ai-ads</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ai-vertise.com/blog/privacy-first-advertising</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ai-vertise.com/blog/ai-telegram-channel-strategy</loc>
-    <lastmod>2024-03-29</lastmod>
+    <lastmod>2024-04-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-vertise.com/blog/us-digital-advertising-trends-2024</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-vertise.com/blog/uk-advertising-landscape-2024</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-vertise.com/blog/ai-personalization-retail</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-vertise.com/blog/voice-search-optimization-2024</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-vertise.com/blog/archive</loc>
+    <lastmod>2024-04-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://ai-vertise.com/privacy</loc>

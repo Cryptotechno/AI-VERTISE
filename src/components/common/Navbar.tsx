@@ -115,7 +115,7 @@ const Navbar: React.FC = () => {
             <Button
               onClick={handleHomeClick}
               variant="text"
-              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="hero"
             >
               Home
@@ -123,7 +123,7 @@ const Navbar: React.FC = () => {
             <Button
               onClick={() => scrollToSection('services')}
               variant="text"
-              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="services"
             >
               Services
@@ -131,7 +131,7 @@ const Navbar: React.FC = () => {
             <Button
               onClick={() => scrollToSection('about')}
               variant="text"
-              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="about"
             >
               About
@@ -140,14 +140,14 @@ const Navbar: React.FC = () => {
               as={Link}
               to="/blog"
               variant="text"
-              className={`${isActive('/blog') ? 'text-indigo-600' : 'text-gray-800'} hover:text-indigo-600 px-3 py-2 text-sm font-medium`}
+              className={`${isActive('/blog') ? 'text-indigo-600' : 'text-gray-700'} hover:text-indigo-600 px-3 py-2 text-sm font-medium`}
             >
               Blog
             </Button>
             <Button
               onClick={() => scrollToSection('calculator')}
               variant="text"
-              className="text-gray-800 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
+              className="text-gray-700 hover:text-indigo-600 px-3 py-2 text-sm font-medium"
               data-section="calculator"
             >
               Calculator
@@ -171,21 +171,21 @@ const Navbar: React.FC = () => {
           <Button
             onClick={handleHomeClick}
             variant="text"
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             Home
           </Button>
           <Button
             onClick={() => scrollToSection('services')}
             variant="text"
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             Services
           </Button>
           <Button
             onClick={() => scrollToSection('about')}
             variant="text"
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             About
           </Button>
@@ -193,14 +193,14 @@ const Navbar: React.FC = () => {
             as={Link}
             to="/blog"
             variant="text"
-            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/blog') ? 'text-indigo-600' : 'text-gray-800'} hover:text-indigo-600 hover:bg-gray-50 rounded-md`}
+            className={`block w-full text-left px-3 py-2 text-base font-medium ${isActive('/blog') ? 'text-indigo-600' : 'text-gray-700'} hover:text-indigo-600 hover:bg-gray-50 rounded-md`}
           >
             Blog
           </Button>
           <Button
             onClick={() => scrollToSection('calculator')}
             variant="text"
-            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-800 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 rounded-md"
           >
             Calculator
           </Button>

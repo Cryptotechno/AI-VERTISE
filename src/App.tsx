@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, memo, useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useParams, Navigate, useNavigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/common/Navbar'
 import { Footer } from './components/common/Footer'
@@ -12,11 +12,13 @@ import { useScrollHandler } from './hooks/useScrollHandler'
 import { useKeyboardNavigation } from './hooks/useKeyboardNavigation'
 import { useAnalyticsPageview } from './hooks/useAnalyticsPageview'
 import { useMobileOptimization } from './hooks/useMobileOptimization'
-import { blogPosts } from './data/blogPosts'
+import blogPosts from './data/blogPosts'
 import { ErrorBoundary } from './components/common/ErrorBoundary'
 import LCPPreload from './components/LCPPreload'
 import MobileAnimationOptimizer from './components/MobileAnimationOptimizer'
 import { useAppStore } from './store'
+import AnalyticsTracker from './components/common/AnalyticsTracker'
+import NetworkDetector from './components/common/NetworkDetector'
 
 // Lazy-loaded components with correct type assertions
 // Non-critical routes are lazy loaded
@@ -25,8 +27,19 @@ const retryImport = (importFn: () => Promise<any>, retries = 3, interval = 1500)
     const attempt = () => {
       importFn()
         .then(resolve)
-        .catch((error) => {
-          console.warn(`Dynamic import failed, retries left: ${retries}`, error);
+        .catch((error: Error) => {
+          // More detailed error logging
+          const errorType = error instanceof TypeError ? 'Network Error' : 
+                           error instanceof SyntaxError ? 'Syntax Error' : 
+                           'Import Error';
+          
+          console.warn(`Dynamic import failed (${errorType}), retries left: ${retries}`, error);
+          
+          // Handle specific error types differently
+          if (error instanceof TypeError && error.message.includes('fetch')) {
+            console.error('Network issue detected during module loading');
+          }
+          
           if (retries === 0) {
             reject(error);
             return;
@@ -45,6 +58,7 @@ const retryImport = (importFn: () => Promise<any>, retries = 3, interval = 1500)
 
 const BlogPage = lazy(() => retryImport(() => import('./pages/BlogPage')));
 const BlogArticle = lazy(() => retryImport(() => import('./components/sections/BlogArticle')));
+const BlogArchive = lazy(() => retryImport(() => import('./pages/BlogArchive')));
 const PrivacyPolicy = lazy(() => retryImport(() => import('./pages/PrivacyPolicy')));
 const TermsOfService = lazy(() => retryImport(() => import('./pages/TermsOfService')));
 const OfflinePage = lazy(() => retryImport(() => import('./pages/OfflinePage')));
@@ -58,43 +72,25 @@ const MemoizedFooter = memo(Footer)
 const MemoizedCookieConsent = memo(CookieConsent)
 
 const BlogArticleWrapper = () => {
-  const { slug } = useParams()
-  const post = blogPosts.find(post => post.slug === slug) || blogPosts[0]
-  return <BlogArticle post={post} />
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const post = blogPosts.find(post => post.slug === slug);
+  
+  useEffect(() => {
+    if (!post && slug) {
+      console.warn(`Blog post not found for slug: ${slug}`);
+      navigate('/blog', { replace: true });
+    }
+  }, [post, slug, navigate]);
+  
+  if (!post) {
+    return <PageLoader />;
+  }
+  
+  return <BlogArticle post={post} />;
 }
 
-// This component ensures analytics are tracked on route changes
-const AnalyticsTracker = () => {
-  useAnalyticsPageview();
-  return null;
-};
-
-// Network detection component
-const NetworkDetector = () => {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-  
-  useEffect(() => {
-    if (!isOnline) {
-      // Navigate to offline page when user goes offline
-      window.location.href = '/offline';
-    }
-  }, [isOnline]);
-  
-  return null;
-};
+// Network detection component is now imported from its own file
 
 function App() {
   // Use our custom hooks
@@ -141,8 +137,11 @@ function App() {
                 <Route path="*" element={
                   <Suspense fallback={<PageLoader />}>
                     <Routes>
-                      <Route path="/blog" element={<BlogPage />} />
+                      <Route path="/blog/archive/:year/:month" element={<BlogArchive />} />
+                      <Route path="/blog/archive/:year" element={<BlogArchive />} />
+                      <Route path="/blog/archive" element={<BlogArchive />} />
                       <Route path="/blog/:slug" element={<BlogArticleWrapper />} />
+                      <Route path="/blog" element={<BlogPage />} />
                       <Route path="/privacy" element={<PrivacyPolicy />} />
                       <Route path="/terms" element={<TermsOfService />} />
                       <Route path="/offline" element={<OfflinePage />} />

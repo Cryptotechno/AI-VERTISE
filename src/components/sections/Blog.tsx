@@ -1,21 +1,45 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FaClock, FaEye, FaFire, FaSearch, FaChevronLeft, FaChevronRight, FaTags, FaFilter, FaRss, FaBrain, FaLightbulb, FaRobot, FaChartLine } from 'react-icons/fa';
-import { blogPosts } from '../../data/blogPosts';
-import { ProgrammaticAdSvg, SocialMediaSvg, PrivacySvg } from '../ui/BlogImages';
+import { FaClock, FaEye, FaFire, FaSearch, FaChevronLeft, FaChevronRight, FaTags, FaFilter, FaRss, FaBrain, FaLightbulb, FaRobot, FaChartLine, FaChartBar, FaArchive } from 'react-icons/fa';
+import blogPosts from '../../data/blogPosts';
+import { 
+  ProgrammaticAdSvg, 
+  SocialMediaSvg, 
+  PrivacySvg, 
+  EcommerceSvg, 
+  MetaverseSvg, 
+  UKLandscapeSvg, 
+  TelegramAISvg, 
+  CustomAIToolsSvg 
+} from '../ui/BlogImages';
 
 // Helper function to get the appropriate SVG based on post ID or slug
 const getPostImage = (post: typeof blogPosts[0]) => {
   if (post.id === '1' || post.slug === 'programmatic-advertising-ai') {
     return <ProgrammaticAdSvg />;
-  } else if (post.id === '2' || post.slug === 'social-media-ai-ads') {
+  } else if (post.id === '2' || post.slug === 'social-media-ai-content') {
     return <SocialMediaSvg />;
   } else if (post.id === '3' || post.slug === 'privacy-first-advertising') {
     return <PrivacySvg />;
+  } else if (post.id === '4' || post.slug === 'ecommerce-personalization') {
+    return <EcommerceSvg />;
+  } else if (post.id === '5' || post.slug === 'metaverse-marketing-opportunities') {
+    return <MetaverseSvg />;
+  } else if (post.id === '6' || post.slug === 'uk-advertising-landscape-2024') {
+    return <UKLandscapeSvg />;
+  } else if (post.id === '7' || post.slug === 'telegram-ai-channel-selection') {
+    return <TelegramAISvg />;
+  } else if (post.id === '8' || post.slug === 'custom-ai-marketing-tools') {
+    return <CustomAIToolsSvg />;
   }
-  // Default fallback
-  return <ProgrammaticAdSvg />;
+  
+  // Default fallback based on the image path in the post
+  return (
+    <div className="absolute inset-0 w-full h-full">
+      <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+    </div>
+  );
 };
 
 const BlogCard: React.FC<{ post: typeof blogPosts[0]; featured?: boolean }> = ({ post, featured = false }) => (
@@ -101,12 +125,42 @@ const SearchAndFilter: React.FC<{
   setSearch: (value: string) => void;
   selectedCategory: string;
   setSelectedCategory: (value: string) => void;
+  selectedRegion: string;
+  setSelectedRegion: (value: string) => void;
   isFilterOpen: boolean;
   setIsFilterOpen: (value: boolean) => void;
-}> = ({ search, setSearch, selectedCategory, setSelectedCategory, isFilterOpen, setIsFilterOpen }) => {
+}> = ({ 
+  search, 
+  setSearch, 
+  selectedCategory, 
+  setSelectedCategory, 
+  selectedRegion, 
+  setSelectedRegion,
+  isFilterOpen, 
+  setIsFilterOpen 
+}) => {
   const categories = useMemo(() => {
     const cats = ['All', ...new Set(blogPosts.map(post => post.category))];
     return cats;
+  }, []);
+
+  const regions = ['All Regions', 'US', 'UK'];
+  
+  const [isDesktop, setIsDesktop] = useState(false);
+  
+  useEffect(() => {
+    const checkIsDesktop = () => {
+      if (typeof window !== 'undefined') {
+        setIsDesktop(window.innerWidth >= 640);
+      }
+    };
+    
+    checkIsDesktop();
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkIsDesktop);
+      return () => window.removeEventListener('resize', checkIsDesktop);
+    }
   }, []);
 
   return (
@@ -135,7 +189,7 @@ const SearchAndFilter: React.FC<{
       </div>
       
       <AnimatePresence>
-        {(isFilterOpen || window.innerWidth >= 640) && (
+        {(isFilterOpen || isDesktop) && (
           <motion.div 
             id="category-filters"
             initial={{ height: 0, opacity: 0 }}
@@ -144,20 +198,46 @@ const SearchAndFilter: React.FC<{
             transition={{ duration: 0.3 }}
             className="overflow-hidden mt-4"
           >
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                    selectedCategory === category 
-                      ? 'bg-indigo-600 text-white shadow-sm' 
-                      : 'bg-white border border-gray-200 text-gray-700 hover:border-indigo-300 hover:text-indigo-600'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+            <div className="flex flex-col gap-4">
+              {/* Categories */}
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Categories</h3>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => setSelectedCategory(category)}
+                      className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                        selectedCategory === category 
+                          ? 'bg-indigo-600 text-white shadow-sm' 
+                          : 'bg-white border border-gray-200 text-gray-700 hover:border-indigo-300 hover:text-indigo-600'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Regions */}
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">Regions</h3>
+                <div className="flex flex-wrap gap-2">
+                  {regions.map((region) => (
+                    <button
+                      key={region}
+                      onClick={() => setSelectedRegion(region)}
+                      className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                        selectedRegion === region 
+                          ? 'bg-indigo-600 text-white shadow-sm' 
+                          : 'bg-white border border-gray-200 text-gray-700 hover:border-indigo-300 hover:text-indigo-600'
+                      }`}
+                    >
+                      {region}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
@@ -421,11 +501,81 @@ const AIInsightsPanel: React.FC<{
   );
 };
 
+// New component for featured region content
+const FeaturedRegion: React.FC<{
+  region: string;
+  setSelectedRegion: (region: string) => void;
+}> = ({ region, setSelectedRegion }) => {
+  const regionData = {
+    'US': {
+      title: 'US Market Insights',
+      description: 'Discover the latest trends and strategies for the American digital advertising landscape.',
+      stats: [
+        { label: 'Market Size', value: '$315B' },
+        { label: 'Growth', value: '+9.8%' },
+        { label: 'Mobile Share', value: '72%' },
+      ],
+      icon: FaChartLine
+    },
+    'UK': {
+      title: 'UK Market Insights',
+      description: 'Explore strategies tailored for success in the British digital advertising ecosystem.',
+      stats: [
+        { label: 'Market Size', value: '£31.8B' },
+        { label: 'Growth', value: '+7.8%' },
+        { label: 'Mobile Share', value: '64%' },
+      ],
+      icon: FaChartBar
+    }
+  };
+
+  const data = region === 'UK' ? regionData.UK : regionData.US;
+  const Icon = data.icon;
+  
+  return (
+    <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6 mb-8">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="bg-white p-2.5 rounded-lg shadow-sm">
+          <Icon className="text-indigo-600 text-xl" />
+        </div>
+        <h3 className="text-lg font-bold text-indigo-900">
+          {data.title}
+        </h3>
+      </div>
+      
+      <p className="text-indigo-800 mb-5 text-sm">
+        {data.description}
+      </p>
+      
+      <div className="grid grid-cols-3 gap-3 mb-5">
+        {data.stats.map((stat, index) => (
+          <div key={index} className="bg-white p-3 rounded-lg shadow-sm text-center">
+            <div className="text-indigo-900 font-bold">{stat.value}</div>
+            <div className="text-xs text-indigo-600">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+      
+      <button
+        onClick={() => setSelectedRegion(region)}
+        className="w-full px-4 py-2.5 bg-white text-indigo-600 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-indigo-100 transition-colors border border-indigo-100 shadow-sm"
+      >
+        View {region} Content
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+    </div>
+  );
+};
+
 const Blog: React.FC = () => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedRegion, setSelectedRegion] = useState('All Regions');
   const [currentPage, setCurrentPage] = useState(1);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [featuredRegion, setFeaturedRegion] = useState<'US' | 'UK'>('US');
   const itemsPerPage = 6;
   
   const trendingPost = useMemo(() => {
@@ -434,30 +584,28 @@ const Blog: React.FC = () => {
   
   const filteredPosts = useMemo(() => {
     return blogPosts.filter(post => {
-      // Apply category filter
-      if (selectedCategory !== 'All' && post.category !== selectedCategory) {
-        return false;
-      }
+      const matchesSearch = 
+        search === '' || 
+        post.title.toLowerCase().includes(search.toLowerCase()) ||
+        post.summary.toLowerCase().includes(search.toLowerCase()) ||
+        post.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()));
       
-      // Apply search filter (search in title, summary, and tags)
-      if (search) {
-        const searchTerm = search.toLowerCase();
-        return (
-          post.title.toLowerCase().includes(searchTerm) ||
-          post.summary.toLowerCase().includes(searchTerm) ||
-          post.tags.some(tag => tag.toLowerCase().includes(searchTerm)) ||
-          post.category.toLowerCase().includes(searchTerm)
-        );
-      }
+      const matchesCategory = 
+        selectedCategory === 'All' || 
+        post.category === selectedCategory;
       
-      return true;
+      const matchesRegion = 
+        selectedRegion === 'All Regions' || 
+        post.tags.some(tag => tag.toLowerCase() === selectedRegion.toLowerCase());
+      
+      return matchesSearch && matchesCategory && matchesRegion;
     });
-  }, [search, selectedCategory]);
+  }, [search, selectedCategory, selectedRegion]);
 
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, selectedCategory]);
+  }, [search, selectedCategory, selectedRegion]);
   
   // Get current posts based on pagination
   const currentPosts = useMemo(() => {
@@ -476,12 +624,24 @@ const Blog: React.FC = () => {
   // Auto-close mobile filters when window width changes
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 640) {
+      if (typeof window !== 'undefined' && window.innerWidth >= 640) {
         setIsFilterOpen(false);
       }
     };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  // Toggle featured region every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFeaturedRegion(prev => prev === 'US' ? 'UK' : 'US');
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -500,13 +660,25 @@ const Blog: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Latest Articles</h2>
+              <Link
+                to="/blog/archive"
+                className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium"
+              >
+                <FaArchive className="text-sm" />
+                Archive
+              </Link>
+            </div>
             <SearchAndFilter 
               search={search} 
               setSearch={setSearch} 
               selectedCategory={selectedCategory} 
               setSelectedCategory={setSelectedCategory}
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
               isFilterOpen={isFilterOpen}
               setIsFilterOpen={setIsFilterOpen}
             />
@@ -574,6 +746,7 @@ const Blog: React.FC = () => {
                     onClick={() => {
                       setSearch('');
                       setSelectedCategory('All');
+                      setSelectedRegion('All Regions');
                     }}
                     className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md font-medium"
                   >
@@ -584,8 +757,16 @@ const Blog: React.FC = () => {
             )}
           </div>
 
-          <div className="lg:col-span-4 lg:block">
+          <div className="space-y-8">
+            {/* Featured Region - alternates between US and UK */}
+            <FeaturedRegion 
+              region={featuredRegion} 
+              setSelectedRegion={setSelectedRegion} 
+            />
+            
             <AIInsightsPanel setSelectedCategory={setSelectedCategory} setSearch={setSearch} />
+            
+            <NewsletterSignup />
           </div>
         </div>
         
@@ -613,10 +794,6 @@ const Blog: React.FC = () => {
           </div>
         </div>
         
-        <div className="mt-12 mb-0">
-          <NewsletterSignup />
-        </div>
-
         <div className="text-center mt-8 mb-0 pb-0">
           <Link
             to="/calculator"

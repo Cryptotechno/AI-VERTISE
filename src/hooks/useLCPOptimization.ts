@@ -9,8 +9,15 @@ import { useEffect, useRef } from 'react';
  */
 export function useLCPOptimization(selector: string) {
   const optimizedRef = useRef(false);
-  const isMobile = useRef(window.innerWidth < 768);
+  const isMobile = useRef(false); // Default to false
   
+  useEffect(() => {
+    // Safely check if window is available (for SSR compatibility)
+    if (typeof window !== 'undefined') {
+      isMobile.current = window.innerWidth < 768;
+    }
+  }, []);
+
   const optimizeLCP = () => {
     if (optimizedRef.current) return;
     
